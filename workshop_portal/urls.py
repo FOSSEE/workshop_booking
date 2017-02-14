@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from workshop_app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^login/$', views.user_login),
+    url(r'^logout/$', views.user_logout),
+    url(r'^register/$', views.user_register),
+    url(r'^book/$', views.book),
+    url(r'^manage/$', views.manage),
+    url(r'^view_profile/$', views.view_profile),
+    url(r'^edit_profile/$', views.edit_profile)
 ]
