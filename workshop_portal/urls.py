@@ -18,6 +18,7 @@ from django.contrib import admin
 from workshop_app import views
 
 urlpatterns = [
+    url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', views.user_login),
     url(r'^logout/$', views.user_logout),
@@ -25,5 +26,7 @@ urlpatterns = [
     url(r'^book/$', views.book),
     url(r'^manage/$', views.manage),
     url(r'^view_profile/$', views.view_profile),
-    url(r'^edit_profile/$', views.edit_profile)
+    url(r'^edit_profile/$', views.edit_profile),
+    url(r'^create_workshop/$', views.create_workshop)
+
 ]

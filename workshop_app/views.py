@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
-def home(request):
-	'''Home'''
-	return render(request, "home.html")
+
+def index(request):
+	'''Landing Page'''
+	return render(request, "workshop_app/index.html")
 
 def is_instructor(user):
 	'''Check if the user is having instructor rights'''
@@ -86,13 +87,13 @@ def view_profile(request):
 
 @login_required
 def edit_profile(request):
-	""" edit profile details facility for instructor and students """
+	""" edit profile details facility for instructor and coordinator """
 
 	user = request.user
 	if is_instructor(user):
 		template = 'workshop_app/manage.html'
 	else:
-		template = 'workshop_app/user.html'
+		template = 'workshop_app/booking.html'
 	context = {'template': template}
 	if has_profile(user):
 		profile = Profile.objects.get(user_id=user.id)
@@ -112,8 +113,18 @@ def edit_profile(request):
 			return render(request, 'workshop_app/profile_updated.html', context)
 		else:
 			context['form'] = form
-			return my_render_to_response('workshop_app/edit_profile.html', context)
+			return render(request, 'workshop_app/edit_profile.html', context)
 	else:
 		form = ProfileForm(user=user, instance=profile)
 		context['form'] = form
 		return render(request, 'workshop_app/edit_profile.html', context)
+
+@login_required
+def create_workshop(request):
+	'''Instructor creates workshops'''
+
+	user = request.user
+	if is_instructor(user):
+		return render(request, 'workshop_app/create_workshop.html')
+	else:
+		return redirect('/book/')
