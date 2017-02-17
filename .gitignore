@@ -91,4 +91,8 @@ ENV/
 .ropeproject
 
 0
+#Database
+db.sqlite3
 
+# Django Migration files
+migrations/
