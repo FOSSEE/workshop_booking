@@ -1,0 +1,101 @@
+{% extends './base.html' %}
+
+{% block title %}
+	View Course List
+{% endblock %}
+
+
+{% block header %}
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="{{ URL_ROOT}}/manage/">WebSiteName</a>
+		</div>
+		<ul class="nav navbar-nav">
+		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Workshop</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		</ul>
+	  	</div>
+	</nav>
+{% endblock %}
+
+{% block extra %}
+	<!-- <script src="{{ URL_ROOT }}/static/workshop_app/js/overlay.js"></script> -->
+
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+	<div class="container">
+		
+		<table class="table table-hover" style="border-collapse:collapse;">
+		  <thead>
+		    <tr>
+		      <th>id</th>
+		      <th>Course Name</th>
+		      <th>Course Duration</th>
+		    </tr>
+		  </thead>
+
+		{% for course in courses %}
+		  <tbody>
+		    <tr  >
+		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
+		      <td>{{ course.course_name }}</td>
+		      <td>{{ course.course_duration }}</td>
+		      <td><button class="btn btn-default btn-sm" class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}">View Course Details</button></td>
+		    </tr>
+
+		   <tr>
+		   <td colspan="12" class="hiddenRow">
+			   <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
+			   <table class="table table-striped">
+			   	<tbody>
+			   		<tr>
+			   		<td>{{ course.course_description|safe }}</td>
+			   		</tr>
+			   	</tbody>
+			   	</table>
+			   </div>
+		   </td>
+		   </tr>
+		  </tbody>
+		 {% endfor %}
+		</table>
+		
+	</div>
+
+	<div class="container">
+		
+		<div class="Page-Nav" align="center">
+		<nav aria-label="Page navigation">
+		 	<ul class="pagination pagination-sm">
+			  	<li class="page-item">
+			      {% if courses.has_previous %}
+					<a class="page-link" tabindex="-1" 
+							href="?page={{ courses.previous_page_number }}">Previous</a>
+				{% endif %}
+			    </li>
+			    <li class="page-item">
+			    <span class="current">
+				Page {{ courses.number }} of {{ courses.paginator.num_pages }}
+					</span>
+				</li>
+			    <li class="page-item">
+			    {% if courses.has_next %}
+					<a class="page-link" href="?page={{ courses.next_page_number }}">Next
+					</a>	
+				{% endif %}
+			    </li>
+		  	</ul>
+		</nav>
+		</div>
+	</div>
+{% endblock %}

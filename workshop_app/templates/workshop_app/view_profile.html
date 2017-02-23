@@ -1,0 +1,57 @@
+{% extends './base.html' %}
+
+{% block title %}
+    View Profile
+{% endblock %}
+
+{% block header %}
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">WebSiteName</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+    {% csrf_token %}
+  <table class="table table-bordered">
+  <tr>
+    <th><label for="id_first_name"><h5>First name:</h5></label></th>
+    <th><label for="id_first_name"><h5>{{ user.first_name }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_last_name"><h5>Last name:</h5></label></th>
+    <th><label for="id_last_name"><h5>{{ user.last_name }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_email"><h5>Email:</h5></label></th>
+    <th><label for="id_email"><h5>{{ user.email }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_institute"><h5>Institute:</h5></label></th>
+    <th><label for="id_institute"><h5>{{ user.profile.institute }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_department"><h5>Department:</h5></label></th>
+    <th><label for="id_department"><h5>{{ user.profile.department }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_position"><h5>Position:</h5></label></th>
+    <th><label for="id_position"><h5>{{ user.profile.position }}</h5></label></th>
+  </tr>
+  </table>
+    <br>
+    <a class="btn btn-primary pull-right" href="{{ URL_ROOT }}/edit_profile/">Edit Profile</a>
+  </div>
+{% endblock %}

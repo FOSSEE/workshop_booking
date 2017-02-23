@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from forms import UserRegistrationForm, UserLoginForm, ProfileForm
-from .models import Profile, User, has_profile
+from .forms import UserRegistrationForm, UserLoginForm, ProfileForm, CreateWorkshop
+from .models import Profile, User, has_profile, Workshop, Course
 from django.template import RequestContext
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 
@@ -23,7 +24,7 @@ def user_login(request):
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
-		return redirect('/view_profile/')
+		return redirect('/book/')
 
 	if request.method == "POST":
 		form = UserLoginForm(request.POST)
@@ -32,7 +33,7 @@ def user_login(request):
 			login(request, user)
 			if user.groups.filter(name='instructor').count() > 0:
 				return redirect('/manage/')
-			return redirect('/view_profile/')
+			return redirect('/book/')
 		else:
 			return render(request, 'workshop_app/login.html', {"form": form})
 	else:
@@ -53,12 +54,11 @@ def user_register(request):
 			username, password = form.save()
 			new_user = authenticate(username=username, password=password)
 			login(request, new_user)
-			return redirect('/home')
+			return redirect('/view_profile/')
 		else:
 			return render(request, "workshop_app/register.html", {"form": form})
 	else:
 		form = UserRegistrationForm()
-			
 	return render(request, "workshop_app/register.html", {"form": form})
 
 
@@ -71,18 +71,21 @@ def book(request):
 	else:
 		return redirect('/login/')
 
+@login_required
 def manage(request):
 	user = request.user
 	if user.is_authenticated():
+		print user.id, user
 		if user.groups.filter(name='instructor').count() > 0:
-			return render(request, "workshop_app/manage.html")
+			workshop_details = Workshop.objects.all()
+			return render(request, "workshop_app/manage.html", {"workshop_details": workshop_details})
 		return redirect('/book/')
 	else:
 		return redirect('/login/')
 
 @login_required
 def view_profile(request):
-	""" view moderators and users profile """
+	""" view instructor and coordinator profile """
 	return render(request, "workshop_app/view_profile.html")
 
 @login_required
@@ -125,6 +128,49 @@ def create_workshop(request):
 
 	user = request.user
 	if is_instructor(user):
-		return render(request, 'workshop_app/create_workshop.html')
+		if request.method == 'POST':
+			form = CreateWorkshop(request.POST)
+			if form.is_valid():
+				form.save()
+				return redirect('/manage/')
+		else:
+			form = CreateWorkshop()
+		return render(request, 'workshop_app/create_workshop.html', {"form": form })
+	else:
+		return redirect('/book/')
+
+@login_required
+def view_course_list(request):
+	'''Gives the course details '''
+	user = request.user
+	if is_instructor(user):
+		course_list = Course.objects.all()
+		paginator = Paginator(course_list, 9) #Show upto 12 Courses per page
+
+		page = request.GET.get('page')
+		try:
+			courses = paginator.page(page)
+		except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+			courses = paginator.page(1)
+		except EmptyPage:
+			#If page is out of range(e.g 999999), deliver last page.
+			courses = paginator.page(paginator.num_pages)
+
+		return render(request, 'workshop_app/view_course_list.html', \
+			{'courses': courses})
+
+	else:
+		return redirect('/book/')
+
+@login_required
+def view_course_details(request):
+	'''Gives the course details '''
+
+	user = request.user
+	if is_instructor(user):
+
+		return redirect('/')
+		
 	else:
 		return redirect('/book/')

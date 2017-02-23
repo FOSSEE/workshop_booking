@@ -20,13 +20,15 @@ from workshop_app import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
+    url(r'^register/$', views.user_register),
     url(r'^login/$', views.user_login),
     url(r'^logout/$', views.user_logout),
-    url(r'^register/$', views.user_register),
-    url(r'^book/$', views.book),
-    url(r'^manage/$', views.manage),
     url(r'^view_profile/$', views.view_profile),
     url(r'^edit_profile/$', views.edit_profile),
+    url(r'^book/$', views.book),
+    url(r'^manage/$', views.manage),
+    url(r'^view_course_list/$', views.view_course_list),
+    url(r'^view_course_details/$', views.view_course_details),
     url(r'^create_workshop/$', views.create_workshop)
 
 ]

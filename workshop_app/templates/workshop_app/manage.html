@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+
+{% block header %}
+   <nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="#">WebSiteName</a>
+		</div>
+		<ul class="nav navbar-nav">
+		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		</ul>
+		</div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	{% csrf_token %}
+	{% for w in workshop_details %}
+	{{ w.date }}<br>
+	{{ w.start_time }}<br>
+	{{ w.end_time }}<br>
+	{{ w.workshop_creator }}<br>
+	{{ w.workshop_title }}
+	{{ w.status }}
+	{% endfor %}
+</div>
+
+{% endblock %}
