@@ -1,4 +1,4 @@
-{% extends './base.html' %}
+{% extends 'workshop_app/base.html' %}
 
 {% block title %}
     View Profile
@@ -41,6 +41,10 @@
   <tr>
     <th><label for="id_institute"><h5>Institute:</h5></label></th>
     <th><label for="id_institute"><h5>{{ user.profile.institute }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
+    <th><label for="id_phone_number"><h5>{{ user.profile.phone_number }}</h5></label></th>
   </tr>
   <tr>
     <th><label for="id_department"><h5>Department:</h5></label></th>

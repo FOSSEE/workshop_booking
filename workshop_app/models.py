@@ -1,6 +1,7 @@
 #from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 position_choices = (
@@ -20,10 +21,21 @@ class Profile(models.Model):
 	user = models.OneToOneField(User)
 	institute = models.CharField(max_length=150)
 	department = models.CharField(max_length=150)
+	phone_number = models.CharField(
+				max_length=15,
+				validators=[RegexValidator(
+									regex=r'^\+?1?\d{9,15}$', message=(
+									"Phone number must be entered \
+                                     in the format: '+999999999'.\
+                                      Up to 15 digits allowed.")
+							)])
 	position = models.CharField(max_length=32, choices=position_choices)
 
 	def __str__(self):
-		return u"{0} {1} | {2}".format(self.user.first_name, self.user.last_name, self.user.email) 
+		return u"{0} {1} | {2} ".format(self.user.first_name, 
+											self.user.last_name, 
+											self.user.email
+										    ) 
 
 
 class Course(models.Model):

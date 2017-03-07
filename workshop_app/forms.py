@@ -27,12 +27,18 @@ class UserRegistrationForm(forms.Form):
                        (max_length=32, widget=forms.PasswordInput())
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
-    institute = forms.CharField\
-                (max_length=128, help_text='Institute/Organization')
-    department = forms.CharField\
-                (max_length=64, help_text='Department you work/study at')
-    position = forms.ChoiceField\
-        (help_text='If you are an instructor please mail us at python[at]fossee[dot]in', choices=position_choices)
+    phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
+                                error_message=("Phone number must be entered \
+                                                  in the format: '+999999999'.\
+                                                 Up to 15 digits allowed."))
+    institute = forms.CharField(max_length=128, 
+                help_text='Institute/Organization')
+    department = forms.CharField(max_length=64, help_text='Department you work \
+                                    study at')
+    position = forms.ChoiceField(help_text='If you are an instructor please \
+                                mail us at python[at]fossee[dot]in',
+                                choices=position_choices
+                                 )
 
     def clean_username(self):
         u_name = self.cleaned_data["username"]
@@ -65,11 +71,13 @@ class UserRegistrationForm(forms.Form):
         u_name = self.cleaned_data["username"]
         u_name = u_name.lower()
         pwd = self.cleaned_data["password"]
-        email = self.cleaned_data['email']
+        email = self.cleaned_data["email"]
         new_user = User.objects.create_user(u_name, email, pwd)
 
         new_user.first_name = self.cleaned_data["first_name"]
         new_user.last_name = self.cleaned_data["last_name"]
+        
+
         new_user.save()
 
         cleaned_data = self.cleaned_data
@@ -77,7 +85,7 @@ class UserRegistrationForm(forms.Form):
         new_profile.institute = cleaned_data["institute"]
         new_profile.department = cleaned_data["department"]
         new_profile.position = cleaned_data["position"]
-       
+        new_profile.phone_number = cleaned_data["phone_number"]
         new_profile.save()
 
         return u_name, pwd

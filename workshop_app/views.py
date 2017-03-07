@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+
 from .forms import UserRegistrationForm, UserLoginForm, ProfileForm, CreateWorkshop
 from .models import Profile, User, has_profile, Workshop, Course
 from django.template import RequestContext
@@ -6,7 +6,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.db import IntegrityError
 
 
 def index(request):
@@ -50,13 +52,21 @@ def user_register(request):
 	if request.method == 'POST':
 		form = UserRegistrationForm(request.POST)
 		if form.is_valid():
-			data = form.cleaned_data
-			username, password = form.save()
-			new_user = authenticate(username=username, password=password)
-			login(request, new_user)
-			return redirect('/view_profile/')
+			try:
+				data = form.cleaned_data
+				username, password = form.save()
+				new_user = authenticate(username=username, password=password)
+				login(request, new_user)
+				user_position = request.user.profile.position
+				send_email(request, call_on='Registration', 
+						   user_position=user_position)
+				return redirect('/view_profile/')
+			except IntegrityError as e:
+				return render(request, 
+						"workshop_app/registeration_error.html")
 		else:
-			return render(request, "workshop_app/register.html", {"form": form})
+			return render(request, "workshop_app/register.html", 
+						{"form": form})
 	else:
 		form = UserRegistrationForm()
 	return render(request, "workshop_app/register.html", {"form": form})
@@ -76,7 +86,7 @@ def manage(request):
 	user = request.user
 	if user.is_authenticated():
 		print user.id, user
-		if user.groups.filter(name='instructor').count() > 0:
+		if user.groups.filter(name='instructor').count() > 0: #Move user to the group via admin 
 			workshop_details = Workshop.objects.all()
 			return render(request, "workshop_app/manage.html", {"workshop_details": workshop_details})
 		return redirect('/book/')
@@ -174,3 +184,18 @@ def view_course_details(request):
 		
 	else:
 		return redirect('/book/')
+
+def send_email(request, call_on, user_position=None):
+	'''
+	Email sending function
+	'''
+
+	if call_on == 'Registration':
+		if user_position == 'instructor':
+			pass
+		else:
+			pass
+
+	elif call_on == 'Booking':
+		pass
+
