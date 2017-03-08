@@ -1,5 +1,8 @@
 
-from .forms import UserRegistrationForm, UserLoginForm, ProfileForm, CreateWorkshop
+from .forms import (
+					UserRegistrationForm, UserLoginForm, 
+					ProfileForm, CreateWorkshop
+					)
 from .models import Profile, User, has_profile, Workshop, Course
 from django.template import RequestContext
 from django.contrib.auth import login, logout, authenticate
@@ -9,7 +12,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
-
+from workshop_portal.settings import (
+                    EMAIL_HOST, 
+                    EMAIL_PORT, 
+                    EMAIL_HOST_USER, 
+                    EMAIL_HOST_PASSWORD,
+                    EMAIL_USE_TLS
+                    )
 
 def index(request):
 	'''Landing Page'''
@@ -58,15 +67,21 @@ def user_register(request):
 				new_user = authenticate(username=username, password=password)
 				login(request, new_user)
 				user_position = request.user.profile.position
-				send_email(request, call_on='Registration', 
-						   user_position=user_position)
+				send_email(
+						   request, call_on='Registration', 
+						   user_position=user_position
+						  )
 				return redirect('/view_profile/')
 			except IntegrityError as e:
-				return render(request, 
-						"workshop_app/registeration_error.html")
+				return render(
+							request, 
+							"workshop_app/registeration_error.html"
+							)
 		else:
-			return render(request, "workshop_app/register.html", 
-						{"form": form})
+			return render(
+						request, "workshop_app/register.html", 
+						{"form": form}
+						)
 	else:
 		form = UserRegistrationForm()
 	return render(request, "workshop_app/register.html", {"form": form})
@@ -85,10 +100,13 @@ def book(request):
 def manage(request):
 	user = request.user
 	if user.is_authenticated():
-		print user.id, user
+		#print user.id, user
 		if user.groups.filter(name='instructor').count() > 0: #Move user to the group via admin 
 			workshop_details = Workshop.objects.all()
-			return render(request, "workshop_app/manage.html", {"workshop_details": workshop_details})
+			return render(
+						 request, "workshop_app/manage.html", 
+						 {"workshop_details": workshop_details}
+						 )
 		return redirect('/book/')
 	else:
 		return redirect('/login/')
@@ -123,7 +141,10 @@ def edit_profile(request):
 			form_data.user.save()
 			form_data.save()
 
-			return render(request, 'workshop_app/profile_updated.html', context)
+			return render(
+						request, 'workshop_app/profile_updated.html', 
+						context
+						)
 		else:
 			context['form'] = form
 			return render(request, 'workshop_app/edit_profile.html', context)
@@ -145,7 +166,10 @@ def create_workshop(request):
 				return redirect('/manage/')
 		else:
 			form = CreateWorkshop()
-		return render(request, 'workshop_app/create_workshop.html', {"form": form })
+		return render(
+					 request, 'workshop_app/create_workshop.html',
+					 {"form": form }
+					 )
 	else:
 		return redirect('/book/')
 
@@ -167,8 +191,10 @@ def view_course_list(request):
 			#If page is out of range(e.g 999999), deliver last page.
 			courses = paginator.page(paginator.num_pages)
 
-		return render(request, 'workshop_app/view_course_list.html', \
-			{'courses': courses})
+		return render(
+					request, 'workshop_app/view_course_list.html', \
+					{'courses': courses}
+					)
 
 	else:
 		return redirect('/book/')
@@ -187,14 +213,32 @@ def view_course_details(request):
 
 def send_email(request, call_on, user_position=None):
 	'''
-	Email sending function
+	Email sending function while registration and 
+	booking confirmation.
 	'''
 
 	if call_on == 'Registration':
 		if user_position == 'instructor':
-			pass
+			message = 'Thank You for Registering on this platform. \n \
+						Since you have ask for Instructor Profile, \n \
+						we will get back to you soon after verifying your \n \
+						profile. \
+						If you don\'t get any response within 3days, \
+						Please contact us at   '
+			send_mail(
+					'Welcome to FOSSEE', message, EMAIL_HOST_USER, 
+					[request.user.email], fail_silently=False
+					)
+			#Send a mail to admin as well as a notification.
 		else:
-			pass
+			message = 'Thank You for Registering on this platform.\n \
+						Rules. \n \
+					If you face any issue during your session please contact \
+					fossee.'
+			send_mail(
+					'Welcome to FOSSEE', message, EMAIL_HOST_USER, 
+					[request.user.email], fail_silently=False
+					)
 
 	elif call_on == 'Booking':
 		pass

@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
+from local_settings import (
+                    EMAIL_HOST, 
+                    EMAIL_PORT, 
+                    EMAIL_HOST_USER, 
+                    EMAIL_HOST_PASSWORD,
+                    EMAIL_USE_TLS
+                    )
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -123,5 +129,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+
+#Email Connection Settings
+EMAIL_HOST = EMAIL_HOST
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_PORT = EMAIL_PORT
+EMAIL_USE_TLS = EMAIL_USE_TLS
+EMAIL_TIMEOUT = 300
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Temp Solution
 
 LOGIN_REDIRECT_URL = '/profile'

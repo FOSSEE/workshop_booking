@@ -60,7 +60,7 @@ class Workshop(models.Model):
 	date = models.DateField()
 	start_time = models.TimeField()
 	end_time = models.TimeField()
-	status = models.BooleanField()
+	#status = models.BooleanField() Book, Pending, Booked
 
 	def __str__(self):
 		return u"{0} | {1}".format(self.workshop_title, self.date)

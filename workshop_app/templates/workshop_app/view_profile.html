@@ -10,9 +10,17 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="#">WebSiteName</a>
         </div>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-        </ul>
+        {% if request.user.profile.position == 'instructor' %}
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ URL_ROOT }}/book">Home</a></li>
+          </ul>
+        {% endif %}
+        
         <ul class="nav navbar-nav navbar-right">
           <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
           <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -21,10 +29,10 @@
     </nav>
 {% endblock %}
 
+{% csrf_token %}
 {% block content %}
-
+  
   <div class="container">
-    {% csrf_token %}
   <table class="table table-bordered">
   <tr>
     <th><label for="id_first_name"><h5>First name:</h5></label></th>

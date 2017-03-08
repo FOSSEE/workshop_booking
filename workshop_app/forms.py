@@ -73,11 +73,8 @@ class UserRegistrationForm(forms.Form):
         pwd = self.cleaned_data["password"]
         email = self.cleaned_data["email"]
         new_user = User.objects.create_user(u_name, email, pwd)
-
         new_user.first_name = self.cleaned_data["first_name"]
         new_user.last_name = self.cleaned_data["last_name"]
-        
-
         new_user.save()
 
         cleaned_data = self.cleaned_data
