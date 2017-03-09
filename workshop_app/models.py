@@ -32,7 +32,9 @@ class Profile(models.Model):
 	position = models.CharField(max_length=32, choices=position_choices)
 
 	def __str__(self):
-		return u"{0} {1} | {2} ".format(self.user.first_name, 
+		return u"id: {0}| {1} {2} | {3} ".format(
+											self.user.id,
+											self.user.first_name, 
 											self.user.last_name, 
 											self.user.email
 										    ) 
@@ -54,7 +56,7 @@ class Workshop(models.Model):
 	"""Instructor Creates workshop based on
 	Courses	available"""
 
-	workshop_creator = models.ForeignKey(Profile, on_delete=models.CASCADE)
+	workshop_creator = models.ForeignKey(User, on_delete=models.CASCADE)
 	workshop_title = models.ForeignKey(Course, on_delete=models.CASCADE,\
 		 help_text='Select the course you would like to create a workshop for')
 	date = models.DateField()

@@ -130,3 +130,5 @@ class CreateWorkshop(forms.ModelForm):
     class Meta:
         model = Workshop
         fields = ['workshop_title', 'date', 'start_time', 'end_time']
+
+

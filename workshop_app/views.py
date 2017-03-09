@@ -22,6 +22,13 @@ from workshop_portal.settings import (
 
 def index(request):
 	'''Landing Page'''
+
+	user = request.user
+	if user.is_authenticated():
+		if user.groups.filter(name='instructor').count() > 0:
+			return redirect('/manage/')
+		return redirect('/book/')
+
 	return render(request, "workshop_app/index.html")
 
 def is_instructor(user):
@@ -158,11 +165,17 @@ def create_workshop(request):
 	'''Instructor creates workshops'''
 
 	user = request.user
+	#profile = User.objects.get(user_id=user.id)
+	print user.id
 	if is_instructor(user):
 		if request.method == 'POST':
 			form = CreateWorkshop(request.POST)
 			if form.is_valid():
-				form.save()
+				form_data = form.save(commit=False)
+				#form_data.profile_id = profile.id
+				form_data.workshop_creator = user
+				form_data.workshop_creator.save()
+				form_data.save()
 				return redirect('/manage/')
 		else:
 			form = CreateWorkshop()
@@ -223,7 +236,7 @@ def send_email(request, call_on, user_position=None):
 						Since you have ask for Instructor Profile, \n \
 						we will get back to you soon after verifying your \n \
 						profile. \
-						If you don\'t get any response within 3days, \
+						In case if you don\'t get any response within 3days, \
 						Please contact us at   '
 			send_mail(
 					'Welcome to FOSSEE', message, EMAIL_HOST_USER, 
