@@ -16,6 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from workshop_app import views
+import django 
+
+js_info_dict = {
+    'packages': ('recurrence', ),
+}
+
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -29,6 +35,7 @@ urlpatterns = [
     url(r'^manage/$', views.manage),
     url(r'^view_course_list/$', views.view_course_list),
     url(r'^view_course_details/$', views.view_course_details),
-    url(r'^create_workshop/$', views.create_workshop)
+    url(r'^create_workshop/$', views.create_workshop),
+    url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
 
 ]

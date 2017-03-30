@@ -2,14 +2,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-
+from recurrence.fields import RecurrenceField
 
 position_choices = (
 	("coordinator", "Coordinator"),
 	("instructor", "Instructor")
 	)
 
-
+status_choices = (
+	("pending", "Pending"),
+	("confirm", "Confirm")
+	)
 
 def has_profile(user):
 	""" check if user has profile """
@@ -41,7 +44,8 @@ class Profile(models.Model):
 
 
 class Course(models.Model):
-	""""Admin creates courses which can be used by the instructor to create workshops.
+	""""Admin creates courses which can be used by the instructor 
+		to create workshops.
 	"""
 
 	course_name = models.CharField(max_length=120)
@@ -56,13 +60,29 @@ class Workshop(models.Model):
 	"""Instructor Creates workshop based on
 	Courses	available"""
 
-	workshop_creator = models.ForeignKey(User, on_delete=models.CASCADE)
-	workshop_title = models.ForeignKey(Course, on_delete=models.CASCADE,\
-		 help_text='Select the course you would like to create a workshop for')
-	date = models.DateField()
-	start_time = models.TimeField()
-	end_time = models.TimeField()
+	workshop_instructor = models.ForeignKey(User, on_delete=models.CASCADE)
+	workshop_title = models.ForeignKey(
+										Course, on_delete=models.CASCADE,\
+		 								help_text='Select the course you \
+		 								would like to create a workshop for'
+		 							  )
+	
+	recurrences = RecurrenceField()
 	#status = models.BooleanField() Book, Pending, Booked
 
 	def __str__(self):
-		return u"{0} | {1}".format(self.workshop_title, self.date)
+		return u"{0} | {1} ".format(self.workshop_title, self.workshop_instructor)
+
+
+# class completed_Workshop(models.Model):
+# 	"""
+# 	Contains Data of Booked/Completed Workshops 
+# 	"""
+
+# 	workshop_instructor = models.ForeignKey(User, on_delete=models.CASCADE)
+# 	workshop_coordinator = models.ForeignKey(User)
+# 	status = models.CharField(max_length=32, choices=status_choices)
+# 	workshop_title = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+
+

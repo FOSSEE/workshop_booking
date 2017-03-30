@@ -4,6 +4,10 @@
 	Booking
 {% endblock %}
 
+{% block extra %}
+
+{% endblock %}
+
 {% block header %}
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
@@ -19,4 +23,57 @@
 		</ul>
 	  	</div>
     </nav>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Instructor Name</th>
+					<th>Course Name</th>
+					<th>Course Day</th>
+					<th>Booking</th>
+				</tr>
+			</thead>
+			{% csrf_token %}
+			{% for workshop in workshop_details %}
+					<tbody>
+						<tr>
+							<td>{{ workshop.1.0 }}</td>
+							<td>{{ workshop.1.1 }}</td>
+							<td>{{ workshop.0 }}</td>
+							<td><button id="book-btn" class="btn btn-primary btn-sm">Book</button></td>
+						</tr>
+					</tbody>
+			{% endfor %}
+		</table>
+	</div>
+
+	<div class="container">
+		<div class="Page-Nav" align="center">
+		<nav aria-label="Page navigation">
+		 	<ul class="pagination pagination-sm">
+			  	<li class="page-item">
+			      {% if workshop_details.has_previous %}
+					<a class="page-link" tabindex="-1" 
+							href="?page={{ workshop_details.previous_page_number }}">Previous</a>
+				  {% endif %}
+			    </li>
+			    <li class="page-item">
+			    <span class="current">
+				Page {{ workshop_details.number }} of {{ workshop_details.paginator.num_pages }}
+					</span>
+				</li>
+			    <li class="page-item">
+			    {% if workshop_details.has_next %}
+					<a class="page-link" href="?page={{ workshop_details.next_page_number }}">Next
+					</a>	
+				{% endif %}
+			    </li>
+		  	</ul>
+		</nav>
+		</div>
+	</div>
+
 {% endblock %}

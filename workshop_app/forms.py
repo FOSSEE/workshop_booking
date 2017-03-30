@@ -1,6 +1,11 @@
 from django import forms
 from .models import Profile, Course, Workshop
-from string import punctuation, digits, letters
+from string import punctuation, digits
+try:
+    from string import letters
+except:
+    from string import ascii_letters as letters
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -129,6 +134,6 @@ class CreateWorkshop(forms.ModelForm):
 
     class Meta:
         model = Workshop
-        fields = ['workshop_title', 'date', 'start_time', 'end_time']
+        fields = ['workshop_title', 'recurrences']
 
-
+    

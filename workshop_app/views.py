@@ -5,6 +5,7 @@ from .forms import (
 					)
 from .models import Profile, User, has_profile, Workshop, Course
 from django.template import RequestContext
+from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -12,6 +13,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
+from collections import OrderedDict
+from dateutil.parser import parse
 from workshop_portal.settings import (
                     EMAIL_HOST, 
                     EMAIL_PORT, 
@@ -99,7 +102,44 @@ def book(request):
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
-		return render(request, "workshop_app/booking.html")
+		workshop_details = Workshop.objects.all()
+		workshop_occurence = {}
+		for workshops in workshop_details:
+			dates = workshops.recurrences.between(
+				datetime(2017, 3, 12, 0, 0, 0),
+	    		datetime(2017, 12, 31, 0, 0, 0), #Needs to be changed 
+	    		inc=True
+				)
+
+			for d in range(len(dates)):
+				workshop_occurence[dates[d].strftime("%d-%m-%Y")] = [
+										workshops.workshop_instructor,
+				 						workshops.workshop_title
+				 						]
+		
+		# workshop_occurence = OrderedDict(sorted(workshop_occurence.items()))
+		workshop_occurence = list(workshop_occurence.items())
+
+
+		
+
+		#Show upto 3 Workshops per page
+		paginator = Paginator(workshop_occurence, 6) 
+		page = request.GET.get('page')
+		try:
+			workshop_occurences  = paginator.page(page)
+		except PageNotAnInteger:
+		#If page is not an integer, deliver first page.
+			workshop_occurences  = paginator.page(1)
+		except EmptyPage:
+			#If page is out of range(e.g 999999), deliver last page.
+			workshop_occurences  = paginator.page(paginator.num_pages)
+
+		return render(
+					request, "workshop_app/booking.html",
+					{"workshop_details": workshop_occurences}
+					 )
+					
 	else:
 		return redirect('/login/')
 
@@ -107,13 +147,42 @@ def book(request):
 def manage(request):
 	user = request.user
 	if user.is_authenticated():
-		#print user.id, user
-		if user.groups.filter(name='instructor').count() > 0: #Move user to the group via admin 
-			workshop_details = Workshop.objects.all()
+		#Move user to the group via admin
+		if user.groups.filter(name='instructor').count() > 0:
+			try:
+				workshop_details = Workshop.objects.get(workshop_instructor=user)
+				workshop_occurence_list = workshop_details.recurrences.between(
+					datetime(2017, 3, 12, 0, 0, 0),
+	    			datetime(2017, 12, 31, 0, 0, 0),
+	    			inc=True													
+	    			)
+				for i in range(len(workshop_occurence_list)):
+					workshop_occurence_list[i] = [{ 
+										"user": str(user), 
+										"workshop": workshop_details, 
+										"date": workshop_occurence_list[i].date
+												 }]
+				
+
+				#Show upto 3 Workshops per page
+				paginator = Paginator(workshop_occurence_list, 3) 
+				page = request.GET.get('page')
+				try:
+					workshops  = paginator.page(page)
+				except PageNotAnInteger:
+					#If page is not an integer, deliver first page.
+					workshops  = paginator.page(1)
+				except EmptyPage:
+					#If page is out of range(e.g 999999), deliver last page.
+					workshops  = paginator.page(paginator.num_pages)
+
+			except:
+				workshops = None
 			return render(
-						 request, "workshop_app/manage.html", 
-						 {"workshop_details": workshop_details}
-						 )
+						request, "workshop_app/manage.html", 
+						{"workshop_occurence_list": workshops}
+						)
+
 		return redirect('/book/')
 	else:
 		return redirect('/login/')
@@ -165,16 +234,16 @@ def create_workshop(request):
 	'''Instructor creates workshops'''
 
 	user = request.user
-	#profile = User.objects.get(user_id=user.id)
-	print user.id
+	
+
 	if is_instructor(user):
 		if request.method == 'POST':
 			form = CreateWorkshop(request.POST)
 			if form.is_valid():
 				form_data = form.save(commit=False)
 				#form_data.profile_id = profile.id
-				form_data.workshop_creator = user
-				form_data.workshop_creator.save()
+				form_data.workshop_instructor = user
+				form_data.workshop_instructor.save()
 				form_data.save()
 				return redirect('/manage/')
 		else:

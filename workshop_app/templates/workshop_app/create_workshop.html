@@ -40,7 +40,11 @@
   <div class="container">
     <form method="post">
       {% csrf_token %}
+      <br/>
+      {{ form.media }}
       {{ form.as_p }}
+      
+      
       <br>
       <button class="btn btn-success" type="submit">Save</button>
     </form>

@@ -1,0 +1,10 @@
+.footer {
+	position: absolute;
+  	bottom: 0;
+  	padding-left: 75px;
+  	
+}
+
+.hiddenRow {
+    padding: 0 !important;
+}
