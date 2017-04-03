@@ -50,10 +50,11 @@ class Course(models.Model):
 
 	course_name = models.CharField(max_length=120)
 	course_description = models.TextField()
-	course_duration = models.CharField(max_length=12)
+	course_duration = models.CharField(max_length=32)
 
 	def __str__(self):
 		return u"{0} {1}".format(self.course_name, self.course_duration)
+
 
 
 class Workshop(models.Model):
@@ -63,26 +64,38 @@ class Workshop(models.Model):
 	workshop_instructor = models.ForeignKey(User, on_delete=models.CASCADE)
 	workshop_title = models.ForeignKey(
 										Course, on_delete=models.CASCADE,\
-		 								help_text='Select the course you \
-		 								would like to create a workshop for'
+		 								help_text='Select the course for which \
+		 								you would like to create a workshop.'
 		 							  )
-	
+	#For recurring workshops source: django-recurrence
 	recurrences = RecurrenceField()
-	#status = models.BooleanField() Book, Pending, Booked
 
 	def __str__(self):
 		return u"{0} | {1} ".format(self.workshop_title, self.workshop_instructor)
 
 
-# class completed_Workshop(models.Model):
-# 	"""
-# 	Contains Data of Booked/Completed Workshops 
-# 	"""
+class RequestedWorkshop(models.Model):
+	"""
+	Contains Data of Booked/Completed Workshops 
+	"""
 
-# 	workshop_instructor = models.ForeignKey(User, on_delete=models.CASCADE)
-# 	workshop_coordinator = models.ForeignKey(User)
-# 	status = models.CharField(max_length=32, choices=status_choices)
-# 	workshop_title = models.ForeignKey(Course, on_delete=models.CASCADE)
+	requested_workshop_instructor = models.ForeignKey(
+											 User,
+											 on_delete=models.CASCADE
+											 		)
+	requested_workshop_coordinator = models.ForeignKey(
+									User, 
+									related_name="%(app_label)s_%(class)s_related"
+													  )
+	status = models.CharField(
+							max_length=32, default="Pending", 
+							choices=status_choices
+							)
+	requested_workshop_title = models.ForeignKey(
+									Workshop, 
+									on_delete=models.CASCADE
+												)
+
 
 
 

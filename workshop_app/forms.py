@@ -40,7 +40,9 @@ class UserRegistrationForm(forms.Form):
                 help_text='Institute/Organization')
     department = forms.CharField(max_length=64, help_text='Department you work \
                                     study at')
-    position = forms.ChoiceField(help_text='If you are an instructor please \
+    position = forms.ChoiceField(help_text='Instructors, please wait \
+                                for our admin approval, if your instructor \
+                                account is not activated in 7 days, please\
                                 mail us at python[at]fossee[dot]in',
                                 choices=position_choices
                                  )
@@ -131,6 +133,10 @@ class ProfileForm(forms.ModelForm):
 
 class CreateWorkshop(forms.ModelForm):
     """Instructors can create Workshops based on the courses available."""
+
+    def __init__( self, *args, **kwargs ):
+        super(CreateWorkshop, self).__init__( *args, **kwargs )
+        self.fields['recurrences'].label = " " #the trick to hide field :)
 
     class Meta:
         model = Workshop

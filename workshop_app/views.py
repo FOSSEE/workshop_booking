@@ -3,25 +3,24 @@ from .forms import (
 					UserRegistrationForm, UserLoginForm, 
 					ProfileForm, CreateWorkshop
 					)
-from .models import Profile, User, has_profile, Workshop, Course
+from .models import (
+					Profile, User,
+					has_profile, Workshop, 
+					Course, RequestedWorkshop
+					)
 from django.template import RequestContext
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from collections import OrderedDict
 from dateutil.parser import parse
-from workshop_portal.settings import (
-                    EMAIL_HOST, 
-                    EMAIL_PORT, 
-                    EMAIL_HOST_USER, 
-                    EMAIL_HOST_PASSWORD,
-                    EMAIL_USE_TLS
-                    )
+from .send_mails import send_email
+from django.http import HttpResponse
+
 
 def index(request):
 	'''Landing Page'''
@@ -103,27 +102,28 @@ def book(request):
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		workshop_details = Workshop.objects.all()
+
 		workshop_occurence = {}
 		for workshops in workshop_details:
 			dates = workshops.recurrences.between(
 				datetime(2017, 3, 12, 0, 0, 0),
-	    		datetime(2017, 12, 31, 0, 0, 0), #Needs to be changed 
+	    		datetime(2017, 12, 31, 0, 0, 0), #Needs to be changed yearly
 	    		inc=True
 				)
-
+			
 			for d in range(len(dates)):
 				workshop_occurence[dates[d].strftime("%d-%m-%Y")] = [
 										workshops.workshop_instructor,
-				 						workshops.workshop_title
+				 						workshops.workshop_title,
+				 						workshops.workshop_instructor_id,
+				 						workshops.workshop_title_id
 				 						]
-		
+				
 		# workshop_occurence = OrderedDict(sorted(workshop_occurence.items()))
 		workshop_occurence = list(workshop_occurence.items())
 
 
-		
-
-		#Show upto 3 Workshops per page
+		#Show upto 6 Workshops per page
 		paginator = Paginator(workshop_occurence, 6) 
 		page = request.GET.get('page')
 		try:
@@ -144,25 +144,72 @@ def book(request):
 		return redirect('/login/')
 
 @login_required
+def book_workshop(request):
+		'''
+		Function for Updating requested_workshop table
+		'''
+		if request.method == 'POST':
+			user_position = request.user.profile.position
+			client_data = request.body.decode("utf-8").split("&")
+			client_data = client_data[0].split("%2C")
+
+			print(Workshop.objects.filter(workshop_title_id=client_data[2]))
+
+			send_email(request, call_on='Booking', 
+						   user_position=user_position)
+
+			instructor_profile = Profile.objects.filter(user=client_data[1])
+			workshop_list = Workshop.objects.get(
+											workshop_instructor=client_data[1]
+													)
+			workshop_recurrence_list =  workshop_list.recurrences.between(
+										datetime(2017, 3, 12, 0, 0, 0),
+										datetime(2017, 12, 31, 0, 0, 0),
+										inc=True
+																		 )
+			for d in workshop_recurrence_list:
+				if client_data[0][2:] == (d.strftime("%d-%m-%Y")):
+					rW_obj = RequestedWorkshop()
+					rW_obj.requested_workshop_instructor = User.objects.get(
+																			id=client_data[1]
+																			)
+					rW_obj.requested_workshop_coordinator = request.user
+					#To be changed
+					rW_obj.requested_workshop_title =  Workshop.objects.all()
+					
+					rW_obj.save()
+
+
+					
+			return HttpResponse(instructor_profile)
+		else:
+			pass
+
+
+
+@login_required
 def manage(request):
 	user = request.user
 	if user.is_authenticated():
 		#Move user to the group via admin
 		if user.groups.filter(name='instructor').count() > 0:
 			try:
-				workshop_details = Workshop.objects.get(workshop_instructor=user)
+				#Can't Handle Multiple objects Fix this asap
+				workshop_details = Workshop.objects.get(
+													workshop_instructor=user.id
+														)
 				workshop_occurence_list = workshop_details.recurrences.between(
-					datetime(2017, 3, 12, 0, 0, 0),
-	    			datetime(2017, 12, 31, 0, 0, 0),
-	    			inc=True													
-	    			)
+											datetime(2017, 3, 12, 0, 0, 0),
+											datetime(2017, 12, 31, 0, 0, 0),
+											inc=True													
+											)
 				for i in range(len(workshop_occurence_list)):
 					workshop_occurence_list[i] = [{ 
-										"user": str(user), 
-										"workshop": workshop_details, 
-										"date": workshop_occurence_list[i].date
-												 }]
-				
+											"user": str(user), 
+									"workshop": workshop_details, 
+									"date": workshop_occurence_list[i].date
+									}]
+
 
 				#Show upto 3 Workshops per page
 				paginator = Paginator(workshop_occurence_list, 3) 
@@ -170,14 +217,14 @@ def manage(request):
 				try:
 					workshops  = paginator.page(page)
 				except PageNotAnInteger:
-					#If page is not an integer, deliver first page.
+				#If page is not an integer, deliver first page.
 					workshops  = paginator.page(1)
 				except EmptyPage:
-					#If page is out of range(e.g 999999), deliver last page.
+				#If page is out of range(e.g 999999), deliver last page.
 					workshops  = paginator.page(paginator.num_pages)
-
 			except:
 				workshops = None
+			
 			return render(
 						request, "workshop_app/manage.html", 
 						{"workshop_occurence_list": workshops}
@@ -234,8 +281,6 @@ def create_workshop(request):
 	'''Instructor creates workshops'''
 
 	user = request.user
-	
-
 	if is_instructor(user):
 		if request.method == 'POST':
 			form = CreateWorkshop(request.POST)
@@ -261,7 +306,7 @@ def view_course_list(request):
 	user = request.user
 	if is_instructor(user):
 		course_list = Course.objects.all()
-		paginator = Paginator(course_list, 9) #Show upto 12 Courses per page
+		paginator = Paginator(course_list, 6) #Show upto 12 Courses per page
 
 		page = request.GET.get('page')
 		try:
@@ -292,36 +337,3 @@ def view_course_details(request):
 		
 	else:
 		return redirect('/book/')
-
-def send_email(request, call_on, user_position=None):
-	'''
-	Email sending function while registration and 
-	booking confirmation.
-	'''
-
-	if call_on == 'Registration':
-		if user_position == 'instructor':
-			message = 'Thank You for Registering on this platform. \n \
-						Since you have ask for Instructor Profile, \n \
-						we will get back to you soon after verifying your \n \
-						profile. \
-						In case if you don\'t get any response within 3days, \
-						Please contact us at   '
-			send_mail(
-					'Welcome to FOSSEE', message, EMAIL_HOST_USER, 
-					[request.user.email], fail_silently=False
-					)
-			#Send a mail to admin as well as a notification.
-		else:
-			message = 'Thank You for Registering on this platform.\n \
-						Rules. \n \
-					If you face any issue during your session please contact \
-					fossee.'
-			send_mail(
-					'Welcome to FOSSEE', message, EMAIL_HOST_USER, 
-					[request.user.email], fail_silently=False
-					)
-
-	elif call_on == 'Booking':
-		pass
-

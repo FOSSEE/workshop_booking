@@ -5,7 +5,28 @@
 {% endblock %}
 
 {% block extra %}
+	
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
+	<script type="text/javascript">
+		function sendData(d){
+			var URL = "{{ URL_ROOT }}/book_workshop/";
+			console.log(d);
+			$.ajax({
+				url: URL,
+				type: "POST",
+				data: {
+					d, 
+					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+					  },
+			
+				success:function(response){
+					alert("success: " + response);
+
+				}
+			});
+		}
+	</script>
 {% endblock %}
 
 {% block header %}
@@ -30,6 +51,7 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
+					
 					<th>Instructor Name</th>
 					<th>Course Name</th>
 					<th>Course Day</th>
@@ -37,19 +59,23 @@
 				</tr>
 			</thead>
 			{% csrf_token %}
+			
 			{% for workshop in workshop_details %}
 					<tbody>
+
 						<tr>
-							<td>{{ workshop.1.0 }}</td>
-							<td>{{ workshop.1.1 }}</td>
-							<td>{{ workshop.0 }}</td>
-							<td><button id="book-btn" class="btn btn-primary btn-sm">Book</button></td>
+							<td id="instructor-name">{{ workshop.1.0 }}</td>
+							<td id="course-name">{{ workshop.1.1 }}</td>
+							<td id="workshop-date{{ forloop.counter }}">{{ workshop.0 }}</td>
+							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.0}},{{workshop.1.2}},{{workshop.1.3}}')" > Book</button></td>
 						</tr>
+
 					</tbody>
 			{% endfor %}
 		</table>
 	</div>
 
+	<!-- Page Navigation -->
 	<div class="container">
 		<div class="Page-Nav" align="center">
 		<nav aria-label="Page navigation">

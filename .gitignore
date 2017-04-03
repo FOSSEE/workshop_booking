@@ -96,3 +96,6 @@ db.sqlite3
 
 # Django Migration files
 migrations/
+
+#MAC OS specific
+.DS_Store
