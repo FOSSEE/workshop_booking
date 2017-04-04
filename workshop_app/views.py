@@ -145,45 +145,46 @@ def book(request):
 
 @login_required
 def book_workshop(request):
-		'''
-		Function for Updating requested_workshop table
-		'''
-		if request.method == 'POST':
-			user_position = request.user.profile.position
-			client_data = request.body.decode("utf-8").split("&")
-			client_data = client_data[0].split("%2C")
+	'''
+	Function for Updating requested_workshop table
+	'''
+	if request.method == 'POST':
+		user_position = request.user.profile.position
+		client_data = request.body.decode("utf-8").split("&")
+		client_data = client_data[0].split("%2C")
 
-			print(Workshop.objects.filter(workshop_title_id=client_data[2]))
+		send_email(request, call_on='Booking', 
+					   user_position=user_position)
 
-			send_email(request, call_on='Booking', 
-						   user_position=user_position)
+		instructor_profile = Profile.objects.filter(user=client_data[1])
+		workshop_list = Workshop.objects.get(
+										workshop_instructor=client_data[1]
+										)
+		workshop_recurrence_list =  workshop_list.recurrences.between(
+									datetime(2017, 3, 12, 0, 0, 0),
+									datetime(2017, 12, 31, 0, 0, 0),
+									inc=True
+									)
+		for d in workshop_recurrence_list:
+			if client_data[0][2:] == (d.strftime("%d-%m-%Y")):
+				rW_obj = RequestedWorkshop()
 
-			instructor_profile = Profile.objects.filter(user=client_data[1])
-			workshop_list = Workshop.objects.get(
-											workshop_instructor=client_data[1]
-													)
-			workshop_recurrence_list =  workshop_list.recurrences.between(
-										datetime(2017, 3, 12, 0, 0, 0),
-										datetime(2017, 12, 31, 0, 0, 0),
-										inc=True
-																		 )
-			for d in workshop_recurrence_list:
-				if client_data[0][2:] == (d.strftime("%d-%m-%Y")):
-					rW_obj = RequestedWorkshop()
-					rW_obj.requested_workshop_instructor = User.objects.get(
-																			id=client_data[1]
-																			)
-					rW_obj.requested_workshop_coordinator = request.user
-					#To be changed
-					rW_obj.requested_workshop_title =  Workshop.objects.all()
-					
-					rW_obj.save()
-
-
-					
-			return HttpResponse(instructor_profile)
-		else:
-			pass
+				workshop_obj = Workshop.objects.get(
+											workshop_instructor=client_data[1], 
+											workshop_title_id=client_data[2]
+											)
+				rW_obj.requested_workshop_instructor = workshop_obj.workshop_instructor
+				rW_obj.requested_workshop_coordinator = request.user
+				rW_obj.requested_workshop_date = datetime.strptime(
+														client_data[0][2:], "%d-%m-%Y"
+														)
+				rW_obj.requested_workshop_title = workshop_obj.workshop_title
+				rW_obj.save()
+				
+		return HttpResponse("Thank You, Please check your email for further \
+							information.")
+	else:
+		return HttpResponse("Some Error Occurred.")
 
 
 

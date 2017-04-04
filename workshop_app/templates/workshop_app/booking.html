@@ -5,31 +5,59 @@
 {% endblock %}
 
 {% block extra %}
-	
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-	<script type="text/javascript">
+	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script>
 		function sendData(d){
-			var URL = "{{ URL_ROOT }}/book_workshop/";
-			console.log(d);
-			$.ajax({
-				url: URL,
-				type: "POST",
-				data: {
-					d, 
-					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-					  },
-			
-				success:function(response){
-					alert("success: " + response);
+			var $dialog = $('<div></div').html(
+				'<form id="myform" action="">\
+				<input type="checkbox" id="one"\
+				name="one" value="one"/>We will give minimum 50 participants for the workshop.<br/>\
+				<input type="checkbox" id="two" name="two" value="two" />We agree that this booking won\'t be cancelled.<br/>\
+				</form> ')
+				.dialog({
+					autoOpen: false,
+					title: 'Terms & Condition',
+					buttons: {
+						"Confirm": function(){
+						if($('#one').is(":checked") && $('#two').is(":checked")){
+								booking_confirmed(d)
+								$(this).dialog("close");	
+						} else {
+								alert("Please select both the checkboxes");
+								}
+						},
+						"Cancel":  function(){
+							$(this).dialog("close");
+						}
+					}
+				});
 
-				}
-			});
+			$dialog.dialog('open');	
+		}
+
+function booking_confirmed(d){
+			var URL = "{{ URL_ROOT }}/book_workshop/";
+
+				$.ajax({
+					url: URL,
+					type: "POST",
+					data: {
+						d, 
+						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+						  },
+				
+					success:function(response){
+						alert("success: " + response);
+					}
+					});
 		}
 	</script>
 {% endblock %}
 
 {% block header %}
+
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 		<div class="navbar-header">
@@ -51,7 +79,6 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					
 					<th>Instructor Name</th>
 					<th>Course Name</th>
 					<th>Course Day</th>
@@ -75,6 +102,7 @@
 		</table>
 	</div>
 
+	
 	<!-- Page Navigation -->
 	<div class="container">
 		<div class="Page-Nav" align="center">

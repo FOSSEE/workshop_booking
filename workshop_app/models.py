@@ -87,12 +87,13 @@ class RequestedWorkshop(models.Model):
 									User, 
 									related_name="%(app_label)s_%(class)s_related"
 													  )
+	requested_workshop_date = models.DateField()
 	status = models.CharField(
 							max_length=32, default="Pending", 
 							choices=status_choices
 							)
 	requested_workshop_title = models.ForeignKey(
-									Workshop, 
+									Course, 
 									on_delete=models.CASCADE
 												)
 
