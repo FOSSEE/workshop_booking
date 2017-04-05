@@ -1,0 +1,143 @@
+{% extends "workshop_app/base.html" %}
+
+{% block title %}
+	My Workshops
+{% endblock %}
+
+{% block extra %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+	<script>
+		function sendData(d){
+			console.log(d);
+			var URL = "{{ URL_ROOT }}/my_workshops/"
+
+			$.ajax({
+				url: URL,
+				type: "POST",
+				dataType: 'json',
+				data: {
+					d, 
+					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+				},
+			});
+			
+			window.location.reload();
+		}
+	</script>
+{% endblock %}
+
+
+{% block header %}
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+        {% if request.user.profile.position == 'instructor' %}
+          <a class="navbar-brand" href="{{ URL_ROOT}}/manage">WebSiteName</a>
+        {% endif %}
+        </div>
+        {% if request.user.profile.position == 'instructor' %}
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ URL_ROOT }}/book">Home</a></li>
+          </ul>
+        {% endif %}
+        
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+{% endblock %}
+
+
+{% block content %}
+{% if workshop_occurences %}
+	<div class="container">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+				{% if request.user.profile.position == 'instructor' %}
+					<th>Coordinator Name</th>
+				{% else %}
+					<th>Instructor Name</th>
+				{% endif %}
+					<th>Course Name</th>
+					<th>Course Day</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			{% csrf_token %}
+			{% for workshop in workshop_occurences %}
+					<tbody>
+						<tr>
+						{% if request.user.profile.position == 'instructor' %}
+							<td>{{ workshop.requested_workshop_coordinator }}</td>
+						{% else %}
+							<td>{{ workshop.requested_workshop_instructor }}</td>
+						{% endif %}
+							<td>{{ workshop.requested_workshop_title }}</td>
+							<td>{{ workshop.requested_workshop_date }}</td>
+						{% if workshop.status == 'Pending' %}
+							<td><span class = "label label-warning">{{ workshop.status }}</span></td>
+						{% elif workshop.status == 'ACCEPTED' %}
+							<td><span class = "label label-success">{{ workshop.status }}</span></td>
+						{% else %}
+							<td><span class = "label label-danger">{{ workshop.status }}</span></td>
+						{% endif %}
+						{% if request.user.profile.position == 'instructor' %}
+							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title }},ACCEPTED')" > Accept</button></td>
+						{% endif %}
+						</tr>
+					</tbody>
+				
+			{% endfor %}
+		</table>
+	</div>
+
+<!-- Page Navigation -->
+		<div class="container">
+		<div class="Page-Nav" align="center">
+		<nav aria-label="Page navigation">
+		 	<ul class="pagination pagination-sm">
+			  	<li class="page-item">
+			      {% if workshop_occurences.has_previous %}
+					<a class="page-link" tabindex="-1" 
+							href="?page={{ workshop_occurences.previous_page_number }}">Previous</a>
+				  {% endif %}
+			    </li>
+			    <li class="page-item">
+			    <span class="current">
+				Page {{ workshop_occurences.number }} of {{ workshop_occurences.paginator.num_pages }}
+					</span>
+				</li>
+			    <li class="page-item">
+			    {% if workshop_occurences.has_next %}
+					<a class="page-link" href="?page={{ workshop_occurences.next_page_number }}">Next
+					</a>	
+				{% endif %}
+			    </li>
+		  	</ul>
+		</nav>
+		</div>
+	</div>
+
+{% else %}
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Welcome Instructor</h1>      
+			<p>Your workshop related information will be shown here, Please navigate to <b>View Course list</b> and depending upon
+			your expertise and availability create a workshop by going to
+			<b>Create Event</b>.</p>
+		</div>
+	</div>
+{% endif %}
+
+{% endblock %}

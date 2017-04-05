@@ -7,7 +7,10 @@ from workshop_portal.settings import (
                     EMAIL_USE_TLS
                     )
 
-def send_email(request, call_on, user_position=None):
+def send_email(request, call_on,
+				user_position=None, workshop_date=None,
+				workshop_title=None, user_name=None
+				):
 	'''
 	Email sending function while registration and 
 	booking confirmation.
@@ -38,7 +41,8 @@ def send_email(request, call_on, user_position=None):
 	elif call_on == 'Booking':
 		if user_position == 'instructor':
 			message = 'You got a workshop booking request \
-						from user name '
+						from ' + user_name + ' for \
+						' + workshop_title + ' on ' + workshop_date + ' please respond.'
 			send_mail(
 					'Python Workshop Booking | FOSSEE', message, EMAIL_HOST_USER, 
 					[request.user.email], fail_silently=False
@@ -46,7 +50,7 @@ def send_email(request, call_on, user_position=None):
 
 		else:
 			message = 'Thank You for Booking on this platform.\n \
-						Rules to be added \
+						' + user_name +' \
 					If you face any issue during your session please contact \
 					fossee.'
 			send_mail(

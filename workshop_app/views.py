@@ -33,10 +33,12 @@ def index(request):
 
 	return render(request, "workshop_app/index.html")
 
+
 def is_instructor(user):
 	'''Check if the user is having instructor rights'''
 	if user.groups.filter(name='instructor').exists():
 		return True
+
 
 def user_login(request):
 	'''Login'''
@@ -60,10 +62,12 @@ def user_login(request):
 		form = UserLoginForm()
 		return render(request, 'workshop_app/login.html', {"form": form})
 
+
 def user_logout(request):
 	'''Logout'''
 	logout(request)
 	return render(request, 'workshop_app/logout.html')
+
 
 def user_register(request):
 	'''User Registeration form'''
@@ -101,8 +105,8 @@ def book(request):
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
-		workshop_details = Workshop.objects.all()
 
+		workshop_details = Workshop.objects.all()
 		workshop_occurence = {}
 		for workshops in workshop_details:
 			dates = workshops.recurrences.between(
@@ -121,6 +125,15 @@ def book(request):
 				
 		# workshop_occurence = OrderedDict(sorted(workshop_occurence.items()))
 		workshop_occurence = list(workshop_occurence.items())
+
+		requested_workshop = RequestedWorkshop.objects.all()
+		
+		for j in requested_workshop:
+			
+			j = j.requested_workshop_date.strftime("%d-%m-%Y")
+			for i in workshop_occurence:
+				if i[0] == j:
+					workshop_occurence.remove(i)
 
 
 		#Show upto 6 Workshops per page
@@ -143,6 +156,7 @@ def book(request):
 	else:
 		return redirect('/login/')
 
+
 @login_required
 def book_workshop(request):
 	'''
@@ -152,9 +166,20 @@ def book_workshop(request):
 		user_position = request.user.profile.position
 		client_data = request.body.decode("utf-8").split("&")
 		client_data = client_data[0].split("%2C")
-
+		workshop_date = client_data[0][2:]
+		print(workshop_date)
 		send_email(request, call_on='Booking', 
-					   user_position=user_position)
+					   user_position='instructor', 
+					   workshop_date=workshop_date,
+					   workshop_title='ISCP',
+					   user_name='mahesh'
+					   )
+
+
+		send_email(request, call_on='Booking',
+				workshop_date=workshop_date,
+				workshop_title='ISCP',
+				user_name=str(request.user))
 
 		instructor_profile = Profile.objects.filter(user=client_data[1])
 		workshop_list = Workshop.objects.get(
@@ -166,7 +191,7 @@ def book_workshop(request):
 									inc=True
 									)
 		for d in workshop_recurrence_list:
-			if client_data[0][2:] == (d.strftime("%d-%m-%Y")):
+			if workshop_date == (d.strftime("%d-%m-%Y")):
 				rW_obj = RequestedWorkshop()
 
 				workshop_obj = Workshop.objects.get(
@@ -187,7 +212,6 @@ def book_workshop(request):
 		return HttpResponse("Some Error Occurred.")
 
 
-
 @login_required
 def manage(request):
 	user = request.user
@@ -204,16 +228,28 @@ def manage(request):
 											datetime(2017, 12, 31, 0, 0, 0),
 											inc=True													
 											)
+
 				for i in range(len(workshop_occurence_list)):
 					workshop_occurence_list[i] = [{ 
-											"user": str(user), 
-									"workshop": workshop_details, 
-									"date": workshop_occurence_list[i].date
+									"user": str(user), 
+									"workshop": workshop_details.workshop_title, 
+									"date": workshop_occurence_list[i].date()
 									}]
 
 
+				requested_workshop = RequestedWorkshop.objects.filter(
+										requested_workshop_instructor=user.id
+										)
+				
+				#Need to recheck logic
+				for j in range(len(requested_workshop)):
+					for i in workshop_occurence_list:
+						if i[0]['date'] == requested_workshop[j].requested_workshop_date:
+							workshop_occurence_list.remove(i)
+
+
 				#Show upto 3 Workshops per page
-				paginator = Paginator(workshop_occurence_list, 3) 
+				paginator = Paginator(workshop_occurence_list, 3)
 				page = request.GET.get('page')
 				try:
 					workshops  = paginator.page(page)
@@ -235,10 +271,74 @@ def manage(request):
 	else:
 		return redirect('/login/')
 
+
+@login_required
+def my_workshops(request):
+	user = request.user
+
+	if user.is_authenticated():
+		if is_instructor(user):
+			if request.method == 'POST':
+				user_position = request.user.profile.position
+				client_data = request.body.decode("utf-8").split("&")
+				client_data = client_data[0].split("%2C")
+				workshop_date = datetime.strptime(
+										client_data[1], "%Y-%m-%d"
+										)
+
+				workshop_status = RequestedWorkshop.objects.get(requested_workshop_instructor=user.id,
+													requested_workshop_date=workshop_date
+												)
+				workshop_status.status = client_data[-1]
+				workshop_status.save()
+
+			workshop_occurence_list = RequestedWorkshop.objects.filter(
+									requested_workshop_instructor=user.id
+									)
+			
+			#Show upto 6 Workshops per page
+			paginator = Paginator(workshop_occurence_list, 3)
+			page = request.GET.get('page')
+			try:
+				workshop_occurences = paginator.page(page)
+			except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+				workshop_occurences = paginator.page(1)
+			except EmptyPage:
+				#If page is out of range(e.g 999999), deliver last page.
+				workshop_occurences = paginator.page(paginator.num_pages)
+			template = 'workshop_app/my_workshops.html'
+		else:
+			workshop_occurence_list = RequestedWorkshop.objects.filter(
+									requested_workshop_coordinator=user.id
+									)
+			
+			#Show upto 6 Workshops per page
+			paginator = Paginator(workshop_occurence_list, 9)
+			print(paginator) 
+			page = request.GET.get('page')
+			try:
+				workshop_occurences = paginator.page(page)
+			except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+				workshop_occurences = paginator.page(1)
+			except EmptyPage:
+				#If page is out of range(e.g 999999), deliver last page.
+				workshop_occurences = paginator.page(paginator.num_pages)
+			template = 'workshop_app/my_workshops.html'
+	else:
+		redirect('/login')
+
+	return render(request, template,
+				 {"workshop_occurences": workshop_occurences} 
+				 )
+
+
 @login_required
 def view_profile(request):
 	""" view instructor and coordinator profile """
 	return render(request, "workshop_app/view_profile.html")
+
 
 @login_required
 def edit_profile(request):
@@ -277,6 +377,7 @@ def edit_profile(request):
 		context['form'] = form
 		return render(request, 'workshop_app/edit_profile.html', context)
 
+
 @login_required
 def create_workshop(request):
 	'''Instructor creates workshops'''
@@ -300,6 +401,7 @@ def create_workshop(request):
 					 )
 	else:
 		return redirect('/book/')
+
 
 @login_required
 def view_course_list(request):
@@ -326,6 +428,7 @@ def view_course_list(request):
 
 	else:
 		return redirect('/book/')
+
 
 @login_required
 def view_course_details(request):

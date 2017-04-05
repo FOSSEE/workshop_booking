@@ -4,11 +4,14 @@
 	Booking
 {% endblock %}
 
+
 {% block extra %}
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	 
 	<script>
+	// Button function
 		function sendData(d){
 			var $dialog = $('<div></div').html(
 				'<form id="myform" action="">\
@@ -22,7 +25,7 @@
 					buttons: {
 						"Confirm": function(){
 						if($('#one').is(":checked") && $('#two').is(":checked")){
-								booking_confirmed(d)
+								booking_confirmed(d);
 								$(this).dialog("close");	
 						} else {
 								alert("Please select both the checkboxes");
@@ -49,9 +52,10 @@ function booking_confirmed(d){
 						  },
 				
 					success:function(response){
+						window.location.reload();
 						alert("success: " + response);
-					}
-					});
+						}
+				});
 		}
 	</script>
 {% endblock %}
@@ -64,7 +68,7 @@ function booking_confirmed(d){
 		  <a class="navbar-brand" href="#">WebSiteName</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li class="active"><a href="#">Home</a></li>
+		  <li class="active"><a href="{{ URL_ROOT}}/my_workshops">My Workshops</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>

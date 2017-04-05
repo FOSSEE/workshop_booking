@@ -9,6 +9,7 @@
 		<ul class="nav navbar-nav">
 		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
 		   <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/my_workshops">My Workshops</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -28,24 +29,24 @@
 					<th>Instructor Name</th>
 					<th>Course Name</th>
 					<th>Course Day</th>
-					<th>Booking</th>
 				</tr>
 			</thead>
 			{% csrf_token %}
 			{% for workshop in workshop_occurence_list %}
 				{% for w in workshop %}
-					<tbody>
-						<tr>
-							<td>{{ w.user }}</td>
-							<td>{{ w.workshop }}</td>
-							<td>{{ w.date }}</td>
-						</tr>
-					</tbody>
+						<tbody>
+							<tr>
+								<td>{{ w.user }}</td>
+								<td>{{ w.workshop }}</td>
+								<td>{{ w.date | date}}</td>
+							</tr>
+						</tbody>
 				{% endfor %}
 			{% endfor %}
 		</table>
 	</div>
 
+<!-- Page Navigation -->
 		<div class="container">
 		<div class="Page-Nav" align="center">
 		<nav aria-label="Page navigation">
@@ -78,7 +79,8 @@
     			<h1>Welcome Instructor</h1>      
     			<p>Please navigate to <b>View Course list</b> and depending upon
     			your expertise and availability create a workshop by going to
-    			<b>Create Event</b>.</p>
+    			<b>Create Event</b>. you can also check any workshop
+    			requests by going to <b>My Workshops</b></p>
 
   			</div>
 		</div>

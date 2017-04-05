@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^edit_profile/$', views.edit_profile),
     url(r'^book/$', views.book),
     url(r'^book_workshop/$', views.book_workshop),
+    url(r'^my_workshops/$', views.my_workshops),
     url(r'^manage/$', views.manage),
     url(r'^view_course_list/$', views.view_course_list),
     url(r'^view_course_details/$', views.view_course_details),

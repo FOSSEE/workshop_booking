@@ -9,14 +9,11 @@ position_choices = (
 	("instructor", "Instructor")
 	)
 
-status_choices = (
-	("pending", "Pending"),
-	("confirm", "Confirm")
-	)
 
 def has_profile(user):
 	""" check if user has profile """
 	return True if hasattr(user, 'profile') else False
+
 
 class Profile(models.Model):
 	"""Profile for users(instructors and coordinators)"""
@@ -56,7 +53,6 @@ class Course(models.Model):
 		return u"{0} {1}".format(self.course_name, self.course_duration)
 
 
-
 class Workshop(models.Model):
 	"""Instructor Creates workshop based on
 	Courses	available"""
@@ -89,8 +85,7 @@ class RequestedWorkshop(models.Model):
 													  )
 	requested_workshop_date = models.DateField()
 	status = models.CharField(
-							max_length=32, default="Pending", 
-							choices=status_choices
+							max_length=32, default="Pending"
 							)
 	requested_workshop_title = models.ForeignKey(
 									Course, 
