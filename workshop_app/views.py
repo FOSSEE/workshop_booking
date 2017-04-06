@@ -129,7 +129,6 @@ def book(request):
 		requested_workshop = RequestedWorkshop.objects.all()
 		
 		for j in requested_workshop:
-			
 			j = j.requested_workshop_date.strftime("%d-%m-%Y")
 			for i in workshop_occurence:
 				if i[0] == j:
@@ -167,19 +166,6 @@ def book_workshop(request):
 		client_data = request.body.decode("utf-8").split("&")
 		client_data = client_data[0].split("%2C")
 		workshop_date = client_data[0][2:]
-		print(workshop_date)
-		send_email(request, call_on='Booking', 
-					   user_position='instructor', 
-					   workshop_date=workshop_date,
-					   workshop_title='ISCP',
-					   user_name='mahesh'
-					   )
-
-
-		send_email(request, call_on='Booking',
-				workshop_date=workshop_date,
-				workshop_title='ISCP',
-				user_name=str(request.user))
 
 		instructor_profile = Profile.objects.filter(user=client_data[1])
 		workshop_list = Workshop.objects.get(
@@ -190,14 +176,22 @@ def book_workshop(request):
 									datetime(2017, 12, 31, 0, 0, 0),
 									inc=True
 									)
+
+		rW_obj = RequestedWorkshop()
+
+		workshop_obj = Workshop.objects.get(
+								workshop_instructor=client_data[1], 
+								workshop_title_id=client_data[2]
+								)
+
 		for d in workshop_recurrence_list:
 			if workshop_date == (d.strftime("%d-%m-%Y")):
-				rW_obj = RequestedWorkshop()
+				# rW_obj = RequestedWorkshop()
 
-				workshop_obj = Workshop.objects.get(
-											workshop_instructor=client_data[1], 
-											workshop_title_id=client_data[2]
-											)
+				# workshop_obj = Workshop.objects.get(
+				# 							workshop_instructor=client_data[1], 
+				# 							workshop_title_id=client_data[2]
+				# 							)
 				rW_obj.requested_workshop_instructor = workshop_obj.workshop_instructor
 				rW_obj.requested_workshop_coordinator = request.user
 				rW_obj.requested_workshop_date = datetime.strptime(
@@ -205,6 +199,21 @@ def book_workshop(request):
 														)
 				rW_obj.requested_workshop_title = workshop_obj.workshop_title
 				rW_obj.save()
+
+		# Mail to instructor
+		send_email(request, call_on='Booking', 
+					   user_position='instructor', 
+					   workshop_date=workshop_date,
+					   workshop_title=workshop_obj.workshop_title.course_name,
+					   user_name=str(request.user),
+					   other_email=workshop_obj.workshop_instructor.email
+					   )
+
+		#Mail to coordinator
+		send_email(request, call_on='Booking',
+				workshop_date=workshop_date,
+				workshop_title=workshop_obj.workshop_title.course_name,
+				user_name=workshop_obj.workshop_instructor.username)
 				
 		return HttpResponse("Thank You, Please check your email for further \
 							information.")
@@ -291,6 +300,21 @@ def my_workshops(request):
 												)
 				workshop_status.status = client_data[-1]
 				workshop_status.save()
+				
+				#For Instructor
+				send_email(request, call_on='Booking Confirmed', 
+					user_position='instructor', 
+					workshop_date=str(client_data[1]),
+					workshop_title=workshop_status.requested_workshop_title.course_name,
+					user_name=str(request.user),
+					)
+
+				#For Coordinator
+				send_email(request, call_on='Booking Confirmed',  
+					workshop_date=str(client_data[1]),
+					workshop_title=workshop_status.requested_workshop_title.course_name,
+					other_email=workshop_status.requested_workshop_coordinator.email
+					)
 
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
 									requested_workshop_instructor=user.id
@@ -308,6 +332,9 @@ def my_workshops(request):
 				#If page is out of range(e.g 999999), deliver last page.
 				workshop_occurences = paginator.page(paginator.num_pages)
 			template = 'workshop_app/my_workshops.html'
+
+			
+
 		else:
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
 									requested_workshop_coordinator=user.id
