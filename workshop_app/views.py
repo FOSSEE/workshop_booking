@@ -301,27 +301,43 @@ def my_workshops(request):
 				workshop_status.status = client_data[-1]
 				workshop_status.save()
 				
-				#For Instructor
-				send_email(request, call_on='Booking Confirmed', 
-					user_position='instructor', 
-					workshop_date=str(client_data[1]),
-					workshop_title=workshop_status.requested_workshop_title.course_name,
-					user_name=str(request.user),
-					)
+				if client_data[-1] == 'ACCEPTED':
+					#For Instructor
+					send_email(request, call_on='Booking Confirmed', 
+						user_position='instructor', 
+						workshop_date=str(client_data[1]),
+						workshop_title=workshop_status.requested_workshop_title.course_name,
+						user_name=str(request.user),
+						)
 
-				#For Coordinator
-				send_email(request, call_on='Booking Confirmed',  
-					workshop_date=str(client_data[1]),
-					workshop_title=workshop_status.requested_workshop_title.course_name,
-					other_email=workshop_status.requested_workshop_coordinator.email
-					)
+					#For Coordinator
+					send_email(request, call_on='Booking Confirmed',  
+						workshop_date=str(client_data[1]),
+						workshop_title=workshop_status.requested_workshop_title.course_name,
+						other_email=workshop_status.requested_workshop_coordinator.email
+						)
+				else:
+					#For Instructor
+					send_email(request, call_on='Booking Request Rejected', 
+						user_position='instructor', 
+						workshop_date=str(client_data[1]),
+						workshop_title=workshop_status.requested_workshop_title.course_name,
+						user_name=str(request.user),
+						)
+
+					#For Coordinator
+					send_email(request, call_on='Booking Request Rejected',
+						workshop_date=str(client_data[1]),
+						workshop_title=workshop_status.requested_workshop_title.course_name,
+						other_email=workshop_status.requested_workshop_coordinator.email
+						)
 
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
 									requested_workshop_instructor=user.id
 									)
 			
 			#Show upto 6 Workshops per page
-			paginator = Paginator(workshop_occurence_list, 3)
+			paginator = Paginator(workshop_occurence_list, 9)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)

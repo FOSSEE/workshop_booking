@@ -17,7 +17,7 @@
 				'<form id="myform" action="">\
 				<input type="checkbox" id="one"\
 				name="one" value="one"/>We will give minimum 50 participants for the workshop.<br/>\
-				<input type="checkbox" id="two" name="two" value="two" />We agree that this booking won\'t be cancelled.<br/>\
+				<input type="checkbox" id="two" name="two" value="two" />We agree that this booking won\'t be cancelled(if you want to cancel please contact the instructor 2days before the event).<br/>\
 				</form> ')
 				.dialog({
 					autoOpen: false,
@@ -49,14 +49,14 @@ function booking_confirmed(d){
 					data: {
 						d, 
 						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-						  },
+					},
 				
 					success:function(response){
 						window.location.reload();
 						alert("success: " + response);
-						}
+					}
 				});
-		}
+			}
 	</script>
 {% endblock %}
 

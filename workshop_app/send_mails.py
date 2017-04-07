@@ -66,6 +66,18 @@ def send_email(request, call_on,
 			message = "Your workshop for "+workshop_date+"request has been confirmed"
 			send_mail("Python Workshop Booking Confirmation", message, EMAIL_HOST_USER,
 				[other_email], fail_silently=False)
+
+	elif call_on == "Booking Request Rejected":
+		if user_position == "instructor":
+			message = "You have reject the booking on "+workshop_date+" for "+workshop_title
+			send_mail("Python Workshop Booking Rejected", message, EMAIL_HOST_USER,
+				[request.user.email], fail_silently=False)
+		else:
+			message = "Your workshop request for "+workshop_date+" has been cancelled please \
+			try for some other day."
+			send_mail("Python Workshop Booking Request Rejected", message, EMAIL_HOST_USER,
+				[other_email], fail_silently=False)
+
 	else:
 		message = "Issue at Workshop Booking App please check"
 		send_mail("Issue At Workshop Booking App", message, EMAIL_HOST_USER,

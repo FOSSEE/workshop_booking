@@ -3,7 +3,7 @@ from .models import Profile, Course, Workshop
 from string import punctuation, digits
 try:
     from string import letters
-except:
+except ImportError:
     from string import ascii_letters as letters
 
 from django.contrib.auth.models import User
@@ -119,7 +119,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'institute', 'department',
-                 'position']
+                ]
 
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)

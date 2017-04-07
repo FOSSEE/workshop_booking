@@ -11,7 +11,6 @@
 
 	<script>
 		function sendData(d){
-			console.log(d);
 			var URL = "{{ URL_ROOT }}/my_workshops/"
 
 			$.ajax({
@@ -25,10 +24,10 @@
 			});
 			
 			window.location.reload();
+			alert("Please Refresh if you don't see your changes");
 		}
 	</script>
 {% endblock %}
-
 
 {% block header %}
     <nav class="navbar navbar-inverse">
@@ -94,6 +93,7 @@
 						{% endif %}
 						{% if request.user.profile.position == 'instructor' %}
 							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title }},ACCEPTED')" > Accept</button></td>
+							<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title }},REJECTED')" > Reject </button></td>
 						{% endif %}
 						</tr>
 					</tbody>
