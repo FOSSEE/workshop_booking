@@ -12,7 +12,7 @@
 	<script>
 		function sendData(d){
 			var URL = "{{ URL_ROOT }}/my_workshops/"
-
+			console.log(d);
 			$.ajax({
 				url: URL,
 				type: "POST",
@@ -24,7 +24,7 @@
 			});
 			
 			window.location.reload();
-			alert("Please Refresh if you don't see your changes");
+			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
 		}
 	</script>
 {% endblock %}
@@ -130,14 +130,23 @@
 	</div>
 
 {% else %}
-	<div class="container">
-		<div class="jumbotron">
-			<h1>Welcome Instructor</h1>      
-			<p>Your workshop related information will be shown here, Please navigate to <b>View Course list</b> and depending upon
-			your expertise and availability create a workshop by going to
-			<b>Create Event</b>.</p>
+	{% if request.user.profile.position == 'instructor' %}
+		<div class="container">
+			<div class="jumbotron">
+				<h1>Welcome Instructor</h1>      
+				<p>Your workshop related information will be shown here, Please navigate to <b>View Course list</b> and depending upon
+				your expertise and availability create a workshop by going to
+				<b>Create Event</b>.</p>
+			</div>
 		</div>
-	</div>
+	{% else %}
+		<div class="container">
+			<div class="jumbotron">
+				<h1>Welcome Coordinator</h1>
+				<p>Information Related to your workshops will be shown here.</p>
+			</div>
+		</div>
+	{% endif %}
 {% endif %}
 
 {% endblock %}

@@ -1,5 +1,8 @@
 from django import forms
-from .models import Profile, Course, Workshop
+from .models import (
+                    Profile, User, Workshop, Course, 
+                    RequestedWorkshop, BookedWorkshop
+                    )
 from string import punctuation, digits
 try:
     from string import letters

@@ -1,4 +1,3 @@
-
 from .forms import (
 					UserRegistrationForm, UserLoginForm, 
 					ProfileForm, CreateWorkshop
@@ -6,7 +5,8 @@ from .forms import (
 from .models import (
 					Profile, User,
 					has_profile, Workshop, 
-					Course, RequestedWorkshop
+					Course, RequestedWorkshop,
+					BookedWorkshop
 					)
 from django.template import RequestContext
 from datetime import datetime, date
@@ -126,10 +126,14 @@ def book(request):
 		# workshop_occurence = OrderedDict(sorted(workshop_occurence.items()))
 		workshop_occurence = list(workshop_occurence.items())
 
-		requested_workshop = RequestedWorkshop.objects.all()
-		
+		#Gives you the objects of BookedWorkshop
+		requested_workshop = BookedWorkshop.objects.all()
 		for j in requested_workshop:
-			j = j.requested_workshop_date.strftime("%d-%m-%Y")
+			'''
+			j.booked_workshop.requested_workshop_date returns object from 
+			requestedworkshop table
+			'''
+			j = j.booked_workshop.requested_workshop_date.strftime("%d-%m-%Y")
 			for i in workshop_occurence:
 				if i[0] == j:
 					workshop_occurence.remove(i)
@@ -168,10 +172,10 @@ def book_workshop(request):
 		workshop_date = client_data[0][2:]
 
 		instructor_profile = Profile.objects.filter(user=client_data[1])
-		workshop_list = Workshop.objects.get(
+		workshop = Workshop.objects.get(
 										workshop_instructor=client_data[1]
 										)
-		workshop_recurrence_list =  workshop_list.recurrences.between(
+		workshop_recurrence_list =  workshop.recurrences.between(
 									datetime(2017, 3, 12, 0, 0, 0),
 									datetime(2017, 12, 31, 0, 0, 0),
 									inc=True
@@ -231,7 +235,7 @@ def manage(request):
 				#Can't Handle Multiple objects Fix this asap
 				workshop_details = Workshop.objects.get(
 													workshop_instructor=user.id
-														)
+													)
 				workshop_occurence_list = workshop_details.recurrences.between(
 											datetime(2017, 3, 12, 0, 0, 0),
 											datetime(2017, 12, 31, 0, 0, 0),
@@ -291,17 +295,25 @@ def my_workshops(request):
 				user_position = request.user.profile.position
 				client_data = request.body.decode("utf-8").split("&")
 				client_data = client_data[0].split("%2C")
-				workshop_date = datetime.strptime(
+				
+				if client_data[-1] == 'ACCEPTED':
+					workshop_date = datetime.strptime(
 										client_data[1], "%Y-%m-%d"
 										)
 
-				workshop_status = RequestedWorkshop.objects.get(requested_workshop_instructor=user.id,
-													requested_workshop_date=workshop_date
-												)
-				workshop_status.status = client_data[-1]
-				workshop_status.save()
-				
-				if client_data[-1] == 'ACCEPTED':
+					coordinator_obj = User.objects.get(username=client_data[0][2:])
+					workshop_status = RequestedWorkshop.objects.get(
+										requested_workshop_instructor=user.id,
+										requested_workshop_date=workshop_date,
+										requested_workshop_coordinator=coordinator_obj.id
+										)
+					workshop_status.status = client_data[-1]
+					workshop_status.save()
+					confirm_workshop = BookedWorkshop()
+					confirm_workshop.booked_workshop = workshop_status
+					confirm_workshop.save()
+
+
 					#For Instructor
 					send_email(request, call_on='Booking Confirmed', 
 						user_position='instructor', 
@@ -316,6 +328,35 @@ def my_workshops(request):
 						workshop_title=workshop_status.requested_workshop_title.course_name,
 						other_email=workshop_status.requested_workshop_coordinator.email
 						)
+
+				elif client_data[-1] == 'DELETED':
+					workshop_date = client_data[1]
+					workshop = Workshop.objects.get(workshop_instructor=request.user.id,
+														workshop_title_id=client_data[2])
+					
+					workshop_recurrence_list = workshop.recurrences.between(
+												datetime(2017, 3, 12, 0, 0, 0),
+												datetime(2017, 12, 31, 0, 0, 0),
+												inc=True
+												)
+
+					for d in workshop_recurrence_list:
+						if workshop_date == d.strftime("%Y-%m-%d"):
+							rW_obj = RequestedWorkshop()
+							rW_obj.requested_workshop_instructor = request.user
+							rW_obj.requested_workshop_coordinator = request.user
+							rW_obj.requested_workshop_date = workshop_date
+							rW_obj.requested_workshop_title = workshop.workshop_title
+							rW_obj.status = client_data[-1]
+							rW_obj.save()
+
+					#For instructor
+					send_email(request, call_on='Workshop Deleted',
+						workshop_date=str(client_data[1]),
+						)
+
+					return HttpResponse("Workshop Deleted")
+					
 				else:
 					#For Instructor
 					send_email(request, call_on='Booking Request Rejected', 

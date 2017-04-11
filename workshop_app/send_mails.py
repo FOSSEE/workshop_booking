@@ -78,6 +78,11 @@ def send_email(request, call_on,
 			send_mail("Python Workshop Booking Request Rejected", message, EMAIL_HOST_USER,
 				[other_email], fail_silently=False)
 
+	elif call_on =='Workshop Deleted':
+		message = "You have deleted a Workshop, "+workshop_title+" scheduled on "+workshop_date+"." 
+		send_mail("Python Workshop Deleted", message, EMAIL_HOST_USER,
+			[request.user.email], fail_silently=False)
+		
 	else:
 		message = "Issue at Workshop Booking App please check"
 		send_mail("Issue At Workshop Booking App", message, EMAIL_HOST_USER,

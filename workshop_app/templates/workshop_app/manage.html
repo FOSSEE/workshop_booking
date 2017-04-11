@@ -19,6 +19,32 @@
   </nav>
 {% endblock %}
 
+{% block extra %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+	 <script>
+		function sendData(d){
+			var URL = "{{ URL_ROOT }}/my_workshops/"
+			console.log(d);
+			$.ajax({
+				url: URL,
+				type: "POST",
+				dataType: 'json',
+				data: {
+					d, 
+					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+				},
+			});
+			
+			window.location.reload();
+			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
+		}
+	</script>
+{% endblock %}
+
+
 {% block content %}
 
 	{% if workshop_occurence_list %}
@@ -39,6 +65,7 @@
 								<td>{{ w.user }}</td>
 								<td>{{ w.workshop }}</td>
 								<td>{{ w.date | date}}</td>
+								<td><button class="btn btn-danger btn-sm" id="delete-btn" onClick="sendData('{{ w.user}},{{w.date | safe}},{{ w.workshop.id }},DELETED')" > Delete Event </button></td>
 							</tr>
 						</tbody>
 				{% endfor %}

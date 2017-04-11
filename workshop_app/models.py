@@ -47,7 +47,8 @@ class Course(models.Model):
 
 	course_name = models.CharField(max_length=120)
 	course_description = models.TextField()
-	course_duration = models.CharField(max_length=32)
+	course_duration = models.CharField(max_length=32, help_text='Please write this in \
+					following format eg: 3days, 8hours a day')
 
 	def __str__(self):
 		return u"{0} {1}".format(self.course_name, self.course_duration)
@@ -72,7 +73,7 @@ class Workshop(models.Model):
 
 class RequestedWorkshop(models.Model):
 	"""
-	Contains Data of Booked/Completed Workshops 
+	Contains Data of request for Workshops
 	"""
 
 	requested_workshop_instructor = models.ForeignKey(
@@ -93,5 +94,10 @@ class RequestedWorkshop(models.Model):
 												)
 
 
+class BookedWorkshop(models.Model):
+	"""
+	Contains details about Confirmed Booked/Completed Workshops
+	"""
 
-
+	booked_workshop = models.ForeignKey(RequestedWorkshop)
+	
