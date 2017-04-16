@@ -12,7 +12,9 @@
 		  <a class="navbar-brand" href="{{ URL_ROOT}}/manage/">WebSiteName</a>
 		</div>
 		<ul class="nav navbar-nav">
+		{% if request.user.profile.position == 'instructor'%}
 		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Workshop</a></li>
+		{% endif %}
 		  <li class="active"><a href="{{ URL_ROOT }}/my_workshops">My Workshops</a></li>
 		</ul>
 

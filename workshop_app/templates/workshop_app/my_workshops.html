@@ -59,6 +59,8 @@
 
 {% block content %}
 {% if workshop_occurences %}
+	<h3 align="center">The status of your workshops </h3>
+	<br>
 	<div class="container">
 		<table class="table table-hover">
 			<thead>
@@ -91,9 +93,9 @@
 						{% else %}
 							<td><span class = "label label-danger">{{ workshop.status }}</span></td>
 						{% endif %}
-						{% if request.user.profile.position == 'instructor' %}
-							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title }},ACCEPTED')" > Accept</button></td>
-							<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title }},REJECTED')" > Reject </button></td>
+						{% if request.user.profile.position == 'instructor' and workshop.status != 'DELETED' %}
+							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" > Accept</button></td>
+							<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" > Reject </button></td>
 						{% endif %}
 						</tr>
 					</tbody>

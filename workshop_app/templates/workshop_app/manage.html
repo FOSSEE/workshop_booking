@@ -4,7 +4,7 @@
    <nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">WebSiteName</a>
+		  <a class="navbar-brand" href="#">Instructor Profile</a>
 		</div>
 		<ul class="nav navbar-nav">
 		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
@@ -42,12 +42,16 @@
 			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
 		}
 	</script>
+
+	
 {% endblock %}
 
 
 {% block content %}
 
 	{% if workshop_occurence_list %}
+	<h4 align="center">This is the list of workshops you have created, you can delete a workshop if you are not availble on that day. </h4>
+	<br>
 	<div class="container">
 		<table class="table table-hover">
 			<thead>
@@ -58,17 +62,15 @@
 				</tr>
 			</thead>
 			{% csrf_token %}
-			{% for workshop in workshop_occurence_list %}
-				{% for w in workshop %}
+			{% for w in workshop_occurence_list %}
 						<tbody>
 							<tr>
 								<td>{{ w.user }}</td>
 								<td>{{ w.workshop }}</td>
 								<td>{{ w.date | date}}</td>
-								<td><button class="btn btn-danger btn-sm" id="delete-btn" onClick="sendData('{{ w.user}},{{w.date | safe}},{{ w.workshop.id }},DELETED')" > Delete Event </button></td>
+								<td><button data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="btn btn-danger btn-sm" id="delete-btn" onClick="sendData('{{ w.user}},{{w.date | safe}},{{ w.workshop.id }},DELETED')" > Delete Event </button></td>
 							</tr>
 						</tbody>
-				{% endfor %}
 			{% endfor %}
 		</table>
 	</div>

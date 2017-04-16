@@ -41,8 +41,8 @@ class UserRegistrationForm(forms.Form):
                                                  Up to 15 digits allowed."))
     institute = forms.CharField(max_length=128, 
                 help_text='Institute/Organization')
-    department = forms.CharField(max_length=64, help_text='Department you work \
-                                    study at')
+    department = forms.CharField(max_length=64, help_text='Department you work/\
+                                study')
     position = forms.ChoiceField(help_text='Instructors, please wait \
                                 for our admin approval, if your instructor \
                                 account is not activated in 7 days, please\

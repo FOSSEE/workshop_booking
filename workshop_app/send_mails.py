@@ -73,13 +73,13 @@ def send_email(request, call_on,
 			send_mail("Python Workshop Booking Rejected", message, EMAIL_HOST_USER,
 				[request.user.email], fail_silently=False)
 		else:
-			message = "Your workshop request for "+workshop_date+" has been cancelled please \
-			try for some other day."
+			message = "Your workshop request for "+workshop_date+" has been rejected by the instructor,\
+			please try for some other day."
 			send_mail("Python Workshop Booking Request Rejected", message, EMAIL_HOST_USER,
 				[other_email], fail_silently=False)
 
 	elif call_on =='Workshop Deleted':
-		message = "You have deleted a Workshop, "+workshop_title+" scheduled on "+workshop_date+"." 
+		message = "You have deleted a Workshop, scheduled on "+workshop_date+"." 
 		send_mail("Python Workshop Deleted", message, EMAIL_HOST_USER,
 			[request.user.email], fail_silently=False)
 		
