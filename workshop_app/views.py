@@ -133,17 +133,29 @@ def book(request):
 		
 		#Gives you the objects of BookedWorkshop
 		bookedworkshop = BookedWorkshop.objects.all()
-		for j in bookedworkshop:
+		for b in bookedworkshop:
 			'''
-			j.booked_workshop.requested_workshop_date returns object from 
+			b.booked_workshop.requested_workshop_date returns object from 
 			requestedworkshop table
 			'''
-			a = j.booked_workshop.requested_workshop_date.strftime("%d-%m-%Y")
-			b = j.booked_workshop.requested_workshop_title
-			for i in workshop_occurence_list:
-				if i[0] == a and i[2] == b:
-					workshop_occurence_list.remove(i)
-			del a, b
+			x = b.booked_workshop.requested_workshop_date.strftime("%d-%m-%Y")
+			y = b.booked_workshop.requested_workshop_title
+			for a in workshop_occurence_list:
+				if a[0] == x and a[2] == y:
+					workshop_occurence_list.remove(a)
+			del x, y
+
+		#Gives you the objects of RequestedWorkshop for that particular coordinator
+		rW_obj = RequestedWorkshop.objects.filter(
+								requested_workshop_coordinator=request.user
+								)
+		for r in rW_obj:
+			x = r.requested_workshop_date.strftime("%d-%m-%Y")
+			for a in workshop_occurence_list:
+				if a[0] == x:
+					workshop_occurence_list.remove(a)
+			del x
+ 
 
 		#Show upto 12 Workshops per page
 		paginator = Paginator(workshop_occurence_list, 12) 
@@ -215,22 +227,22 @@ def book_workshop(request):
 						rW_obj.requested_workshop_title = workshop.workshop_title
 						rW_obj.save()
 
-				# Mail to instructor
-				send_email(request, call_on='Booking', 
-							   user_position='instructor', 
-							   workshop_date=workshop_date,
-							   workshop_title=workshop.workshop_title.course_name,
-							   user_name=str(request.user),
-							   other_email=workshop.workshop_instructor.email
-							   )
+						# Mail to instructor
+						send_email(request, call_on='Booking', 
+									   user_position='instructor', 
+									   workshop_date=workshop_date,
+									   workshop_title=workshop.workshop_title.course_name,
+									   user_name=str(request.user),
+									   other_email=workshop.workshop_instructor.email
+									   )
 
-				#Mail to coordinator
-				send_email(request, call_on='Booking',
-						workshop_date=workshop_date,
-						workshop_title=workshop.workshop_title.course_name,
-						user_name=workshop.workshop_instructor.username)
-						
-				return HttpResponse("Thank You, Please check your email for further information.")
+						#Mail to coordinator
+						send_email(request, call_on='Booking',
+								workshop_date=workshop_date,
+								workshop_title=workshop.workshop_title.course_name,
+								user_name=workshop.workshop_instructor.username)
+								
+						return HttpResponse("Thank You, Please check your email for further information.")
 	else:
 		return HttpResponse("Some Error Occurred.")
 
