@@ -12,15 +12,15 @@
       </div>
       <ul class="nav navbar-nav">
       {% if request.user.profile.position == 'instructor' %}
-        <li class="active"><a href="{{ URL_ROOT }}/manage">Home</a></li>
+        <li class="active"><a href="{{ URL_ROOT }}/manage/">Home</a></li>
       {% else %}
-        <li class="active"><a href="{{ URL_ROOT }}/book">Home</a></li>
+        <li class="active"><a href="{{ URL_ROOT }}/book/">Home</a></li>
       {% endif %}
-        <li class="active"><a href="{{ URL_ROOT }}/my_workshops">My Workshops</a></li>
+        <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-        <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+        <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
       </ul>
       </div>
   </nav>

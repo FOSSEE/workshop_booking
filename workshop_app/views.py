@@ -20,31 +20,33 @@ from collections import OrderedDict
 from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
+from textwrap import dedent
 
+__author__ = "Akshen Doke"
+__credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
+                "Prathamesh Salunke", "Akshen Doke"]
 
 def index(request):
 	'''Landing Page'''
 
 	user = request.user
 	if user.is_authenticated():
-		if user.groups.filter(name='instructor').count() > 0:
+		if user.profile.position == 'instructor':
 			return redirect('/manage/')
 		return redirect('/book/')
-
 	return render(request, "workshop_app/index.html")
 
 
 def is_instructor(user):
 	'''Check if the user is having instructor rights'''
-	if user.groups.filter(name='instructor').exists():
-		return True
-
+	return True if user.profile.position == 'instructor' else False
+		
 
 def user_login(request):
-	'''Login'''
+	'''User Login'''
 	user = request.user
 	if user.is_authenticated():
-		if user.groups.filter(name='instructor').count() > 0:
+		if user.profile.position == 'instructor':
 			return redirect('/manage/')
 		return redirect('/book/')
 
@@ -53,7 +55,7 @@ def user_login(request):
 		if form.is_valid():
 			user = form.cleaned_data
 			login(request, user)
-			if user.groups.filter(name='instructor').count() > 0:
+			if user.profile.position == 'instructor':
 				return redirect('/manage/')
 			return redirect('/book/')
 		else:
@@ -85,7 +87,7 @@ def user_register(request):
 						   user_position=user_position
 						  )
 				return redirect('/view_profile/')
-			except IntegrityError as e:
+			except:
 				return render(
 							request, 
 							"workshop_app/registeration_error.html"
@@ -104,7 +106,7 @@ def user_register(request):
 def book(request):
 	user = request.user
 	if user.is_authenticated():
-		if user.groups.filter(name='instructor').count() > 0:
+		if user.profile.position == 'instructor':
 			return redirect('/manage/')
 
 		workshop_details = Workshop.objects.all()
@@ -130,7 +132,6 @@ def book(request):
 				workshop_occurence_list.append(workshop_occurence)
 				del workshop_occurence
 
-		
 		#Gives you the objects of BookedWorkshop
 		bookedworkshop = BookedWorkshop.objects.all()
 		for b in bookedworkshop:
@@ -145,7 +146,7 @@ def book(request):
 					workshop_occurence_list.remove(a)
 			del x, y
 
-		#Gives you the objects of RequestedWorkshop for that particular coordinator
+		#Objects of RequestedWorkshop for that particular coordinator
 		rW_obj = RequestedWorkshop.objects.filter(
 								requested_workshop_coordinator=request.user
 								)
@@ -188,8 +189,17 @@ def book_workshop(request):
 		client_data = request.body.decode("utf-8").split("&")
 		client_data = client_data[0].split("%2C")
 		workshop_date = client_data[0][2:]
-		instructor_profile = Profile.objects.filter(user=client_data[1])
 
+		if client_data[-1] == '0':
+			queue = RequestedWorkshop.objects.filter(
+				requested_workshop_instructor=client_data[1],
+				requested_workshop_date=datetime.strptime(
+											client_data[0][2:], "%d-%m-%Y"
+											),
+				requested_workshop_title=client_data[-2]
+				).count() + 1
+
+			return HttpResponse(str(queue))
 
 		workshops_list = Workshop.objects.filter(
 										workshop_instructor=client_data[1],
@@ -213,19 +223,29 @@ def book_workshop(request):
 					requested_workshop_title=client_data[-1]
 					).count() > 0:
 
-					return HttpResponse("You already have a booking for this workshop \
-						please check the instructors response in My Workshops tab and \
-					also check your email.")
+					return HttpResponse(dedent("""You already have a booking 
+								for this workshop please check the 
+								instructors response in My Workshops tab and
+								also check your email."""))
 			else:
-				for d in workshop_recurrence_list:
-					if workshop_date == (d.strftime("%d-%m-%Y")):
+				for w in workshop_recurrence_list:
+					if workshop_date == (w.strftime("%d-%m-%Y")):
+						print(workshop_date)
 						rW_obj.requested_workshop_instructor = workshop.workshop_instructor
 						rW_obj.requested_workshop_coordinator = request.user
 						rW_obj.requested_workshop_date = datetime.strptime(
-																client_data[0][2:], "%d-%m-%Y"
-																)
+													   workshop_date,"%d-%m-%Y"
+														)
 						rW_obj.requested_workshop_title = workshop.workshop_title
 						rW_obj.save()
+
+						queue = RequestedWorkshop.objects.filter(
+								requested_workshop_instructor=workshop.workshop_instructor,
+								requested_workshop_date=datetime.strptime(
+											workshop_date, "%d-%m-%Y",
+											),
+								requested_workshop_title=client_data[-1]
+								).count()
 
 						# Mail to instructor
 						send_email(request, call_on='Booking', 
@@ -235,14 +255,19 @@ def book_workshop(request):
 									   user_name=str(request.user),
 									   other_email=workshop.workshop_instructor.email
 									   )
-
+						phone_number = workshop.workshop_instructor.profile.phone_number
 						#Mail to coordinator
 						send_email(request, call_on='Booking',
-								workshop_date=workshop_date,
-								workshop_title=workshop.workshop_title.course_name,
-								user_name=workshop.workshop_instructor.username)
+							workshop_date=workshop_date,
+							workshop_title=workshop.workshop_title.course_name,
+							user_name=workshop.workshop_instructor.username,
+							other_email=workshop.workshop_instructor.email,
+							phone_number=phone_number)
 								
-						return HttpResponse("Thank You, Please check your email for further information.")
+						return HttpResponse(dedent("""\
+						Thank You, Please check 
+						your email for further information. Your number on the
+						queue for this book is {0}""".format(str(queue))))
 	else:
 		return HttpResponse("Some Error Occurred.")
 
@@ -330,32 +355,42 @@ def my_workshops(request):
 										)
 
 					coordinator_obj = User.objects.get(username=client_data[0][2:])
+
 					workshop_status = RequestedWorkshop.objects.get(
-										requested_workshop_instructor=user.id,
-										requested_workshop_date=workshop_date,
-										requested_workshop_coordinator=coordinator_obj.id,
-										requested_workshop_title=client_data[2]
-										)
+									requested_workshop_instructor=user.id,
+									requested_workshop_date=workshop_date,
+									requested_workshop_coordinator=coordinator_obj.id,
+									requested_workshop_title=client_data[2]
+									)
+
 					workshop_status.status = client_data[-1]
 					workshop_status.save()
 					booked_workshop_obj = BookedWorkshop()
 					booked_workshop_obj.booked_workshop = workshop_status
 					booked_workshop_obj.save()
 
+					cmail = workshop_status.requested_workshop_coordinator.email
+					cname = workshop_status.requested_workshop_coordinator.username
+					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
+					inum = request.user.profile.phone_number
+					wtitle = workshop_status.requested_workshop_title.course_name
 
 					#For Instructor
 					send_email(request, call_on='Booking Confirmed', 
 						user_position='instructor', 
 						workshop_date=str(client_data[1]),
-						workshop_title=workshop_status.requested_workshop_title.course_name,
-						user_name=str(request.user),
+						workshop_title=wtitle,
+						user_name=str(cname),
+						other_email=cmail,
+						phone_number=cnum
 						)
 
 					#For Coordinator
 					send_email(request, call_on='Booking Confirmed',  
 						workshop_date=str(client_data[1]),
-						workshop_title=workshop_status.requested_workshop_title.course_name,
-						other_email=workshop_status.requested_workshop_coordinator.email
+						workshop_title=wtitle,
+						other_email=cmail,
+						phone_number=inum
 						)
 
 				elif client_data[-1] == 'DELETED':
@@ -387,6 +422,7 @@ def my_workshops(request):
 					#For instructor
 					send_email(request, call_on='Workshop Deleted',
 						workshop_date=str(client_data[1]),
+						workshop_title=workshop.workshop_title
 						)
 
 					return HttpResponse("Workshop Deleted")
@@ -406,19 +442,23 @@ def my_workshops(request):
 					workshop_status.status = client_data[-1]
 					workshop_status.save()
 
+					wtitle = workshop_status.requested_workshop_title.course_name
+					cmail = workshop_status.requested_workshop_coordinator.email
+					cname = workshop_status.requested_workshop_coordinator.username
+
 					#For Instructor
 					send_email(request, call_on='Booking Request Rejected', 
 						user_position='instructor', 
 						workshop_date=str(client_data[1]),
-						workshop_title=workshop_status.requested_workshop_title.course_name,
-						user_name=str(request.user),
+						workshop_title=wtitle,
+						user_name=str(cname),
 						)
 
 					#For Coordinator
 					send_email(request, call_on='Booking Request Rejected',
 						workshop_date=str(client_data[1]),
-						workshop_title=workshop_status.requested_workshop_title.course_name,
-						other_email=workshop_status.requested_workshop_coordinator.email
+						workshop_title=wtitle,
+						other_email=cmail
 						)
 
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
@@ -564,8 +604,6 @@ def view_course_details(request):
 
 	user = request.user
 	if is_instructor(user):
-
 		return redirect('/')
-		
 	else:
 		return redirect('/book/')

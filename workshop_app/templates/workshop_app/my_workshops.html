@@ -43,23 +43,23 @@
       <div class="container-fluid">
         <div class="navbar-header">
         {% if request.user.profile.position == 'instructor' %}
-          <a class="navbar-brand" href="{{ URL_ROOT}}/manage">WebSiteName</a>
+          <a class="navbar-brand" href="{{ URL_ROOT}}/manage/">WebSiteName</a>
         {% endif %}
         </div>
         {% if request.user.profile.position == 'instructor' %}
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Event</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Event</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/view_course_list/">View Course List</a></li>
           </ul>
         {% else %}
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ URL_ROOT }}/book">Home</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/book/">Home</a></li>
           </ul>
         {% endif %}
         
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-          <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+          <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
       </div>
     </nav>

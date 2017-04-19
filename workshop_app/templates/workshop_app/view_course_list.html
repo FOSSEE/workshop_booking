@@ -13,21 +13,20 @@
 		</div>
 		<ul class="nav navbar-nav">
 		{% if request.user.profile.position == 'instructor'%}
-		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop">Create Workshop</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
 		{% endif %}
-		  <li class="active"><a href="{{ URL_ROOT }}/my_workshops">My Workshops</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
 		</ul>
 
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-		  <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 		</ul>
 	  	</div>
 	</nav>
 {% endblock %}
 
 {% block extra %}
-	<!-- <script src="{{ URL_ROOT }}/static/workshop_app/js/overlay.js"></script> -->
 
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 

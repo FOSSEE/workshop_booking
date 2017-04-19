@@ -11,26 +11,44 @@
 	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	 
 	<script>
+	
 	// Button function
 		function sendData(d){
-			console.log(d);
+			var check_count;		
+			//For queue
+			var URL = "{{ URL_ROOT }}/book_workshop/";
+				c = d + ',0';
+				$.ajax({
+					url: URL,
+					datatype: 'json',
+					async: false,
+					type: "POST",
+					data: {
+						c, 
+						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+					},
+					success:function(response){
+						check_count = response;
+					}
+				});
 
 			var $dialog = $('<div></div').html(
 				'<form id="myform" action="">\
 				<input type="checkbox" id="one"\
 				name="one" value="one"/> I will give minimum 50 participants for the workshop.<br/>\
-				<input type="checkbox" id="two" name="two" value="two" /> I agree that this booking won\'t be cancelled(if you want to cancel please contact the instructor 2days before the event).<br/>\
+				<input type="checkbox" id="two" name="two" value="two" /> I agree that this booking won\'t be cancelled without prior notice to the instructor and fossee.<br/>\
+				<input type="checkbox" id="three" name="three" value="three"/> I am '+ check_count +' in the queue.\
 				</form> ')
 				.dialog({
 					autoOpen: false,
 					title: 'Terms & Condition',
 					buttons: {
 						"Confirm": function(){
-						if($('#one').is(":checked") && $('#two').is(":checked")){
+						if($('#one').is(":checked") && $('#two').is(":checked") && $('#three').is(":checked")){
 								booking_confirmed(d);
 								$(this).dialog("close");	
 						} else {
-								alert("Please select both the checkboxes");
+								alert("Please select all the checkboxes.");
 								}
 						},
 						"Cancel":  function(){
@@ -70,12 +88,12 @@
 		  <a class="navbar-brand" href="#">WebSiteName</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li class="active"><a href="{{ URL_ROOT}}/my_workshops">My Workshops</a></li>
-		  <li class="active"><a href="{{ URL_ROOT }}/view_course_list">View Course List</a></li>
+		  <li class="active"><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/view_course_list/">View Course List</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-		  <li><a href="{{ URL_ROOT }}/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 		</ul>
 	  	</div>
     </nav>
