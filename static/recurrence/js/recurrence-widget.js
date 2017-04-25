@@ -782,7 +782,7 @@ recurrence.widget.RuleForm.prototype = {
             'span', {'class': 'recurrence-label'},
             recurrence.display.labels.every);
         var interval_label2 = recurrence.widget.e(
-            'span', {'class': 'laebl'},
+            'span', {'class': 'label'},
             recurrence.display.timeintervals_plural[this.rule.freq]);
         var interval_container = recurrence.widget.e(
             'div', {'class': 'interval'},

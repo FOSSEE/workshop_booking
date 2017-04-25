@@ -46,7 +46,7 @@ class UserRegistrationForm(forms.Form):
     position = forms.ChoiceField(help_text='Instructors, please wait \
                                 for our admin approval, if your instructor \
                                 account is not activated in 7 days, please\
-                                mail us at python[at]fossee[dot]in',
+                                mail us at workshops[at]fossee[dot]in',
                                 choices=position_choices
                                  )
 

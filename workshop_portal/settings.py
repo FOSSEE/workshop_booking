@@ -133,6 +133,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 LOGIN_URL = '/login/'
 
+MEDIA_URL = '/data/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "workshop_app", "data")
+
+
 #Email Connection Settings
 EMAIL_HOST = EMAIL_HOST
 EMAIL_HOST_USER = EMAIL_HOST_USER
@@ -140,6 +145,6 @@ EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_PORT = EMAIL_PORT
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_TIMEOUT = 300
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Temp Solution
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Temp Solution
 
 LOGIN_REDIRECT_URL = '/profile'

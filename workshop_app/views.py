@@ -31,7 +31,7 @@ def index(request):
 
 	user = request.user
 	if user.is_authenticated():
-		if user.profile.position == 'instructor':
+		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		return redirect('/book/')
 	return render(request, "workshop_app/index.html")
@@ -39,14 +39,14 @@ def index(request):
 
 def is_instructor(user):
 	'''Check if the user is having instructor rights'''
-	return True if user.profile.position == 'instructor' else False
+	return True if user.groups.filter(name='instructor').count() > 0 else False
 		
 
 def user_login(request):
 	'''User Login'''
 	user = request.user
 	if user.is_authenticated():
-		if user.profile.position == 'instructor':
+		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		return redirect('/book/')
 
@@ -55,7 +55,7 @@ def user_login(request):
 		if form.is_valid():
 			user = form.cleaned_data
 			login(request, user)
-			if user.profile.position == 'instructor':
+			if user.groups.filter(name='instructor').count() > 0:
 				return redirect('/manage/')
 			return redirect('/book/')
 		else:
@@ -106,7 +106,7 @@ def user_register(request):
 def book(request):
 	user = request.user
 	if user.is_authenticated():
-		if user.profile.position == 'instructor':
+		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 
 		workshop_details = Workshop.objects.all()
@@ -372,6 +372,7 @@ def my_workshops(request):
 					cmail = workshop_status.requested_workshop_coordinator.email
 					cname = workshop_status.requested_workshop_coordinator.username
 					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
+					cinstitute = workshop_status.requested_workshop_coordinator.profile.institute
 					inum = request.user.profile.phone_number
 					wtitle = workshop_status.requested_workshop_title.course_name
 
@@ -382,7 +383,8 @@ def my_workshops(request):
 						workshop_title=wtitle,
 						user_name=str(cname),
 						other_email=cmail,
-						phone_number=cnum
+						phone_number=cnum,
+						institute=cinstitute
 						)
 
 					#For Coordinator
@@ -445,6 +447,8 @@ def my_workshops(request):
 					wtitle = workshop_status.requested_workshop_title.course_name
 					cmail = workshop_status.requested_workshop_coordinator.email
 					cname = workshop_status.requested_workshop_coordinator.username
+					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
+					cinstitute = workshop_status.requested_workshop_coordinator.profile.institute
 
 					#For Instructor
 					send_email(request, call_on='Booking Request Rejected', 
@@ -452,6 +456,9 @@ def my_workshops(request):
 						workshop_date=str(client_data[1]),
 						workshop_title=wtitle,
 						user_name=str(cname),
+						other_email=cmail,
+						phone_number=cnum,
+						institute=cinstitute
 						)
 
 					#For Coordinator
