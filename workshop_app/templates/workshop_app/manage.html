@@ -7,8 +7,8 @@
 		  <a class="navbar-brand" href="#">Instructor Profile</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Event</a></li>
-		   <li class="active"><a href="{{ URL_ROOT }}/view_course_list/">View Course List</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/view_course_list/">View Workshop List</a></li>
 		   <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
@@ -78,7 +78,7 @@
 								<td>{{ w.user }}</td>
 								<td>{{ w.workshop }}</td>
 								<td>{{ w.date | date}}</td>
-								<td><button  class="btn btn-danger btn-sm" id="delete-btn" onClick="sendData('{{ w.user}},{{w.date | safe}},{{ w.workshop.id }},DELETED')" data-toggle="popover" title="Please Note" data-content="Once Deleted you cannot revoke this action." > Delete Event </button></td>
+								<td><button  class="btn btn-danger btn-sm" id="delete-btn" onClick="sendData('{{ w.user}},{{w.date | safe}},{{ w.workshop.id }},DELETED')" data-toggle="popover" title="Please Note" data-content="Once Deleted you cannot revoke this action." > Delete Workshop </button></td>
 							</tr>
 						</tbody>
 			{% endfor %}
@@ -116,9 +116,9 @@
 		<div class="container">
 			<div class="jumbotron">
     			<h1>Welcome Instructor</h1>      
-    			<p>Please navigate to <b>View Course list</b> and depending upon
+    			<p>Please navigate to <b>View Workshop list</b> and depending upon
     			your expertise and availability create a workshop by going to
-    			<b>Create Event</b>. you can also check any workshop
+    			<b>Create Workshop</b>. you can also check any workshop
     			requests by going to <b>My Workshops</b></p>
 
   			</div>
