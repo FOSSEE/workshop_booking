@@ -49,11 +49,13 @@
         {% if request.user.profile.position == 'instructor' %}
           <ul class="nav navbar-nav">
             <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/view_course_list/">View Workshop List</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
           </ul>
         {% else %}
           <ul class="nav navbar-nav">
             <li class="active"><a href="{{ URL_ROOT }}/book/">Home</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+            <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
           </ul>
         {% endif %}
         
@@ -82,8 +84,8 @@
 				{% else %}
 					<th>Instructor Name</th>
 				{% endif %}
-					<th>Course Name</th>
-					<th>Course Day</th>
+					<th>Workshop Name</th>
+					<th>Workshop Day</th>
 					<th>Status</th>
 				</tr>
 			</thead>
@@ -91,7 +93,7 @@
 			{% for workshop in workshop_occurences %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'Pending' %}
+						{% if workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td>{{ workshop.requested_workshop_coordinator }}</td>
 							{% else %}
@@ -101,7 +103,7 @@
 								<td>{{ workshop.requested_workshop_date }}</td>
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 						{% endif %}
-							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
+							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
 								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
 								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
 							{% endif %}
@@ -123,8 +125,8 @@
 				{% else %}
 					<th>Instructor Name</th>
 				{% endif %}
-					<th>Course Name</th>
-					<th>Course Day</th>
+					<th>Workshop Name</th>
+					<th>Workshop Day</th>
 					<th>Status</th>
 				</tr>
 			</thead>
@@ -132,7 +134,7 @@
 			{% for workshop in workshop_occurences %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'ACCEPTED' %}
+						{% if workshop.status == 'ACCEPTED' and workshop.requested_workshop_title %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td>{{ workshop.requested_workshop_coordinator }}</td>
 							{% else %}
@@ -142,6 +144,16 @@
 								<td>{{ workshop.requested_workshop_date }}</td>
 								<td><span class = "label label-success">{{ workshop.status }}</span></td>
 						{% endif %}
+						{% if workshop.status == 'ACCEPTED' and workshop.conditionone %}
+							{% if request.user.profile.position == 'instructor' %}
+								<td>{{ workshop.proposed_workshop_coordinator }}</td>
+							{% else %}
+								<td>{{ workshop.proposed_workshop_instructor }}</td>
+							{% endif %}
+								<td>{{ workshop.proposed_workshop_title }}</td>
+								<td>{{ workshop.proposed_workshop_date }}</td>
+								<td><span class = "label label-success">{{ workshop.status }}</span></td>
+						{% endif %}
 						</tr>
 					</tbody>
 				
@@ -149,6 +161,47 @@
 
 		</table>
 	</div>
+
+
+<!-- Proposed View -->
+<div class="container">
+	<h3 align="center"><strong><u>Proposed</u></strong></h3>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				{% if request.user.profile.position == 'instructor' %}
+					<th>Coordinator Name</th>
+				{% else %}
+					
+				{% endif %}
+					<th>Workshop Name</th>
+					<th>Workshop Day</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			{% csrf_token %}
+			{% for workshop in workshop_occurences %}
+					<tbody>
+						<tr>
+						{% if workshop.status == 'Pending' and workshop.conditionone %}
+							{% if request.user.profile.position == 'instructor' %}
+								<td>{{ workshop.proposed_workshop_coordinator }}</td>
+							{% endif %}
+								<td>{{ workshop.proposed_workshop_title }}</td>
+								<td>{{ workshop.proposed_workshop_date }}</td>
+							
+								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
+								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
+								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+							{% endif %}
+						{% endif %}
+						</tr>
+					</tbody>
+				
+			{% endfor %}
+		</table>
+	</div>
+
 
 <!-- Deleted/Rejected View -->
 <div class="container">
@@ -161,8 +214,8 @@
 				{% else %}
 					<th>Instructor Name</th>
 				{% endif %}
-					<th>Course Name</th>
-					<th>Course Day</th>
+					<th>Workshop Name</th>
+					<th>Workshop Day</th>
 					<th>Status</th>
 				</tr>
 			</thead>
@@ -229,7 +282,8 @@
 		<div class="container">
 			<div class="jumbotron">
 				<h1>Welcome Coordinator</h1>
-				<p>Information Related to your workshops will be shown here.</p>
+				<p>Information Related to your workshops will be shown here, you can also
+				propose a Workshop as per your available date in <strong>Propose a Workshop tab</strong> .</p>
 			</div>
 		</div>
 	{% endif %}

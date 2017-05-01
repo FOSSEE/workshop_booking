@@ -1,7 +1,7 @@
 from django import forms
 from .models import (
-                    Profile, User, Workshop, Course, 
-                    RequestedWorkshop, BookedWorkshop
+                    Profile, User, Workshop, WorkshopType, 
+                    RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
                     )
 from string import punctuation, digits
 try:
@@ -135,7 +135,10 @@ class ProfileForm(forms.ModelForm):
         self.fields['last_name'].initial = user.last_name
 
 class CreateWorkshop(forms.ModelForm):
-    """Instructors can create Workshops based on the courses available."""
+    """
+    Instructors can create Workshops based on the Types 
+    of available workshops.
+    """
 
     def __init__( self, *args, **kwargs ):
         super(CreateWorkshop, self).__init__( *args, **kwargs )
@@ -146,3 +149,25 @@ class CreateWorkshop(forms.ModelForm):
         fields = ['workshop_title', 'recurrences']
 
     
+class ProposeWorkshopDateForm(forms.ModelForm):
+    """
+    Coordinators will propose a workshop and date 
+    """
+    
+    def __init__( self, *args, **kwargs ):
+        super(ProposeWorkshopDateForm, self).__init__( *args, **kwargs )
+        self.fields['conditionone'].label = " "
+        self.fields['conditionone'].required = True
+        self.fields['conditiontwo'].label = " "
+        self.fields['conditiontwo'].required = True
+        self.fields['conditionthree'].label = " "
+        self.fields['conditionthree'].required = True
+
+    class Meta:
+        model = ProposeWorkshopDate
+        fields = ['conditionone','conditiontwo','conditionthree','proposed_workshop_title', 'proposed_workshop_date']
+        widgets = {
+            'proposed_workshop_date': forms.DateInput(attrs={
+                'class':'datepicker'}),
+        }
+

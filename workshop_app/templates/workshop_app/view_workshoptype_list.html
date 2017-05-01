@@ -1,7 +1,7 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	View Course List
+	View Workshops Type List
 {% endblock %}
 
 
@@ -42,18 +42,18 @@
 		  <thead>
 		    <tr>
 		      <th>id</th>
-		      <th>Course Name</th>
-		      <th>Course Duration</th>
+		      <th>Workshop Name</th>
+		      <th>Workshop Duration</th>
 		    </tr>
 		  </thead>
 
-		{% for course in courses %}
+		{% for w in workshoptype %}
 		  <tbody>
 		    <tr  >
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
-		      <td>{{ course.course_name }}</td>
-		      <td>{{ course.course_duration }}</td>
-		      <td><button class="btn btn-default btn-sm" class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}">View Course Details</button></td>
+		      <td>{{ w.workshoptype_name }}</td>
+		      <td>{{ w.workshoptype_duration }}</td>
+		      <td><button class="btn btn-default btn-sm" class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}">View Workshop Details</button></td>
 		    </tr>
 
 		   <tr>
@@ -62,7 +62,7 @@
 			   <table class="table table-striped">
 			   	<tbody>
 			   		<tr>
-			   		<td>{{ course.course_description|safe }}</td>
+			   		<td>{{ w.workshoptype_description|safe }}</td>
 			   		</tr>
 			   	</tbody>
 			   	</table>
@@ -82,19 +82,19 @@
 		<nav aria-label="Page navigation">
 		 	<ul class="pagination pagination-sm">
 			  	<li class="page-item">
-			      {% if courses.has_previous %}
+			      {% if workshoptype.has_previous %}
 					<a class="page-link" tabindex="-1" 
-							href="?page={{ courses.previous_page_number }}">Previous</a>
+							href="?page={{ workshoptype.previous_page_number }}">Previous</a>
 				{% endif %}
 			    </li>
 			    <li class="page-item">
 			    <span class="current">
-				Page {{ courses.number }} of {{ courses.paginator.num_pages }}
+				Page {{ workshoptype.number }} of {{ workshoptype.paginator.num_pages }}
 					</span>
 				</li>
 			    <li class="page-item">
-			    {% if courses.has_next %}
-					<a class="page-link" href="?page={{ courses.next_page_number }}">Next
+			    {% if workshoptype.has_next %}
+					<a class="page-link" href="?page={{ workshoptype.next_page_number }}">Next
 					</a>	
 				{% endif %}
 			    </li>

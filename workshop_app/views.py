@@ -1,12 +1,13 @@
 from .forms import (
 					UserRegistrationForm, UserLoginForm, 
-					ProfileForm, CreateWorkshop
+					ProfileForm, CreateWorkshop,
+					ProposeWorkshopDateForm
 					)
 from .models import (
 					Profile, User,
 					has_profile, Workshop, 
-					Course, RequestedWorkshop,
-					BookedWorkshop
+					WorkshopType, RequestedWorkshop,
+					BookedWorkshop, ProposeWorkshopDate
 					)
 from django.template import RequestContext
 from datetime import datetime, date
@@ -122,11 +123,11 @@ def book(request):
 			
 			for d in range(len(dates)):
 				workshop_occurence = [
-										dates[d].strftime("%d-%m-%Y"),
-										workshops.workshop_instructor,
-				 						workshops.workshop_title,
-				 						workshops.workshop_instructor_id,
-				 						workshops.workshop_title_id,
+									dates[d].strftime("%d-%m-%Y"),
+									workshops.workshop_instructor,
+			 						workshops.workshop_title,
+			 						workshops.workshop_instructor_id,
+			 						workshops.workshop_title_id,
 				 					]
 				
 				workshop_occurence_list.append(workshop_occurence)
@@ -134,17 +135,23 @@ def book(request):
 
 		#Gives you the objects of BookedWorkshop
 		bookedworkshop = BookedWorkshop.objects.all()
-		for b in bookedworkshop:
-			'''
-			b.booked_workshop.requested_workshop_date returns object from 
-			requestedworkshop table
-			'''
-			x = b.booked_workshop.requested_workshop_date.strftime("%d-%m-%Y")
-			y = b.booked_workshop.requested_workshop_title
-			for a in workshop_occurence_list:
-				if a[0] == x and a[2] == y:
-					workshop_occurence_list.remove(a)
-			del x, y
+		if len(bookedworkshop) != 0:
+			for b in bookedworkshop:
+				'''
+				handles objects from bookedworkshop 
+					-requested
+					-proposed
+				'''
+				try:
+					x = b.booked_workshop_requested.requested_workshop_date.strftime("%d-%m-%Y")
+					y = b.booked_workshop_requested.requested_workshop_title
+				except:
+					x = b.booked_workshop_proposed.proposed_workshop_date.strftime("%d-%m-%Y")
+					y = b.booked_workshop_proposed.proposed_workshop_title
+				for a in workshop_occurence_list:
+					if a[0] == x and a[2] == y:
+						workshop_occurence_list.remove(a)
+				del x, y
 
 		#Objects of RequestedWorkshop for that particular coordinator
 		rW_obj = RequestedWorkshop.objects.filter(
@@ -251,7 +258,7 @@ def book_workshop(request):
 						send_email(request, call_on='Booking', 
 									   user_position='instructor', 
 									   workshop_date=workshop_date,
-									   workshop_title=workshop.workshop_title.course_name,
+									   workshop_title=workshop.workshop_title.workshoptype_name,
 									   user_name=str(request.user),
 									   other_email=workshop.workshop_instructor.email
 									   )
@@ -259,7 +266,7 @@ def book_workshop(request):
 						#Mail to coordinator
 						send_email(request, call_on='Booking',
 							workshop_date=workshop_date,
-							workshop_title=workshop.workshop_title.course_name,
+							workshop_title=workshop.workshop_title.workshoptype_name,
 							user_name=workshop.workshop_instructor.username,
 							other_email=workshop.workshop_instructor.email,
 							phone_number=phone_number)
@@ -366,7 +373,7 @@ def my_workshops(request):
 					workshop_status.status = client_data[-1]
 					workshop_status.save()
 					booked_workshop_obj = BookedWorkshop()
-					booked_workshop_obj.booked_workshop = workshop_status
+					booked_workshop_obj.booked_workshop_requested = workshop_status
 					booked_workshop_obj.save()
 
 					cmail = workshop_status.requested_workshop_coordinator.email
@@ -374,7 +381,7 @@ def my_workshops(request):
 					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
 					cinstitute = workshop_status.requested_workshop_coordinator.profile.institute
 					inum = request.user.profile.phone_number
-					wtitle = workshop_status.requested_workshop_title.course_name
+					wtitle = workshop_status.requested_workshop_title.workshoptype_name
 
 					#For Instructor
 					send_email(request, call_on='Booking Confirmed', 
@@ -418,7 +425,7 @@ def my_workshops(request):
 								rW_obj.status = client_data[-1]
 								rW_obj.save()
 								bW_obj = BookedWorkshop()
-								bW_obj.booked_workshop = rW_obj
+								bW_obj.booked_workshop_requested = rW_obj
 								bW_obj.save()
 
 					#For instructor
@@ -428,12 +435,57 @@ def my_workshops(request):
 						)
 
 					return HttpResponse("Workshop Deleted")
-					
+				
+				elif client_data[-1] == 'APPROVED':
+					print(client_data)
+					workshop_date = datetime.strptime(
+										client_data[1], "%Y-%m-%d"
+										)
+
+					coordinator_obj = User.objects.get(username=client_data[0][2:])
+					workshop_status = ProposeWorkshopDate.objects.get(
+									proposed_workshop_date=workshop_date,
+									proposed_workshop_coordinator=coordinator_obj.id,
+									proposed_workshop_title=client_data[2]
+									)
+
+					workshop_status.status = 'ACCEPTED'
+					workshop_status.proposed_workshop_instructor = user
+					workshop_status.save()
+					booked_workshop_obj = BookedWorkshop()
+					booked_workshop_obj.booked_workshop_proposed = workshop_status
+					booked_workshop_obj.save()
+
+					cmail = workshop_status.proposed_workshop_coordinator.email
+					cname = workshop_status.proposed_workshop_coordinator.username
+					cnum = workshop_status.proposed_workshop_coordinator.profile.phone_number
+					cinstitute = workshop_status.proposed_workshop_coordinator.profile.institute
+					inum = request.user.profile.phone_number
+					wtitle = workshop_status.proposed_workshop_title.workshoptype_name
+
+					#For Instructor
+					send_email(request, call_on='Booking Confirmed', 
+						user_position='instructor', 
+						workshop_date=str(client_data[1]),
+						workshop_title=wtitle,
+						user_name=str(cname),
+						other_email=cmail,
+						phone_number=cnum,
+						institute=cinstitute
+						)
+
+					#For Coordinator
+					send_email(request, call_on='Booking Confirmed',  
+						workshop_date=str(client_data[1]),
+						workshop_title=wtitle,
+						other_email=cmail,
+						phone_number=inum
+						)
+
 				else:
 					workshop_date = datetime.strptime(
 										client_data[1], "%Y-%m-%d"
 										)
-					print(client_data)
 					coordinator_obj = User.objects.get(username=client_data[0][2:])
 					workshop_status = RequestedWorkshop.objects.get(
 										requested_workshop_instructor=user.id,
@@ -444,7 +496,7 @@ def my_workshops(request):
 					workshop_status.status = client_data[-1]
 					workshop_status.save()
 
-					wtitle = workshop_status.requested_workshop_title.course_name
+					wtitle = workshop_status.requested_workshop_title.workshoptype_name
 					cmail = workshop_status.requested_workshop_coordinator.email
 					cname = workshop_status.requested_workshop_coordinator.username
 					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
@@ -468,12 +520,27 @@ def my_workshops(request):
 						other_email=cmail
 						)
 
+			workshops = []
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
 									requested_workshop_instructor=user.id
 									)
-			
+			for w in workshop_occurence_list:
+				workshops.append(w)
+
+			proposed_workshop = ProposeWorkshopDate.objects.filter(
+							proposed_workshop_instructor=user.id
+							)
+			for p in proposed_workshop:
+				workshops.append(p)
+
+			proposed_workshop_pending  = ProposeWorkshopDate.objects.filter(
+									status='Pending'
+									)
+			for p in proposed_workshop_pending:
+				workshops.append(p)
+
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshop_occurence_list, 12)
+			paginator = Paginator(workshops, 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -488,13 +555,21 @@ def my_workshops(request):
 			
 
 		else:
+			workshops = []
 			workshop_occurence_list = RequestedWorkshop.objects.filter(
-									requested_workshop_coordinator=user.id
-									)
-			
+						requested_workshop_coordinator=user.id
+						)
+			for w in workshop_occurence_list:
+				workshops.append(w)
+
+			proposed_workshop = ProposeWorkshopDate.objects.filter(
+				proposed_workshop_coordinator=user.id
+				)
+			for p in proposed_workshop:
+				workshops.append(p)			
+
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshop_occurence_list, 12)
-			print(paginator) 
+			paginator = Paginator(workshops, 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -512,6 +587,29 @@ def my_workshops(request):
 				 {"workshop_occurences": workshop_occurences} 
 				 )
 
+
+@login_required
+def propose_workshop(request):
+	'''Coordinator proposed a workshop and date'''
+
+	user = request.user
+	if is_instructor(user):
+		return redirect('/manage/')
+	else:
+		if request.method == 'POST':
+			form = ProposeWorkshopDateForm(request.POST)
+			if form.is_valid():
+				form_data = form.save(commit=False)
+				form_data.proposed_workshop_coordinator = user
+				form_data.proposed_workshop_coordinator.save()
+				form_data.save()
+				return redirect('/my_workshops/')
+		else:
+			form = ProposeWorkshopDateForm()
+		return render(
+					request, 'workshop_app/propose_workshop.html',
+					{"form": form }
+					)
 
 @login_required
 def view_profile(request):
@@ -583,31 +681,31 @@ def create_workshop(request):
 
 
 @login_required
-def view_course_list(request):
-	'''Gives the course details '''
+def view_workshoptype_list(request):
+	'''Gives the types of workshop details '''
 	user = request.user
-	course_list = Course.objects.all()
-	paginator = Paginator(course_list, 12) #Show upto 12 Courses per page
+	workshoptype_list = WorkshopType.objects.all()
+	paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
 
 	page = request.GET.get('page')
 	try:
-		courses = paginator.page(page)
+		workshoptype = paginator.page(page)
 	except PageNotAnInteger:
 		#If page is not an integer, deliver first page.
-		courses = paginator.page(1)
+		workshoptype = paginator.page(1)
 	except EmptyPage:
 		#If page is out of range(e.g 999999), deliver last page.
-		courses = paginator.page(paginator.num_pages)
+		workshoptype = paginator.page(paginator.num_pages)
 
 	return render(
-				request, 'workshop_app/view_course_list.html', \
-				{'courses': courses}
+				request, 'workshop_app/view_workshoptype_list.html', \
+				{'workshoptype': workshoptype}
 				)
 
 
 @login_required
-def view_course_details(request):
-	'''Gives the course details '''
+def view_workshoptype_details(request):
+	'''Gives the details for types of workshops.'''
 
 	user = request.user
 	if is_instructor(user):

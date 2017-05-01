@@ -35,11 +35,11 @@ def send_smtp_email(request=None, subject=None, message=None,
 
 	if attachment:
 		from django.conf import settings
-		from os import listdir
+		from os import listdir, path
 		files = listdir(settings.MEDIA_ROOT)
-
 		for f in files:
-			attachment = open(f, 'rb')
+			print(path.join(settings.MEDIA_ROOT,f))
+			attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
 			part = MIMEBase('application', 'octet-stream')
 			part.set_payload((attachment).read())
 			encoders.encode_base64(part)

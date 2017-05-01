@@ -35,9 +35,10 @@ urlpatterns = [
     url(r'^book_workshop/$', views.book_workshop),
     url(r'^my_workshops/$', views.my_workshops),
     url(r'^manage/$', views.manage),
-    url(r'^view_course_list/$', views.view_course_list),
-    url(r'^view_course_details/$', views.view_course_details),
+    url(r'^view_workshoptype_list/$', views.view_workshoptype_list),
+    url(r'^view_workshoptype_details/$', views.view_workshoptype_details),
     url(r'^create_workshop/$', views.create_workshop),
+    url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
 
 ]

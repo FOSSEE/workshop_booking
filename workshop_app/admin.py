@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import Profile, Course, Workshop
+from .models import (
+				Profile, WorkshopType, 
+				Workshop, ProposeWorkshopDate)
 
 # Register your models here.
 admin.site.register(Profile)
-admin.site.register(Course)
+admin.site.register(WorkshopType)
 admin.site.register(Workshop)
+admin.site.register(ProposeWorkshopDate)
