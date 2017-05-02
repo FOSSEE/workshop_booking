@@ -14,7 +14,6 @@ def has_profile(user):
 	""" check if user has profile """
 	return True if hasattr(user, 'profile') else False
 
-
 class Profile(models.Model):
 	"""Profile for users(instructors and coordinators)"""
 
@@ -24,12 +23,15 @@ class Profile(models.Model):
 	phone_number = models.CharField(
 				max_length=15,
 				validators=[RegexValidator(
-									regex=r'^\+?1?\d{9,15}$', message=(
-									"Phone number must be entered \
-                                    in the format: '+999999999'.\
-                                    Up to 15 digits allowed.")
+								regex=r'^\+?1?\d{9,15}$', message=(
+								"Phone number must be entered \
+                                in the format: '+929490956'.\
+                                Up to 15 digits allowed.")
 							)])
 	position = models.CharField(max_length=32, choices=position_choices)
+	is_email_verified = models.BooleanField(default=False)
+	activation_key = models.CharField(max_length=40, blank=True, null=True)
+	key_expiry_time = models.DateTimeField(blank=True, null=True)
 
 	def __str__(self):
 		return u"id: {0}| {1} {2} | {3} ".format(

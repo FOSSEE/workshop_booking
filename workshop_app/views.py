@@ -17,7 +17,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
+from django.utils import timezone
 from collections import OrderedDict
+from .decorators import email_verified
 from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
@@ -26,6 +28,14 @@ from textwrap import dedent
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                 "Prathamesh Salunke", "Akshen Doke"]
+
+
+def is_email_checked(user):
+	if hasattr(user, 'profile'):
+		return True if user.profile.is_email_verified else False
+	else:
+		return False
+
 
 def index(request):
 	'''Landing Page'''
@@ -72,27 +82,48 @@ def user_logout(request):
 	return render(request, 'workshop_app/logout.html')
 
 
+def activate_user(request, key):
+	try:
+		user = Profile.objects.get(activation_key=key)	
+	except:
+		return redirect('/register/')
+
+	if user.is_email_verified:
+		status = "Your email is already verified"
+	elif timezone.now() > user.key_expiry_time:
+		status = "Your activation has expired please register again"
+		Profile.objects.get(user_id=user.user_id).delete()
+		User.objects.get(id=user.user_id).delete()
+		return render(request, 'workshop_app/activation.html',
+					{"status": status})
+	elif key == user.activation_key:
+		user.is_email_verified = True
+		user.save()
+		status = "Your account has been activated"
+	else:
+		logout(request)
+		return redirect('/logout/')
+	return render(request, 'workshop_app/activation.html',
+				{"status": status})
+
+
 def user_register(request):
 	'''User Registeration form'''
 	if request.method == 'POST':
 		form = UserRegistrationForm(request.POST)
 		if form.is_valid():
-			try:
-				data = form.cleaned_data
-				username, password = form.save()
-				new_user = authenticate(username=username, password=password)
-				login(request, new_user)
-				user_position = request.user.profile.position
-				send_email(
-						   request, call_on='Registration', 
-						   user_position=user_position
-						  )
-				return redirect('/view_profile/')
-			except:
-				return render(
-							request, 
-							"workshop_app/registeration_error.html"
-							)
+			data = form.cleaned_data
+			username, password, key = form.save()
+			new_user = authenticate(username=username, password=password)
+			login(request, new_user)
+			user_position = request.user.profile.position
+			send_email(
+					   request, call_on='Registration', 
+					   user_position=user_position,
+					   key=key
+					  )
+			
+			return render(request, 'workshop_app/activation.html')
 		else:
 			return render(
 						request, "workshop_app/register.html", 
@@ -107,81 +138,83 @@ def user_register(request):
 def book(request):
 	user = request.user
 	if user.is_authenticated():
-		if user.groups.filter(name='instructor').count() > 0:
-			return redirect('/manage/')
+		if is_email_checked(user):
+			if user.groups.filter(name='instructor').count() > 0:
+				return redirect('/manage/')
 
-		workshop_details = Workshop.objects.all()
-		
-		workshop_occurence_list = []
-
-		for workshops in workshop_details:
-			dates = workshops.recurrences.between(
-				datetime(2017, 3, 12, 0, 0, 0),
-	    		datetime(2040, 12, 31, 0, 0, 0), #Needs to be changed yearly
-	    		inc=True
-				)
+			workshop_details = Workshop.objects.all()
 			
-			for d in range(len(dates)):
-				workshop_occurence = [
-									dates[d].strftime("%d-%m-%Y"),
-									workshops.workshop_instructor,
-			 						workshops.workshop_title,
-			 						workshops.workshop_instructor_id,
-			 						workshops.workshop_title_id,
-				 					]
+			workshop_occurence_list = []
+
+			for workshops in workshop_details:
+				dates = workshops.recurrences.between(
+					datetime(2017, 3, 12, 0, 0, 0),
+		    		datetime(2040, 12, 31, 0, 0, 0), #Needs to be changed yearly
+		    		inc=True
+					)
 				
-				workshop_occurence_list.append(workshop_occurence)
-				del workshop_occurence
-
-		#Gives you the objects of BookedWorkshop
-		bookedworkshop = BookedWorkshop.objects.all()
-		if len(bookedworkshop) != 0:
-			for b in bookedworkshop:
-				'''
-				handles objects from bookedworkshop 
-					-requested
-					-proposed
-				'''
-				try:
-					x = b.booked_workshop_requested.requested_workshop_date.strftime("%d-%m-%Y")
-					y = b.booked_workshop_requested.requested_workshop_title
-				except:
-					x = b.booked_workshop_proposed.proposed_workshop_date.strftime("%d-%m-%Y")
-					y = b.booked_workshop_proposed.proposed_workshop_title
-				for a in workshop_occurence_list:
-					if a[0] == x and a[2] == y:
-						workshop_occurence_list.remove(a)
-				del x, y
-
-		#Objects of RequestedWorkshop for that particular coordinator
-		rW_obj = RequestedWorkshop.objects.filter(
-								requested_workshop_coordinator=request.user
-								)
-		for r in rW_obj:
-			x = r.requested_workshop_date.strftime("%d-%m-%Y")
-			for a in workshop_occurence_list:
-				if a[0] == x:
-					workshop_occurence_list.remove(a)
-			del x
- 
-
-		#Show upto 12 Workshops per page
-		paginator = Paginator(workshop_occurence_list, 12) 
-		page = request.GET.get('page')
-		try:
-			workshop_occurences  = paginator.page(page)
-		except PageNotAnInteger:
-		#If page is not an integer, deliver first page.
-			workshop_occurences  = paginator.page(1)
-		except EmptyPage:
-			#If page is out of range(e.g 999999), deliver last page.
-			workshop_occurences  = paginator.page(paginator.num_pages)
-
-		return render(
-					request, "workshop_app/booking.html",
-					{"workshop_details": workshop_occurences}
-					 )
+				for d in range(len(dates)):
+					workshop_occurence = [
+										dates[d].strftime("%d-%m-%Y"),
+										workshops.workshop_instructor,
+				 						workshops.workshop_title,
+				 						workshops.workshop_instructor_id,
+				 						workshops.workshop_title_id,
+					 					]
 					
+					workshop_occurence_list.append(workshop_occurence)
+					del workshop_occurence
+
+			#Gives you the objects of BookedWorkshop
+			bookedworkshop = BookedWorkshop.objects.all()
+			if len(bookedworkshop) != 0:
+				for b in bookedworkshop:
+					'''
+					handles objects from bookedworkshop 
+						-requested
+						-proposed
+					'''
+					try:
+						x = b.booked_workshop_requested.requested_workshop_date.strftime("%d-%m-%Y")
+						y = b.booked_workshop_requested.requested_workshop_title
+					except:
+						x = b.booked_workshop_proposed.proposed_workshop_date.strftime("%d-%m-%Y")
+						y = b.booked_workshop_proposed.proposed_workshop_title
+					for a in workshop_occurence_list:
+						if a[0] == x and a[2] == y:
+							workshop_occurence_list.remove(a)
+					del x, y
+
+			#Objects of RequestedWorkshop for that particular coordinator
+			rW_obj = RequestedWorkshop.objects.filter(
+									requested_workshop_coordinator=request.user
+									)
+			for r in rW_obj:
+				x = r.requested_workshop_date.strftime("%d-%m-%Y")
+				for a in workshop_occurence_list:
+					if a[0] == x:
+						workshop_occurence_list.remove(a)
+				del x
+	 
+
+			#Show upto 12 Workshops per page
+			paginator = Paginator(workshop_occurence_list, 12) 
+			page = request.GET.get('page')
+			try:
+				workshop_occurences  = paginator.page(page)
+			except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+				workshop_occurences  = paginator.page(1)
+			except EmptyPage:
+				#If page is out of range(e.g 999999), deliver last page.
+				workshop_occurences  = paginator.page(paginator.num_pages)
+
+			return render(
+						request, "workshop_app/booking.html",
+						{"workshop_details": workshop_occurences}
+						 )
+		else:
+			return render(request, "workshop_app/activation.html")
 	else:
 		return redirect('/login/')
 
@@ -282,7 +315,7 @@ def book_workshop(request):
 @login_required
 def manage(request):
 	user = request.user
-	if user.is_authenticated():
+	if user.is_authenticated() and is_email_checked(user):
 		#Move user to the group via admin
 		if user.groups.filter(name='instructor').count() > 0:
 			try:
@@ -349,7 +382,7 @@ def manage(request):
 def my_workshops(request):
 	user = request.user
 
-	if user.is_authenticated():
+	if user.is_authenticated() and is_email_checked(user):
 		if is_instructor(user):
 			if request.method == 'POST':
 				user_position = request.user.profile.position
@@ -581,11 +614,7 @@ def my_workshops(request):
 				workshop_occurences = paginator.page(paginator.num_pages)
 			template = 'workshop_app/my_workshops.html'
 	else:
-		redirect('/login')
-
-	return render(request, template,
-				 {"workshop_occurences": workshop_occurences} 
-				 )
+		return redirect('/login/')
 
 
 @login_required
@@ -593,23 +622,26 @@ def propose_workshop(request):
 	'''Coordinator proposed a workshop and date'''
 
 	user = request.user
-	if is_instructor(user):
-		return redirect('/manage/')
-	else:
-		if request.method == 'POST':
-			form = ProposeWorkshopDateForm(request.POST)
-			if form.is_valid():
-				form_data = form.save(commit=False)
-				form_data.proposed_workshop_coordinator = user
-				form_data.proposed_workshop_coordinator.save()
-				form_data.save()
-				return redirect('/my_workshops/')
+	if is_email_checked(user):
+		if is_instructor(user):
+			return redirect('/manage/')
 		else:
-			form = ProposeWorkshopDateForm()
-		return render(
-					request, 'workshop_app/propose_workshop.html',
-					{"form": form }
-					)
+			if request.method == 'POST':
+				form = ProposeWorkshopDateForm(request.POST)
+				if form.is_valid():
+					form_data = form.save(commit=False)
+					form_data.proposed_workshop_coordinator = user
+					form_data.proposed_workshop_coordinator.save()
+					form_data.save()
+					return redirect('/my_workshops/')
+			else:
+				form = ProposeWorkshopDateForm()
+			return render(
+						request, 'workshop_app/propose_workshop.html',
+						{"form": form }
+						)
+	else:
+		return render(request, 'workshop_app/activation.html')
 
 @login_required
 def view_profile(request):
@@ -622,12 +654,13 @@ def edit_profile(request):
 	""" edit profile details facility for instructor and coordinator """
 
 	user = request.user
-	if is_instructor(user):
+	if is_instructor(user) and is_email_checked(user):
 		template = 'workshop_app/manage.html'
 	else:
-		template = 'workshop_app/booking.html'
+		if is_email_checked(user):
+			template = 'workshop_app/booking.html'
 	context = {'template': template}
-	if has_profile(user):
+	if has_profile(user) and is_email_checked(user):
 		profile = Profile.objects.get(user_id=user.id)
 	else:
 		profile = None
@@ -660,7 +693,7 @@ def create_workshop(request):
 	'''Instructor creates workshops'''
 
 	user = request.user
-	if is_instructor(user):
+	if is_instructor(user) and is_email_checked(user):
 		if request.method == 'POST':
 			form = CreateWorkshop(request.POST)
 			if form.is_valid():
@@ -684,23 +717,29 @@ def create_workshop(request):
 def view_workshoptype_list(request):
 	'''Gives the types of workshop details '''
 	user = request.user
-	workshoptype_list = WorkshopType.objects.all()
-	paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
+	if is_email_checked(user):
+		workshoptype_list = WorkshopType.objects.all()
 
-	page = request.GET.get('page')
-	try:
-		workshoptype = paginator.page(page)
-	except PageNotAnInteger:
-		#If page is not an integer, deliver first page.
-		workshoptype = paginator.page(1)
-	except EmptyPage:
-		#If page is out of range(e.g 999999), deliver last page.
-		workshoptype = paginator.page(paginator.num_pages)
 
-	return render(
+
+		paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
+
+		page = request.GET.get('page')
+		try:
+			workshoptype = paginator.page(page)
+		except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+			workshoptype = paginator.page(1)
+		except EmptyPage:
+			#If page is out of range(e.g 999999), deliver last page.
+			workshoptype = paginator.page(paginator.num_pages)
+
+		return render(
 				request, 'workshop_app/view_workshoptype_list.html', \
 				{'workshoptype': workshoptype}
 				)
+	else:
+		return redirect('/activate_user/')
 
 
 @login_required

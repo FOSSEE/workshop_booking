@@ -2,6 +2,14 @@ __author__ = "Akshen Doke"
 
 from django.core.mail import send_mail
 from textwrap import dedent
+from random import randint
+import hashlib
+from django.utils.crypto import get_random_string
+from string import punctuation, digits
+try:
+    from string import letters
+except ImportError:
+    from string import ascii_letters as letters
 from workshop_portal.settings import (
                     EMAIL_HOST, 
                     EMAIL_PORT, 
@@ -10,6 +18,11 @@ from workshop_portal.settings import (
                     EMAIL_USE_TLS
                     )
 
+def generate_activation_key(username):
+	"""Generates hashed secret key for email activation"""
+	chars = letters + digits + punctuation
+	secret_key = get_random_string(randint(10,40), chars)
+	return hashlib.sha256((secret_key + username).encode('utf-8')).hexdigest()
 
 def send_smtp_email(request=None, subject=None, message=None,
 				user_position=None, workshop_date=None,
@@ -62,7 +75,7 @@ def send_email(	request, call_on,
 			user_position=None, workshop_date=None,
 			workshop_title=None, user_name=None,
 			other_email=None, phone_number=None,
-			institute=None
+			institute=None, key=None
 			):
 	'''
 	Email sending function while registration and 
@@ -73,11 +86,16 @@ def send_email(	request, call_on,
 		if user_position == "instructor":
 			message = dedent("""\
 					Your request as an Instructor at FOSSEE, IIT Bombay 
-					has been received. You will be notified via email on
-					approval of the same within 3 working days.
+					has been received. Please click on the below link to 
+					activate your account
+					127.0.0.1/activate_user/{0}
+
+					You will be notified via email on
+					approval of your instructor account
+					within 3 working days.
 
 					In case of queries regarding the same revert to this 
-					email.""")
+					email.""".format(key))
 
 			try:
 				send_mail(
@@ -93,13 +111,13 @@ def send_email(	request, call_on,
 
 			#Send a mail to admin as well.
 			message = dedent("""\	
-					A new instructor request has been received. 
+					A new instructor request has been received.
 
 					Instructor name:{0}
 					Instructor email:{1}
-
- 					Please verify the profile and mail the user within 2
- 					working days.""".format(request.user, request.user.email))
+					
+					Please verify the profile and mail the user within 2
+					working days.""".format(request.user, request.user.email))
 
 			try:
 				send_mail("New Instructor Registration - FOSSEE, IIT Bombay", 
@@ -114,11 +132,17 @@ def send_email(	request, call_on,
 		else:
 			message = dedent("""\
 						Thank you for registering as a coordinator with us. 
-						Your request as a coordinator has been accepted. You 
-						may now proceed to book your dates for the workshop(s).
+
+						Your request as a coordinator has been accepted.
+						Please click on the below link to 
+						activate your account
+						127.0.0.1/activate_user/{0}
+						
+						After activation you can proceed to book your dates for 
+						the workshop(s).
 
 						In case of queries regarding workshop booking(s), 
-						revert to this email.""")
+						revert to this email.""".format(key))
 
 			try:
 				send_mail(

@@ -1,4 +1,5 @@
 from django import forms
+import datetime
 from .models import (
                     Profile, User, Workshop, WorkshopType, 
                     RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
@@ -11,7 +12,7 @@ except ImportError:
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-
+from .send_mails import generate_activation_key
 
 
 UNAME_CHARS = letters + "._" + digits
@@ -77,6 +78,12 @@ class UserRegistrationForm(forms.Form):
 
         return c_pwd
 
+    # def clean_email(self):
+    #     user_email = self.cleaned_data['email']
+    #     if User.objects.filter(email=user_email).exists():
+    #         raise forms.ValidationError("This email already exists")
+    #     return user_email
+
     def save(self):
         u_name = self.cleaned_data["username"]
         u_name = u_name.lower()
@@ -93,9 +100,15 @@ class UserRegistrationForm(forms.Form):
         new_profile.department = cleaned_data["department"]
         new_profile.position = cleaned_data["position"]
         new_profile.phone_number = cleaned_data["phone_number"]
+        new_profile.activation_key = generate_activation_key(new_user.username)
+        new_profile.key_expiry_time = datetime.datetime.strftime(
+                                    datetime.datetime.now() + \
+                                    datetime.timedelta(days=3),
+                                    "%Y-%m-%d %H:%M:%S"
+                                    )
+        
         new_profile.save()
-
-        return u_name, pwd
+        return u_name, pwd, new_profile.activation_key
 
 class UserLoginForm(forms.Form):
     """Creates a form which will allow the user to log into the system."""
