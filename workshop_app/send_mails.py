@@ -325,7 +325,7 @@ def send_email(	request, call_on,
 		message = "Issue at Workshop Booking App please check"
 		try:
 			send_mail("Issue At Workshop Booking App Mailing", message, EMAIL_HOST_USER,
-				[doke.akshen@gmail.com, mahesh.p.gudi@gmail.com, aditya94palaparthy@gmail.com], fail_silently=False)
+				['doke.akshen@gmail.com', 'mahesh.p.gudi@gmail.com', 'aditya94palaparthy@gmail.com'], fail_silently=False)
 		except Exception:
 			send_smtp_email(request=request, 
 				subject="Issue at Workshop Booking App please check",

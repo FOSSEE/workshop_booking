@@ -19,7 +19,6 @@ from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.utils import timezone
 from collections import OrderedDict
-from .decorators import email_verified
 from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
@@ -270,7 +269,6 @@ def book_workshop(request):
 			else:
 				for w in workshop_recurrence_list:
 					if workshop_date == (w.strftime("%d-%m-%Y")):
-						print(workshop_date)
 						rW_obj.requested_workshop_instructor = workshop.workshop_instructor
 						rW_obj.requested_workshop_coordinator = request.user
 						rW_obj.requested_workshop_date = datetime.strptime(
@@ -583,9 +581,8 @@ def my_workshops(request):
 			except EmptyPage:
 				#If page is out of range(e.g 999999), deliver last page.
 				workshop_occurences = paginator.page(paginator.num_pages)
-			template = 'workshop_app/my_workshops.html'
-
-			
+			return render(request, 'workshop_app/my_workshops.html',
+				{ "workshop_occurences" :workshop_occurences})
 
 		else:
 			workshops = []
@@ -612,7 +609,8 @@ def my_workshops(request):
 			except EmptyPage:
 				#If page is out of range(e.g 999999), deliver last page.
 				workshop_occurences = paginator.page(paginator.num_pages)
-			template = 'workshop_app/my_workshops.html'
+			return render(request, 'workshop_app/my_workshops.html',
+				{"workshop_occurences": workshop_occurences})
 	else:
 		return redirect('/login/')
 
