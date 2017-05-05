@@ -1,45 +1,119 @@
-{% extends "workshop_app/base.html" %}
-
 <!DOCTYPE html>
 <html>
-	<head>
-	{% block title %}
-		Welcome
-	{% endblock %}
-	</head>
+  <head>
+  <title>Welcome</title>
+  </head>
+
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
   
-  {% block header %}
-   <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="{{ URL_ROOT }}/">Booking</a>
+
+   <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+
+  <body > 
+  <div class="container" style="width: 90%; height:90%;background:#C8C5B6;">
+     <div class="row">
+      
+      <div class="col-md-4">
+        <div class="fossee-label">FOSSEE Workshop</div>
+        <div class="logo">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" style="margin-left: 50px;margin-top:6px;width:60px ;height: 60px">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/sandhi_logo.png" style="margin-left: 50px;margin-top:6px;width:60px ;height: 60px">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/Scilab_logo.png" style="margin-left: 50px;margin-top:6px;width:90px ;height: 60px">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/OR_logo.png" style="margin-left: 30px;margin-top:6px;width:60px ;height: 60px">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/Dwsim_logo.png" style="margin-left: 50px;margin-top:6px;width:60px ;height: 60px">
+        </div>
+
+        </div>
+
+      <div class="login col-md-8">
+        <div class="label-bar"><a href="" style="color: #6D5847;">About </a>|<a href="" style="color: #6D5847;">Blog </a>| <a href="" style="color: #6D5847;">Gallery</a></div>
+        <img src=" {{ URL_ROOT }}/static/workshop_app/img/img_1.png" style="margin-left: 160px;padding-top: 45px;"><br>
+        <div id="rectbox">
+            
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+              <button class="btn btn-default btn-sm" style="margin-left: 35%;"  type="submit">Login</button>
+            <br>
+         </form>
+        </div>
+
+        <h4 style="margin-left: 90px; color: grey;">If not Registered yet, <br> please <a href="" target="_blank">register here.</a></h4>
+        <br><br>
+        <button style="margin-left: 140px; width:120px;height:45px;border-radius:15px;background:#6D5847;color: white" class="demo-button"><h4>Demo</h4></button>
+      </div>
+
+    </div>   
+
+    <div class="row">
+      <div class="icons col-md-12">
+
+        <figure class="item">
+          <img class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/list.png" style="margin-left: 195px;">
+          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">Course List</a></figcaption>
+        </figure>
+
+        <figure class="item">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/bnft.png" style="margin-left: 195px; ">
+          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">Benefits</a></figcaption>
+      </figure>
+
+      <figure class="item">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/faq.png" style="margin-left: 195px; ">
+          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">FAQs</a></figcaption>
+      </figure>
+
+
+      <figure class="item">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/part.png" style="margin-left: 195px; ">
+          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">How to participate</a></figcaption>
+      </figure>
+
+      </div>
     </div>
 
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-      <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-    </ul>
+    <!-- Bottom 3 cols -->
+    <div class="row">
+    <!-- Logo -->
+      <div class="org-logo col-md-3">
+      <span style="margin-top:10px; font-size: 15px;">Organized By:</span><br>
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png" style="width:120px;height:54px;">
+
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" style="margin-left:5px ;width:45px;height:48px;">
       </div>
-    </nav>
-  {% endblock %}
 
-	{% block content %}
-		<div class="container">
-			<div class="jumbotron container-fluid">
-    			<h3>Why should you attend Python workshop</h3>      
-    			<p>Python is widely used in organizations like <b>Google, Yahoo, Zope, Walt Disney , IBM etc.</b> It is easy to earn and widely used in scientific computing. If you are new to programming, python is the best place to start exploring the power of programming. Moreover that, you can easy integrate python with your existing projects.Python has an extensive set of libraries and well documented user guide.</p>
-  			</div>
-  			<div class="row">
-  				<div class="col-lg-6">
-  					FOSSEE python workshop is designed by keeping  students and faculties of India in prime focus. Workshop content is designed without any assumption about prior knowledge of participants. It takes you by hand from basic to advanced level in 3 days.
-  					<img src="{{ URL_ROOT }}/static/workshop_app/img/img1.png" style="width:304px;height:228px;">
-  				</div>
-  				<div class="col-lg-6">
-  					FOSSEE has imparted  <b>“Introduction to Scientific Computing using python”</b> workshop to 1364 students from 20+ colleges spread across different states in India in 2017.This number is increasing and you can also become part of this incredible initiative by organizing FOSSEE workshop at your college.  Visit <a href=http://www.fossee.in/fossee-stats target="_blank">stats</a> for details on statistics. 
-  					<img src="{{ URL_ROOT }}/static/workshop_app/img/img2.png" style="width:304px;height:228px;">
-  				</div>
-  			</div>
-		</div>
-	{% endblock %}
+      <!-- Related Links -->
+      <div class="related-links col-md-3">
+        Related Links<br>
+        <h6>
+        <a href="fossee.in" style="font-size: 12px;">fossee.in</a><br>
+        <a href="yaksh.fossee.in" style="font-size: 12px;">yaksh.fossee.in</a><br>
+        <a href="python.fossee.in" style="font-size: 12px;">python.fossee.in</a>
+        </h6>
+      </div>
 
+      <!-- Contact Us -->
+      <div class="contact-us col-md-3">
+        Contact Us:<br>
+        <h6>FOSSEE, IIT-Bombay<br>
+        Mumbai, India<br></h6>
+        <h6>
+        Phone: (+91) 22 2576
+        4133<br>
+        Email: info[at]fossee[dot]in 
+        </h6>
+      </div>
+
+    </div>
+
+    <div class="footer">
+    <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" style="width:45px;height:15px;">
+      This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License
+    </div>
+  </div>
+  </body>
 </html>

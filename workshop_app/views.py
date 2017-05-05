@@ -40,11 +40,21 @@ def index(request):
 	'''Landing Page'''
 
 	user = request.user
+	form = UserLoginForm()
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		return redirect('/book/')
-	return render(request, "workshop_app/index.html")
+	elif request.method == "POST":
+		form = UserLoginForm(request.POST)
+		if form.is_valid():
+			user = form.cleaned_data
+			login(request, user)
+			if user.groups.filter(name='instructor').count() > 0:
+				return redirect('/manage/')
+			return redirect('/book/')
+		
+	return render(request, "workshop_app/index.html", {"form": form})
 
 
 def is_instructor(user):

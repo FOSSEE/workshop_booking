@@ -148,3 +148,4 @@ EMAIL_TIMEOUT = 300
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Temp Solution
 
 LOGIN_REDIRECT_URL = '/profile'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

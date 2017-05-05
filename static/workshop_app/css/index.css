@@ -1,0 +1,129 @@
+body {
+  background-color: #C8C5B6;
+}
+
+.fossee-label {
+  padding-top: 90px;
+  margin-left: 200px;
+  color: #6D5847;
+  font-size: 70px;
+}
+
+
+.logo {
+    width: 600px;
+    height: 70px;
+    background: white;
+    float: left;
+    margin-top: 40px;
+    margin-left: 85px;
+}
+
+.label-bar {
+  color: #6D5847;
+  float: right;
+  margin-top: 36px;
+  font-size: 18px;
+  margin-right: 30px;
+}
+
+
+.login {
+    margin-left: 330px;
+    width: 420px;
+    height: 470px;
+    background: white;
+}
+
+#rectbox {
+    border-radius: 25px;
+    background: #6D5847;
+    padding: 20px; 
+    margin-left: 20px;
+    margin-top: 10px;
+    width: 350px;
+    height: 120px;    
+}
+
+
+.caption-img {
+  width:70px;
+  height:75px;
+  margin-top: -9px;
+}
+
+
+/* Icons with their respective Images */
+.icons {
+    background: white;
+    height: 110px;
+    margin-top: 15px;
+}
+
+figure.item {
+    /* To correctly align image, regardless of content height: */
+    vertical-align: top;
+    display: inline-block;
+    /* To horizontally center images and caption */
+    text-align: center;
+    /* The width of the container also implies margin around the images. */
+}
+
+.caption-img {
+	width:70px;
+	height:75px;
+	margin-top: 5px;
+}
+
+
+.caption {
+    /* Make the caption a block so it occupies its own line. */
+    display: block;
+    color: #5A3700;
+    padding-bottom: 10px;
+}
+
+/* Contact Us, Related Links and Organization Logo */
+
+.contact {
+	width: 100%;
+  margin: auto;
+}
+
+
+.org-logo {
+	margin-top: 30px;
+  margin-left: 60px;
+  float: left;
+
+  color: #5A3700;
+  
+}
+
+.related-links {
+  font-size: 20px;
+	color: #5A3700;
+  margin-top: 12px;
+  margin-left: 90px
+}
+
+.contact-us {
+	font-size: 20px;
+  color: #5A3700;
+  margin-top: 12px;
+  margin-right: 10px;
+  float: right;
+
+}
+
+/* Footer */
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  
+  background-color: black;
+  text-align: center;
+  color:white;
+}
