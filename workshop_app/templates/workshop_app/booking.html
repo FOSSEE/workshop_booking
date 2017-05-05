@@ -6,12 +6,16 @@
 
 
 {% block extra %}
-	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+
 	<script>
-	
+
 	// Button function
 		function sendData(d){
 			var check_count;		
@@ -118,13 +122,27 @@
 			{% for workshop in workshop_details %}
 					<tbody>
 
-						<tr>
+						<tr >
 							<td id="instructor-name">{{ workshop.1 }}</td>
-							<td id="workshop-name">{{ workshop.2 }}</td>
+							<td class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}"
+							id="workshop-name">{{ workshop.2 }}</td>
 							<td id="workshop-date{{ forloop.counter }}">{{ workshop.0 }}</td>
 							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.0}},{{workshop.3}},{{workshop.4}}')" > Book</button></td>
 						</tr>
 
+						  <tr>
+					   <td colspan="12" class="hiddenRow">
+						   <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
+						   <table class="table table-striped">
+						   	<tbody>
+						   		<tr>
+						   		<td>{{ workshop.5|safe }}</td>
+						   		</tr>
+						   	</tbody>
+						   	</table>
+						   </div>
+					   </td>
+					   </tr>
 					</tbody>
 			{% endfor %}
 		</table>

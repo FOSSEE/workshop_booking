@@ -169,11 +169,12 @@ def book(request):
 				 						workshops.workshop_title,
 				 						workshops.workshop_instructor_id,
 				 						workshops.workshop_title_id,
+				 						workshops.workshop_title.workshoptype_description
 					 					]
 					
 					workshop_occurence_list.append(workshop_occurence)
 					del workshop_occurence
-
+			
 			#Gives you the objects of BookedWorkshop
 			bookedworkshop = BookedWorkshop.objects.all()
 			if len(bookedworkshop) != 0:
