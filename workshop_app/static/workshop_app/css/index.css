@@ -3,20 +3,19 @@ body {
 }
 
 .fossee-label {
-  padding-top: 90px;
-  margin-left: 200px;
+  padding-top: 20%;
+  margin-left: 60%;
   color: #6D5847;
-  font-size: 70px;
+  font-size: 450%;
 }
 
 
 .logo {
-    width: 600px;
-    height: 70px;
-    background: white;
+    width: 200%;
+    height: 100%;
     float: left;
-    margin-top: 40px;
-    margin-left: 85px;
+    margin-top: 9%;
+    margin-left: 75%;
 }
 
 .label-bar {

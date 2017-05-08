@@ -5,26 +5,28 @@
 {% endblock %}
 
 {% block header %}
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default navbar-custom">
       <div class="container-fluid">
         <div class="navbar-header">
+          <a class="navbar-brand" href="#">WebSiteName</a>
         </div>
         {% if request.user.profile.position == 'instructor' %}
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ URL_ROOT }}/manage/">Home</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+            <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
+            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
           </ul>
         {% else %}
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ URL_ROOT }}/book/">Home</a></li>
-            <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+            <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a>
+            <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li></li>
           </ul>
         {% endif %}
         
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li class="active"><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
           <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
       </div>

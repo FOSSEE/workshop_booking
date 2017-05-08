@@ -5,18 +5,22 @@
 {% endblock %}
 
 {% block header %}
-  <nav class="navbar navbar-inverse">
+  <nav class="navbar navbar-default navbar-custom">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="#">WebSiteName</a>
       </div>
       <ul class="nav navbar-nav">
       {% if request.user.profile.position == 'instructor' %}
-        <li class="active"><a href="{{ URL_ROOT }}/manage/">Home</a></li>
+        <li><a href="{{ URL_ROOT }}/manage/">Manage</a>
+        </li>
+        <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
       {% else %}
-        <li class="active"><a href="{{ URL_ROOT }}/book/">Home</a></li>
+        <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
+        <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
       {% endif %}
-        <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+        <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop Details</a></li>
+        <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -27,6 +31,10 @@
 {% endblock %}
 
 {% block content %}
-  <h3>Your Profile has changed {{ user.first_name }}</h3>
+  <div class="container">
+    <div class="jumbotron">
+      <h3>Your Profile has changed {{ user.first_name }}</h3>
+    </div>
+  </div>
 {% endblock %}
 

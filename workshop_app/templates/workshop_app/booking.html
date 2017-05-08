@@ -8,14 +8,12 @@
 {% block extra %}
 	 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-
-	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
 
 	<script>
-
 	// Button function
 		function sendData(d){
 			var check_count;		
@@ -60,7 +58,6 @@
 						}
 					}
 				});
-
 			$dialog.dialog('open');	
 		}
 
@@ -86,15 +83,15 @@
 
 {% block header %}
 
-	<nav class="navbar navbar-inverse">
+	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Home</a>
+		  <a class="navbar-brand" href="#">Coordinator Profile</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li class="active"><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
-		  <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
-		  <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+		  <li class="active"><a href="{{ URL_ROOT}}/book/">Book</a></li>
+		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
+		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -108,7 +105,7 @@
 	<h4 align="center">This is the list of events available, if you haved booked a workshop please goto My Workshops and check your workshop status.</h4>
 	<br>
 	<div class="container">
-		<table class="table table-hover">
+		<table class="table table-hover ">
 			<thead>
 				<tr>
 					<th>Instructor Name</th>
@@ -125,7 +122,9 @@
 						<tr >
 							<td id="instructor-name">{{ workshop.1 }}</td>
 							<td class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}"
-							id="workshop-name">{{ workshop.2 }}</td>
+							id="workshop-name">{{ workshop.2 }}<a href="#">
+          					<span class="glyphicon glyphicon-info-sign"></span>
+        					</a></td>
 							<td id="workshop-date{{ forloop.counter }}">{{ workshop.0 }}</td>
 							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.0}},{{workshop.3}},{{workshop.4}}')" > Book</button></td>
 						</tr>
