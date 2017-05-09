@@ -26,7 +26,8 @@ from textwrap import dedent
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
-                "Prathamesh Salunke", "Akshen Doke"]
+                "Prathamesh Salunke", "Akshen Doke", "Kiran Kishore",
+                "KhushalSingh Rajput"]
 
 
 def is_email_checked(user):
@@ -729,8 +730,6 @@ def view_workshoptype_list(request):
 	if is_email_checked(user):
 		workshoptype_list = WorkshopType.objects.all()
 
-
-
 		paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
 
 		page = request.GET.get('page')
@@ -751,12 +750,24 @@ def view_workshoptype_list(request):
 		return redirect('/activate_user/')
 
 
-@login_required
 def view_workshoptype_details(request):
 	'''Gives the details for types of workshops.'''
+	workshoptype_list = WorkshopType.objects.all()
 
-	user = request.user
-	if is_instructor(user):
-		return redirect('/')
-	else:
-		return redirect('/book/')
+	paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
+
+	page = request.GET.get('page')
+	try:
+		workshoptype = paginator.page(page)
+	except PageNotAnInteger:
+		#If page is not an integer, deliver first page.
+		workshoptype = paginator.page(1)
+	except EmptyPage:
+		#If page is out of range(e.g 999999), deliver last page.
+		workshoptype = paginator.page(paginator.num_pages)
+
+	return render(
+			request, 'workshop_app/view_workshoptype_details.html', \
+				{'workshoptype': workshoptype}
+				)
+	

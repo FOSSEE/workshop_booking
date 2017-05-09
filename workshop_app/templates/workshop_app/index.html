@@ -20,15 +20,16 @@
       <div class="col-md-4">
         <div class="fossee-label">FOSSEE Workshop</div>
         <div class="logo">
-          <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" style="width:20% ;height: 18%">
+          <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" >
           
         </div>
 
         </div>
 
       <div class="login col-md-8">
-        <div class="label-bar"><a href="" style="color: #6D5847;">About </a>|<a href="" style="color: #6D5847;">Blog </a>| <a href="" style="color: #6D5847;">Gallery</a></div>
-        <img src=" {{ URL_ROOT }}/static/workshop_app/img/img_1.png" style="margin-left: 160px;padding-top: 45px;"><br>
+        <div class="label-bar"><a href="http://python.fossee.in/about/"
+        target="_blank" style="color: #6D5847;">About </a>|<a href="" style="color: #6D5847;">Blog </a>| <a href="http://python.fossee.in/gallery/" target="_blank" style="color: #6D5847;">Gallery</a></div>
+        <img src=" {{ URL_ROOT }}/static/workshop_app/img/img_1.png" style="margin-left: 40%;padding-top: 25%;"><br>
         <div id="rectbox">
             
             <form method="post">
@@ -39,9 +40,9 @@
          </form>
         </div>
 
-        <h4 style="margin-left: 90px; color: grey;">If not Registered yet, <br> please <a href="" target="_blank">register here.</a></h4>
+        <h4 style="margin-left: 27%; color: grey;">If not Registered yet, <br> please <a href="{{ URL_ROOT}}/register/" target="_blank">register here.</a></h4>
         <br><br>
-        <button style="margin-left: 140px; width:120px;height:45px;border-radius:15px;background:#6D5847;color: white" class="demo-button"><h4>Demo</h4></button>
+        <button style="margin-left: 30%; width:20%;height:35%;margin-bottom:3%;border-radius:25%;background:#6D5847;color: white" class="demo-button"><h4>Demo</h4></button>
       </div>
 
     </div>   
@@ -49,25 +50,32 @@
     <div class="row">
       <div class="icons col-md-12">
 
-        <figure class="item">
-          <img class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/list.png" style="margin-left: 195px;">
-          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">Course List</a></figcaption>
+        <figure class="item" style="margin-left: 10%;">
+        <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+          <img class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/list.png" >
+          <figcaption class="caption">Course List</figcaption>
+        </a>
         </figure>
 
-        <figure class="item">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/bnft.png" style="margin-left: 195px; ">
-          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">Benefits</a></figcaption>
+        <figure class="item" style="margin-left: 15%;">
+        <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/bnft.png" >
+          <figcaption class="caption" >Benefits</figcaption>
+        </a>
       </figure>
 
-      <figure class="item">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/faq.png" style="margin-left: 195px; ">
-          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">FAQs</a></figcaption>
+      <figure class="item" style="margin-left: 15%;">
+      <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/faq.png" >
+          <figcaption class="caption" >FAQs</figcaption>
+      </a>
       </figure>
 
-
-      <figure class="item">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/part.png" style="margin-left: 195px; ">
-          <figcaption class="caption" style="margin-left: 195px;"><a href="" style="color: #6D5847;">How to participate</a></figcaption>
+      <figure class="item" style="margin-left: 15%; ">
+      <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/part.png" >
+          <figcaption class="caption">How to Participate</figcaption>
+        </a>
       </figure>
 
       </div>
@@ -77,19 +85,19 @@
     <div class="row">
     <!-- Logo -->
       <div class="org-logo col-md-3">
-      <span style="margin-top:10px; font-size: 15px;">Organized By:</span><br>
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png" style="width:120px;height:54px;">
+      <span style="margin-top:10%; font-size: 75%;">Organized By:</span><br>
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png" style="width:50%;height:54%;">
 
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" style="margin-left:5px ;width:45px;height:48px;">
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" style="margin-left:3% ;width:15%;height:18%;">
       </div>
 
       <!-- Related Links -->
       <div class="related-links col-md-3">
         Related Links<br>
         <h6>
-        <a href="fossee.in" style="font-size: 12px;">fossee.in</a><br>
-        <a href="yaksh.fossee.in" style="font-size: 12px;">yaksh.fossee.in</a><br>
-        <a href="python.fossee.in" style="font-size: 12px;">python.fossee.in</a>
+        <a href="http://fossee.in" target="_blank" style="font-size: 96%;">fossee.in</a><br>
+        <a href="http://yaksh.fossee.in" target="_blank" style="font-size: 96%;">yaksh.fossee.in</a><br>
+        <a href="http://python.fossee.in" target="_blank" style="font-size: 96%;">python.fossee.in</a>
         </h6>
       </div>
 
@@ -108,7 +116,7 @@
     </div>
 
     <div class="footer">
-    <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" style="width:45px;height:15px;">
+    <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" style="width:5%;height:3%;">
       This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License
     </div>
   </div>

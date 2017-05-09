@@ -1,3 +1,4 @@
+
 body {
   background-color: grey;
 }
@@ -21,42 +22,36 @@ body {
 .label-bar {
   color: #6D5847;
   float: right;
-  margin-top: 36px;
-  font-size: 18px;
-  margin-right: 30px;
+  margin-top: 9%;
+  font-size: 120%;
+  margin-right: 10%;
 }
 
 
 .login {
-    margin-left: 330px;
-    width: 420px;
-    height: 470px;
+    margin-left: 20%;
+    width: 40%;
+    height: 90%;
     background: white;
 }
 
 #rectbox {
-    border-radius: 25px;
+    border-radius: 9%;
     background: #6D5847;
-    padding: 20px; 
-    margin-left: 20px;
-    margin-top: 10px;
-    width: 350px;
-    height: 130px;    
+    padding: 3%; 
+    margin-left: 10%;
+    margin-top: 3%;
+    width: 75%;
+    height: 60%;    
 }
 
-
-.caption-img {
-  width:70px;
-  height:75px;
-  margin-top: -9px;
-}
 
 
 /* Icons with their respective Images */
 .icons {
     background: white;
-    height: 110px;
-    margin-top: 15px;
+    height: 70%;
+    margin-top: 3%;
 }
 
 figure.item {
@@ -68,19 +63,9 @@ figure.item {
     /* The width of the container also implies margin around the images. */
 }
 
-.caption-img {
-	width:70px;
-	height:75px;
-	margin-top: 5px;
-}
 
 
-.caption {
-    /* Make the caption a block so it occupies its own line. */
-    display: block;
-    color: #5A3700;
-    padding-bottom: 10px;
-}
+
 
 /* Contact Us, Related Links and Organization Logo */
 
@@ -91,33 +76,32 @@ figure.item {
 
 
 .org-logo {
-	margin-top: 30px;
-  margin-left: 60px;
+	margin-top: 5%;
+  margin-left: 6%;
   float: left;
-
   color: #5A3700;
   
 }
 
 .related-links {
-  font-size: 20px;
+  font-size: 180%;
 	color: #5A3700;
-  margin-top: 12px;
-  margin-left: 90px
+  margin-top: 3%;
+  margin-left: 9%
 }
 
 .contact-us {
-	font-size: 20px;
+	font-size: 180%;
   color: #5A3700;
-  margin-top: 12px;
-  margin-right: 10px;
+  margin-top: 1%;
+  margin-right: 3%;
   float: right;
 
 }
 
 /* Footer */
 .footer {
-  position: absolute;
+  position: relative;
   right: 0;
   bottom: 0;
   left: 0;
