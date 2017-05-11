@@ -771,3 +771,12 @@ def view_workshoptype_details(request):
 				{'workshoptype': workshoptype}
 				)
 	
+
+def benefits(request):
+	return render(request, 'workshop_app/view_benefits.html')
+
+def faq(request):
+	return render(request, 'workshop_app/view_faq.html')
+
+def how_to_participate(request):
+	return render(request, 'workshop_app/how_to_participate.html')

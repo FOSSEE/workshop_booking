@@ -9,21 +9,18 @@
 
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-  
 
-   <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+  <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
 
-  <body > 
+  <body> 
   <div class="container" style="width: 90%; height:90%;background:#C8C5B6;">
      <div class="row">
       
       <div class="col-md-4">
         <div class="fossee-label">FOSSEE Workshop</div>
-        <div class="logo">
-          <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" >
-          
-        </div>
-
+          <div class="logo">
+            <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" >  
+          </div>
         </div>
 
       <div class="login col-md-8">
@@ -48,7 +45,7 @@
     </div>   
 
     <div class="row">
-      <div class="icons col-md-12">
+      <div class="icons col-sm-12">
 
         <figure class="item" style="margin-left: 10%;">
         <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
@@ -58,21 +55,21 @@
         </figure>
 
         <figure class="item" style="margin-left: 15%;">
-        <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+        <a href="{{ URL_ROOT }}/benefits/" style="color: #6D5847;">
           <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/bnft.png" >
           <figcaption class="caption" >Benefits</figcaption>
         </a>
       </figure>
 
       <figure class="item" style="margin-left: 15%;">
-      <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+      <a href="{{ URL_ROOT }}/faq/" style="color: #6D5847;">
           <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/faq.png" >
           <figcaption class="caption" >FAQs</figcaption>
       </a>
       </figure>
 
       <figure class="item" style="margin-left: 15%; ">
-      <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
+      <a href="{{ URL_ROOT }}/how_to_participate/" style="color: #6D5847;">
           <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/part.png" >
           <figcaption class="caption">How to Participate</figcaption>
         </a>
@@ -81,39 +78,38 @@
       </div>
     </div>
 
+    
     <!-- Bottom 3 cols -->
     <div class="row">
     <!-- Logo -->
-      <div class="org-logo col-md-3">
-      <span style="margin-top:10%; font-size: 75%;">Organized By:</span><br>
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png" style="width:50%;height:54%;">
+      <div class="org-logo col-sm-4">
+      <span >Organized By:</span><br>
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png">
 
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" style="margin-left:3% ;width:15%;height:18%;">
+        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" >
+        <br>
       </div>
 
       <!-- Related Links -->
-      <div class="related-links col-md-3">
+      <div class="related-links col-sm-4">
         Related Links<br>
-        <h6>
-        <a href="http://fossee.in" target="_blank" style="font-size: 96%;">fossee.in</a><br>
-        <a href="http://yaksh.fossee.in" target="_blank" style="font-size: 96%;">yaksh.fossee.in</a><br>
-        <a href="http://python.fossee.in" target="_blank" style="font-size: 96%;">python.fossee.in</a>
-        </h6>
+        <a href="http://fossee.in" target="_blank" >fossee.in</a><br>
+        <a href="http://yaksh.fossee.in" target="_blank" >yaksh.fossee.in</a><br>
+        <a href="http://python.fossee.in" target="_blank" >python.fossee.in</a>
       </div>
 
       <!-- Contact Us -->
-      <div class="contact-us col-md-3">
+      <div class="contact-us col-sm-4">
         Contact Us:<br>
-        <h6>FOSSEE, IIT-Bombay<br>
-        Mumbai, India<br></h6>
-        <h6>
+        FOSSEE, IIT-Bombay<br>
+        Mumbai, India<br>
+        
         Phone: (+91) 22 2576
         4133<br>
         Email: info[at]fossee[dot]in 
-        </h6>
       </div>
-
     </div>
+    
 
     <div class="footer">
     <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" style="width:5%;height:3%;">

@@ -1,0 +1,150 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+	FAQ'S
+{% endblock %}
+
+{% block extra %}
+	<link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/faq.css" type="text/css" />
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link href='//fonts.googleapis.com/css?family=Antic Slab' rel='stylesheet'>
+
+{% endblock %}
+
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">Booking</a>
+	</div>
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+  {% endblock %}
+
+{% block content %}
+
+	<div class="container">
+	<h1>FAQs-</h1><br>
+		<ul class='num'>
+			<li class='ans'>
+				Who can participate in these workshops?<br>
+			
+					Anyone interested in learning Python irrespective of their domain can participate.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Will the participants receive certificates?<br>
+				Yes, graded certificates shall be issued only after successfully clearing our post-workshop assessments/tests. 
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Will the coordinators receive certificates?<br>
+				Yes, even the coordinators of the workshops are awarded certificates.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			When will I get my certificate?<br>
+				Within 15 working days from the last day of the workshop.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			How many coordinators are required to conduct a workshop?<br>
+				One coordinator for 50 participants.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Do we have to pay for the workshop?<br>
+				Yes, there is a minimal fee to be paid by the students participating in the workshop. 	
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Do I have to register?<br>
+				Yes, only the coordinator of the workshop will have to register.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Can we conduct this workshop as per our convenience?<br>
+				Absolutely! You may conduct the workshop as per your lab availability. 
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			What is the approximate wait time after requesting for a workshop?<br>
+		 		It could be between 1-2 weeks (subject to availability of our instructors).
+		 	</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			How will the workshop be conducted?<br>
+				It will be a hands-on workshop with remote assistance by a FOSSEE instructor at IIT Bombay. 
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Could we have the instructor at our institute for the workshop?<br>
+				Unfortunately, we will not be able to send our instructor(s) to your institute.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			I am from a non-technical background but wish to learn Python. Can I participate in this workshop?<br>
+				Yes, of course. This is open to anyone from any field who is interested in learning Python.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Can I use the material of this workshop in my class?<br>
+				Sure, you can use our video lectures.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			Are these workshops provided to individuals as well?<br>
+				Currently, this program is exclusively available for institutes only. However, if you are not associated with an institute and are willing to participate in this workshop, please write to us at workshops[at]fossee[dot]in 
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			What are the equipments required for conducting this workshop?<br>
+				A room with projector, speaker, microphone, laptops/desktops for every participant, high-speed internet and one laptop with a webcam.
+			</li>
+		</ul>
+
+		<ul class='num'>
+			<li class='ans'>
+			 What are the video-audio conferencing tools used for this workshop?<br>
+				 We will use any of these tools: Skype, appear.in and hangouts
+			</li>
+		</ul>
+	</div>
+
+
+{% endblock %}

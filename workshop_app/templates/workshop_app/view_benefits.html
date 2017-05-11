@@ -1,0 +1,48 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+	View Benefits
+{% endblock %}
+
+{% block extra %}
+
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
+
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">Booking</a>
+	</div>
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+  {% endblock %}
+
+{% block content %}
+
+	<div class="container">
+		<h1>Features and Benefits:</h1><br>
+		<p><h4>
+			The workshops can be arranged at your convenience.
+			Hands-on experience in Python programming with many practice sessions and quizzes.
+			Certificates and honorarium will be provided on successful completion.
+		</h4></p>
+		<br>
+		<p><h4>
+			Hone your programming skills in Python.
+			Live video/chat assistance from FOSSEE Python experts
+			Closely integrated with online programming evaluation tool.
+			Designed, developed, and presented by Prof.Prabhu Ramachandran and the FOSSEE team at IIT Bombay 
+		</h4></p>
+		<br><br>
+	</div>
+
+{% endblock %}
