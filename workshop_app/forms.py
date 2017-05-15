@@ -27,7 +27,7 @@ class UserRegistrationForm(forms.Form):
     """A Class to create new form for User's Registration.
     It has the various fields and functions required to register
     a new user to the system"""
-
+    required_css_class = 'required'
     username = forms.CharField(max_length=32, help_text='''Letters, digits,
                                period only.''')
     email = forms.EmailField()
@@ -154,6 +154,7 @@ class CreateWorkshop(forms.ModelForm):
     """
 
     def __init__( self, *args, **kwargs ):
+        kwargs.setdefault('label_suffix', '')
         super(CreateWorkshop, self).__init__( *args, **kwargs )
         self.fields['recurrences'].label = " " #the trick to hide field :)
 
@@ -165,15 +166,16 @@ class CreateWorkshop(forms.ModelForm):
 class ProposeWorkshopDateForm(forms.ModelForm):
     """
     Coordinators will propose a workshop and date 
-    """
-    
+    """ 
+        
     def __init__( self, *args, **kwargs ):
+        kwargs.setdefault('label_suffix', '')
         super(ProposeWorkshopDateForm, self).__init__( *args, **kwargs )
-        self.fields['conditionone'].label = " "
+        self.fields['conditionone'].label = ""
         self.fields['conditionone'].required = True
-        self.fields['conditiontwo'].label = " "
+        self.fields['conditiontwo'].label = ""
         self.fields['conditiontwo'].required = True
-        self.fields['conditionthree'].label = " "
+        self.fields['conditionthree'].label = ""
         self.fields['conditionthree'].required = True
 
     class Meta:

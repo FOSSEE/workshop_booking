@@ -3,7 +3,7 @@ __author__ = "Akshen Doke"
 from django.core.mail import send_mail
 from textwrap import dedent
 from random import randint
-import hashlib
+import hashlib 
 from django.utils.crypto import get_random_string
 from string import punctuation, digits
 try:
@@ -15,7 +15,8 @@ from workshop_portal.settings import (
                     EMAIL_PORT, 
                     EMAIL_HOST_USER, 
                     EMAIL_HOST_PASSWORD,
-                    EMAIL_USE_TLS
+                    EMAIL_USE_TLS,
+                    PRODUCTION_URL
                     )
 
 def generate_activation_key(username):
@@ -88,14 +89,14 @@ def send_email(	request, call_on,
 					Your request as an Instructor at FOSSEE, IIT Bombay 
 					has been received. Please click on the below link to 
 					activate your account
-					127.0.0.1/activate_user/{0}
+					{0}/activate_user/{1}
 
 					You will be notified via email on
 					approval of your instructor account
 					within 3 working days.
 
 					In case of queries regarding the same revert to this 
-					email.""".format(key))
+					email.""".format(PRODUCTION_URL, key))
 
 			try:
 				send_mail(
@@ -110,12 +111,12 @@ def send_email(	request, call_on,
 			
 
 			#Send a mail to admin as well.
-			message = dedent("""\	
+			message = dedent("""\
 					A new instructor request has been received.
 
-					Instructor name:{0}
-					Instructor email:{1}
-					
+					Instructor name: {0}
+					Instructor email: {1}
+
 					Please verify the profile and mail the user within 2
 					working days.""".format(request.user, request.user.email))
 
@@ -136,13 +137,13 @@ def send_email(	request, call_on,
 						Your request as a coordinator has been accepted.
 						Please click on the below link to 
 						activate your account
-						127.0.0.1/activate_user/{0}
+						{0}/activate_user/{1}
 						
 						After activation you can proceed to book your dates for 
 						the workshop(s).
 
 						In case of queries regarding workshop booking(s), 
-						revert to this email.""".format(key))
+						revert to this email.""".format(PRODUCTION_URL, key))
 
 			try:
 				send_mail(
@@ -225,7 +226,7 @@ def send_email(	request, call_on,
 			Workshop title:{5}
 
 			You have accepted this booking.  Detailed instructions have
-			been sent to the coordinator. """.format(user_name, user_name, 
+			been sent to the coordinator. """.format(user_name, other_email, 
 				phone_number, institute, workshop_date, workshop_title))
 
 			send_smtp_email(request=request, 

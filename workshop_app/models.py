@@ -66,7 +66,7 @@ class Workshop(models.Model):
 	workshop_instructor = models.ForeignKey(User, on_delete=models.CASCADE)
 	workshop_title = models.ForeignKey(
 								WorkshopType, on_delete=models.CASCADE,
-		 						help_text='Select the type of workshop.'
+		 						help_text=' [Select the type of workshop.] '
 		 						)
 	#For recurring workshops source: django-recurrence
 	recurrences = RecurrenceField()
