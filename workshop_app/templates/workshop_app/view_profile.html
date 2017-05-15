@@ -12,22 +12,22 @@
         </div>
         {% if request.user.profile.position == 'instructor' %}
           <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
-            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
-            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/manage/">Manage</a></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/create_workshop/">Create Workshop</a></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/view_workshoptype_list/">View Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/my_workshops/">My Workshops</a></li>
           </ul>
         {% else %}
           <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
-            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a>
-            <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/book/">Book</a></li>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/my_workshops/">My Workshops</a>
+            <li><a href="{{ URL_ROOT }}/workshop_booking/propose_workshop/">Propose a Workshop</a></li></li>
           </ul>
         {% endif %}
         
         <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-          <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          <li class="active"><a href="{{ URL_ROOT }}/workshop_booking/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/workshop_booking/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
       </div>
     </nav>
@@ -68,6 +68,6 @@
   </tr>
   </table>
     <br>
-    <a class="btn btn-primary pull-right" href="{{ URL_ROOT }}/edit_profile/">Edit Profile</a>
+    <a class="btn btn-primary pull-right" href="{{ URL_ROOT }}/workshop_booking/edit_profile/">Edit Profile</a>
   </div>
 {% endblock %}

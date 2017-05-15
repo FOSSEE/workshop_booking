@@ -44,16 +44,16 @@ def index(request):
 	form = UserLoginForm()
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
-			return redirect('/manage/')
-		return redirect('/book/')
+			return redirect('/workshop_booking/manage/')
+		return redirect('/workshop_booking/book/')
 	elif request.method == "POST":
 		form = UserLoginForm(request.POST)
 		if form.is_valid():
 			user = form.cleaned_data
 			login(request, user)
 			if user.groups.filter(name='instructor').count() > 0:
-				return redirect('/manage/')
-			return redirect('/book/')
+				return redirect('/workshop_booking/manage/')
+			return redirect('/workshop_booking/book/')
 		
 	return render(request, "workshop_app/index.html", {"form": form})
 
@@ -68,8 +68,8 @@ def user_login(request):
 	user = request.user
 	if user.is_authenticated():
 		if user.groups.filter(name='instructor').count() > 0:
-			return redirect('/manage/')
-		return redirect('/book/')
+			return redirect('/workshop_booking/manage/')
+		return redirect('/workshop_booking/book/')
 
 	if request.method == "POST":
 		form = UserLoginForm(request.POST)
@@ -77,8 +77,8 @@ def user_login(request):
 			user = form.cleaned_data
 			login(request, user)
 			if user.groups.filter(name='instructor').count() > 0:
-				return redirect('/manage/')
-			return redirect('/book/')
+				return redirect('/workshop_booking/manage/')
+			return redirect('/workshop_booking/book/')
 		else:
 			return render(request, 'workshop_app/login.html', {"form": form})
 	else:
@@ -96,7 +96,7 @@ def activate_user(request, key):
 	try:
 		user = Profile.objects.get(activation_key=key)	
 	except:
-		return redirect('/register/')
+		return redirect('/workshop_booking/register/')
 
 	if user.is_email_verified:
 		status = "Your email is already verified"
@@ -112,7 +112,7 @@ def activate_user(request, key):
 		status = "Your account has been activated"
 	else:
 		logout(request)
-		return redirect('/logout/')
+		return redirect('/workshop_booking/logout/')
 	return render(request, 'workshop_app/activation.html',
 				{"status": status})
 
@@ -150,7 +150,7 @@ def book(request):
 	if user.is_authenticated():
 		if is_email_checked(user):
 			if user.groups.filter(name='instructor').count() > 0:
-				return redirect('/manage/')
+				return redirect('/workshop_booking/manage/')
 
 			workshop_details = Workshop.objects.all()
 			
@@ -227,7 +227,7 @@ def book(request):
 		else:
 			return render(request, "workshop_app/activation.html")
 	else:
-		return redirect('/login/')
+		return redirect('/workshop_booking/login/')
 
 
 @login_required
@@ -383,9 +383,9 @@ def manage(request):
 						{"workshop_occurence_list": workshops}
 						)
 
-		return redirect('/book/')
+		return redirect('/workshop_booking/book/')
 	else:
-		return redirect('/login/')
+		return redirect('/workshop_booking/login/')
 
 
 @login_required
@@ -624,7 +624,7 @@ def my_workshops(request):
 			return render(request, 'workshop_app/my_workshops.html',
 				{"workshop_occurences": workshop_occurences})
 	else:
-		return redirect('/login/')
+		return redirect('/workshop_booking/login/')
 
 
 @login_required
@@ -634,7 +634,7 @@ def propose_workshop(request):
 	user = request.user
 	if is_email_checked(user):
 		if is_instructor(user):
-			return redirect('/manage/')
+			return redirect('/workshop_booking/manage/')
 		else:
 			if request.method == 'POST':
 				form = ProposeWorkshopDateForm(request.POST)
@@ -643,7 +643,7 @@ def propose_workshop(request):
 					form_data.proposed_workshop_coordinator = user
 					form_data.proposed_workshop_coordinator.save()
 					form_data.save()
-					return redirect('/my_workshops/')
+					return redirect('/workshop_booking/my_workshops/')
 			else:
 				form = ProposeWorkshopDateForm()
 			return render(
@@ -712,7 +712,7 @@ def create_workshop(request):
 				form_data.workshop_instructor = user
 				form_data.workshop_instructor.save()
 				form_data.save()
-				return redirect('/manage/')
+				return redirect('/workshop_booking/manage/')
 		else:
 			form = CreateWorkshop()
 		return render(
@@ -720,7 +720,7 @@ def create_workshop(request):
 					 {"form": form }
 					 )
 	else:
-		return redirect('/book/')
+		return redirect('/workshop_booking/book/')
 
 
 @login_required
@@ -747,7 +747,7 @@ def view_workshoptype_list(request):
 				{'workshoptype': workshoptype}
 				)
 	else:
-		return redirect('/activate_user/')
+		return redirect('/workshop_booking/activate_user/')
 
 
 def view_workshoptype_details(request):
