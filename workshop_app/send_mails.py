@@ -273,7 +273,7 @@ def send_email(	request, call_on,
 					workshop_date, workshop_title))
 
 			try:
-				send_mail("FOSSEE Workshop booking rejected for{0}"
+				send_mail("FOSSEE Workshop booking rejected for {0}"
 					.format(workshop_date), message, EMAIL_HOST_USER, 
 					[request.user.email], fail_silently=False)
 			except Exception:
