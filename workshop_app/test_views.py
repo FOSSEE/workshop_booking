@@ -175,9 +175,9 @@ class TestWorkshopCreation(TestCase):
 		self.client.login(username=self.user_two, password='pass@123')
 		self.client.post('/propose_workshop/',
 			{
-				'conditionone': 1,
-				'conditiontwo': 1,
-				'conditionthree': 1,
+				'condition_one': 1,
+				'condition_two': 1,
+				'condition_three': 1,
 				'proposed_workshop_title': (2),
 				'proposed_workshop_date': '2017-06-06'
 			})

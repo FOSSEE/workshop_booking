@@ -47,9 +47,9 @@ def setUpModule():
 					proposed_workshop_instructor=testUser2,
 					proposed_workshop_title=wt1,
 					proposed_workshop_date='2017-07-06',
-					conditionone=1,
-					conditiontwo=1,
-					conditionthree=1
+					condition_one=1,
+					condition_two=1,
+					condition_three=1
 					)
 
 
@@ -163,14 +163,14 @@ class ProposedWorkshopDateTest(TestCase):
 					proposed_workshop_instructor=self.testuser2,
 					proposed_workshop_title=self.wt,
 					proposed_workshop_date='2017-06-06',
-					conditionone=1,
-					conditiontwo=1,
-					conditionthree=1
+					condition_one=1,
+					condition_two=1,
+					condition_three=1
 					)
 
 	def test_proposedworkshopdate_model(self):
 		self.assertEqual(self.pw.proposed_workshop_title.workshoptype_name,'ISCP')
-		self.assertEqual(self.pw.conditionthree, 1)
+		self.assertEqual(self.pw.condition_three, 1)
 		self.assertEqual(self.pw.status, 'Pending')
 
 class BookedWorkshopTest(TestCase):
@@ -185,6 +185,6 @@ class BookedWorkshopTest(TestCase):
 		self.bwp = BookedWorkshop.objects.create(booked_workshop_proposed=self.pw)
 
 	def test_bookedworkshop_model(self):
-		self.assertEqual(self.bwp.booked_workshop_proposed.conditionone,1)
+		self.assertEqual(self.bwp.booked_workshop_proposed.condition_one,1)
 		self.assertEqual(self.bwr.booked_workshop_requested.requested_workshop_title.workshoptype_name,'ISCP' )
 
