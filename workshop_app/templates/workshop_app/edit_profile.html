@@ -1,0 +1,48 @@
+{% extends "workshop_app/base.html" %}
+
+{% block title %}
+	Edit Profile
+{% endblock %}
+
+{% block header %}
+  <nav class="navbar navbar-default navbar-custom">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">WebSiteName</a>
+      </div>
+      {% if request.user.profile.position == 'instructor' %}
+          <ul class="nav navbar-nav">
+            <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
+            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav">
+            <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+            <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+          </ul>
+        {% endif %}
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+        <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <form action="{{URL_ROOT}}/edit_profile/" method="post" >
+    {% csrf_token %}
+      <center>
+        <table class="table table-bordered">
+          {{ form.as_table }}
+        </table>
+      </center>
+      <br>
+        <button class="btn btn-primary pull-right" type="submit">Save Profile</button>
+    </form>
+  </div>
+{% endblock %}

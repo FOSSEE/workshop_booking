@@ -1,0 +1,39 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+	Awating activation
+{% endblock %}
+
+{% block header %}
+	<nav class="navbar navbar-default navbar-custom">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="#">SiteName</a>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+		{% if request.user.profile.is_email_verified %}
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+		{% endif %}
+		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		</ul>
+	  	</div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+	{% if status %}
+	<div class="container">
+			<div class="jumbotron">
+				<p>{{ status }}</p>
+				{{ request.user.profile.activation_key }}
+			</div>
+	</div>
+	{% else %}
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Activation Awaiting</h1>      
+			<p>Please <strong>Logout</strong> and check your email to activate your account. The key expires in <strong>3days</strong> from the date of registeration</p>
+		</div>
+	</div>
+	{% endif %}
+{% endblock %}

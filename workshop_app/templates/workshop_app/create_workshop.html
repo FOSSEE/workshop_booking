@@ -1,0 +1,45 @@
+{% extends "workshop_app/base.html" %}
+
+{% block title %}
+	Create Event
+{% endblock %}
+
+  {% block extra %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  {% endblock %}
+
+{% block header %}
+  <nav class="navbar navbar-default navbar-custom">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Instructor Profile</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li ><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
+        <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+        <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+       <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+        <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <form method="post">
+      {% csrf_token %}
+      <br/>
+      {{ form.media }}
+      {{ form.as_p }}
+      <br><br>
+      <button class="btn btn-success" type="submit">Save</button>
+    </form>
+  </div>
+{% endblock %}

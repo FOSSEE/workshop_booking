@@ -1,0 +1,31 @@
+{% extends 'workshop_app/base.html' %}
+
+	{% block title %}
+		Logged out
+	{% endblock %}
+
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{ URL_ROOT }}/">Booking</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+  {% endblock %}
+
+
+	{% block content %}
+		<div class="container" align="center">
+			<br>
+			<h3>You have logged out successfully.</h3>
+			<h4>If you want to Login again please <a href="{{ URL_ROOT}}/login/">click here</a></h4>
+			<br>
+		</div>
+
+	{% endblock %}

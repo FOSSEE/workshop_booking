@@ -1,0 +1,76 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+    View Profile
+{% endblock %}
+
+{% block header %}
+    <nav class="navbar navbar-default navbar-custom">
+      <div class="container-fluid">
+        {% if request.user.profile.position == 'instructor' %}
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Instructor Profile</a>
+        </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
+            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
+          </ul>
+        {% else %}
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{{URL_ROOT}}/book/">Coordinator Profile</a>
+        </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a>
+            <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li></li>
+          </ul>
+        {% endif %}
+        
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+{% endblock %}
+
+{% csrf_token %}
+{% block content %}
+  
+  <div class="container">
+  <table class="table table-bordered">
+  <tr>
+    <th><label for="id_first_name"><h5>First name:</h5></label></th>
+    <th><label for="id_first_name"><h5>{{ user.first_name }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_last_name"><h5>Last name:</h5></label></th>
+    <th><label for="id_last_name"><h5>{{ user.last_name }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_email"><h5>Email:</h5></label></th>
+    <th><label for="id_email"><h5>{{ user.email }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_institute"><h5>Institute:</h5></label></th>
+    <th><label for="id_institute"><h5>{{ user.profile.institute }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
+    <th><label for="id_phone_number"><h5>{{ user.profile.phone_number }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_department"><h5>Department:</h5></label></th>
+    <th><label for="id_department"><h5>{{ user.profile.department }}</h5></label></th>
+  </tr>
+  <tr>
+    <th><label for="id_position"><h5>Position:</h5></label></th>
+    <th><label for="id_position"><h5>{{ user.profile.position }}</h5></label></th>
+  </tr>
+  </table>
+    <br>
+    <a class="btn btn-primary pull-right" href="{{ URL_ROOT }}/edit_profile/">Edit Profile</a>
+  </div>
+{% endblock %}

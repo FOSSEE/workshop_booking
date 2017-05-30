@@ -1,0 +1,44 @@
+/* Navbar */
+.navbar-custom {
+	background-color:#6D5847;
+    color:black;
+  	border-radius:0;
+}
+
+/* Text color */
+.navbar-custom .navbar-nav > li > a {
+  	color:#fff;
+}
+
+/* OnActive Tab */
+.navbar-custom .navbar-nav > .active > a {
+    color: black;
+    background: white;	
+}
+
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus,
+.navbar-custom .navbar-nav > .active > a:hover,
+.navbar-custom .navbar-nav > .active > a:focus,
+.navbar-custom .navbar-nav > .open >a {
+    text-decoration: none;
+    background-color: #fff;
+}
+
+/* Brand-CompanyName */
+.navbar-custom .navbar-brand {
+	color:#efefef;
+  background-color: black;
+}
+
+/* Footer CSS */
+.footer {
+	position: relative;
+  bottom: 0;
+  right: 0;
+  left: 0;  	
+}
+
+.hiddenRow {
+    padding: 0 !important;
+}

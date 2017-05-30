@@ -1,0 +1,40 @@
+{% extends 'workshop_app/base.html' %}
+
+	{% block title %}
+		Register
+	{% endblock %}
+
+	{% block header %}
+	 <nav class="navbar navbar-default navbar-custom">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/">Booking</a>
+		</div>
+
+		<ul class="nav navbar-nav navbar-right">
+		  <li class="active"><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+		  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		</ul>
+	  	</div>
+	  </nav>
+  {% endblock %}
+  
+{% block content %}
+	<style type="text/css">
+    	label.required::after {
+    	content: "*";
+    	color: red;
+		}
+	</style>
+
+	<div class="container" >
+		<br>
+		<form action="" method="post">
+			{% csrf_token %}
+				<table class="table table-bordered">
+					{{ form.as_table }}
+				</table>
+				<button class="btn btn-primary" type="submit">Register</button>
+		</form>
+	</div>
+{% endblock %}
