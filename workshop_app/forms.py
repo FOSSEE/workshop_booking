@@ -167,17 +167,18 @@ class ProposeWorkshopDateForm(forms.ModelForm):
         
     def __init__( self, *args, **kwargs ):
         kwargs.setdefault('label_suffix', '')
-        super(ProposeWorkshopDateForm, self).__init__( *args, **kwargs )
-        self.fields['conditionone'].label = ""
-        self.fields['conditionone'].required = True
-        self.fields['conditiontwo'].label = ""
-        self.fields['conditiontwo'].required = True
-        self.fields['conditionthree'].label = ""
-        self.fields['conditionthree'].required = True
+        super(ProposeWorkshopDateForm, self).__init__(*args, **kwargs)
+        self.fields['condition_one'].label = ""
+        self.fields['condition_one'].required = True
+        self.fields['condition_two'].label = ""
+        self.fields['condition_two'].required = True
+        self.fields['condition_three'].label = ""
+        self.fields['condition_three'].required = True
 
     class Meta:
         model = ProposeWorkshopDate
-        fields = ['conditionone','conditiontwo','conditionthree','proposed_workshop_title', 'proposed_workshop_date']
+        fields = ['condition_one','condition_two','condition_three',
+                'proposed_workshop_title', 'proposed_workshop_date']
         widgets = {
             'proposed_workshop_date': forms.DateInput(attrs={
                 'class':'datepicker'}),

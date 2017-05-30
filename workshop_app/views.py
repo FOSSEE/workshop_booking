@@ -27,7 +27,7 @@ from textwrap import dedent
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                 "Prathamesh Salunke", "Akshen Doke", "Kiran Kishore",
-                "KhushalSingh Rajput"]
+                "KhushalSingh Rajput", "Prabhu Ramachandran"]
 
 
 def is_email_checked(user):
