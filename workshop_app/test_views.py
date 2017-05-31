@@ -19,11 +19,11 @@ class TestProfile(TestCase):
 		self.user1 = User.objects.create(
 			username='demo_test_user1',
 			password='pass@123',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user2 = User.objects.create(
 			username='demo_test_user2',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user2.set_password('pass@123')
 		self.user2.save()
@@ -33,7 +33,7 @@ class TestProfile(TestCase):
 			department='cs',
 			institute='ace',
 			position='instructor',
-			phone_number='9930011492',
+			phone_number='1122993388',
 			is_email_verified=1
 			)
 
@@ -99,13 +99,13 @@ class TestWorkshopCreation(TestCase):
 		self.superuser = User.objects.create_superuser(
 			username='admin',
 			password='pass@123',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.mod_group = Group.objects.create(name='instructor')
 
 		self.user_one = User.objects.create(
 			username='test_user1',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user_one.set_password('pass@123')
 		self.user_one.save()
@@ -115,7 +115,7 @@ class TestWorkshopCreation(TestCase):
 			department='cs',
 			institute='IIT',
 			position='instructor',
-			phone_number='9930011492',
+			phone_number='1122993388',
 			is_email_verified=1
 			)
 
@@ -128,7 +128,7 @@ class TestWorkshopCreation(TestCase):
 		
 		self.user_two = User.objects.create(
 			username='demo_user2',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user_two.set_password('pass@123')
 		self.user_two.save()
@@ -138,7 +138,7 @@ class TestWorkshopCreation(TestCase):
 			department='cs',
 			institute='ace',
 			position='coordinator',
-			phone_number='9930011492',
+			phone_number='1122993388',
 			is_email_verified=1
 			)
 
@@ -188,19 +188,16 @@ class TestWorkshopCreation(TestCase):
 
 class TestWorkshopDashboard(TestCase):
 	def setUp(self):
-		'''
-		demo user as coordinator and test user as instructor
-		'''
 		self.superuser = User.objects.create_superuser(
 			username='admin',
 			password='pass@123',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.mod_group = Group.objects.create(name='instructor')
 
 		self.user_one = User.objects.create(
 			username='test_user1',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user_one.set_password('pass@123')
 		self.user_one.save()
@@ -210,20 +207,20 @@ class TestWorkshopDashboard(TestCase):
 			department='cs',
 			institute='IIT',
 			position='instructor',
-			phone_number='9930011492',
+			phone_number='1122993388',
 			is_email_verified=1
 			)
 
 		#Add user_one in instructor group and give required permissions
 		self.mod_group.user_set.add(self.user_one)
-		self.per = (Permission.objects.all())
-		self.user_one.user_permissions.add(self.per[44])
-		self.user_one.user_permissions.add(self.per[43])
-		self.user_one.user_permissions.add(self.per[42])
+		self.permissions = Permission.objects.all()
+		self.user_one.user_permissions.add(self.permissions[44])
+		self.user_one.user_permissions.add(self.permissions[43])
+		self.user_one.user_permissions.add(self.permissions[42])
 		
 		self.user_two = User.objects.create(
 			username='demo_user2',
-			email='doke.akshen@gmail.com')
+			email='test.user@gmail.com')
 
 		self.user_two.set_password('pass@123')
 		self.user_two.save()
@@ -233,7 +230,7 @@ class TestWorkshopDashboard(TestCase):
 			department='cs',
 			institute='ace',
 			position='coordinator',
-			phone_number='9930011492',
+			phone_number='1122993388',
 			is_email_verified=1
 			)
 
@@ -242,34 +239,7 @@ class TestWorkshopDashboard(TestCase):
 
 		self.workshop = Workshop.objects.create(workshop_instructor=self.user_one,
 						workshop_title=self.workshoptype,
-						recurrences='RRULE:FREQ=WEEKLY;UNTIL=20170624T183000Z;BYDAY=WE;')
+						recurrences='RRULE:FREQ=WEEKLY;UNTIL=20170624T183000Z;BYDAY=WE;'
+						)
 	
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

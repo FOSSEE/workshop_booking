@@ -23,11 +23,12 @@ class Profile(models.Model):
     phone_number = models.CharField(
                 max_length=15,
                 validators=[RegexValidator(
-                                regex=r'^\+?1?\d{9,15}$', message=(
+                                regex=r'^.{9}$', message=(
                                 "Phone number must be entered \
-                                in the format: '+929490956'.\
+                                in the format: '+99999999'.\
                                 Up to 15 digits allowed.")
-                            )])
+                            )]
+                ,null=False)
     position = models.CharField(max_length=32, choices=position_choices)
     is_email_verified = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
