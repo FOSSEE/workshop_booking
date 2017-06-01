@@ -99,9 +99,9 @@ def activate_user(request, key):
 		return redirect('/register/')
 
 	if user.is_email_verified:
-		status = "Your email is already verified"
+		status = "2"
 	elif timezone.now() > user.key_expiry_time:
-		status = "Your activation has expired please register again"
+		status = "1"
 		Profile.objects.get(user_id=user.user_id).delete()
 		User.objects.get(id=user.user_id).delete()
 		return render(request, 'workshop_app/activation.html',
@@ -109,7 +109,7 @@ def activate_user(request, key):
 	elif key == user.activation_key:
 		user.is_email_verified = True
 		user.save()
-		status = "Your account has been activated"
+		status = "0"
 	else:
 		logout(request)
 		return redirect('/logout/')

@@ -21,11 +21,25 @@
 {% endblock %}
 
 {% block content %}
-	{% if status %}
+	{% if status == '2' %}
 	<div class="container">
 			<div class="jumbotron">
-				<p>{{ status }}</p>
-				{{ request.user.profile.activation_key }}
+				<p> Your email is already verified, Please view your profile <a href="{{ URL_ROOT }}/view_profile/">here</a> </p>
+				
+			</div>
+	</div>
+	{% elif status == '1' %}
+	<div class="container">
+			<div class="jumbotron">
+				<p> Your activation has expired please register again</p>
+				
+			</div>
+	</div>
+	{% elif status == '0' %}
+	<div class="container">
+			<div class="jumbotron">
+				<p> Your account has been activated. Please view your profile <a href="{{ URL_ROOT }}/view_profile/">here</a> </p>
+				
 			</div>
 	</div>
 	{% else %}

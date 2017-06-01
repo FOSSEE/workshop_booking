@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
 from local_settings import (
                     EMAIL_HOST, 
                     EMAIL_PORT, 
@@ -82,13 +83,15 @@ WSGI_APPLICATION = 'workshop_portal.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
 DATABASES = {
-    'default': {
+        'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'TEST': {
+            'NAME': 'mytestdatabase',
+        },
+        }
     }
-}
 
 
 # Password validation
