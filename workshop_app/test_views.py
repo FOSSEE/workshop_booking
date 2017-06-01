@@ -121,10 +121,10 @@ class TestWorkshopCreation(TestCase):
 
 		#Add user_one in instructor group and give required permissions
 		self.mod_group.user_set.add(self.user_one)
-		self.per = (Permission.objects.all())
-		self.user_one.user_permissions.add(self.per[44])
-		self.user_one.user_permissions.add(self.per[43])
-		self.user_one.user_permissions.add(self.per[42])
+		self.permission = (Permission.objects.all())
+		self.user_one.user_permissions.add(self.permission[44])
+		self.user_one.user_permissions.add(self.permission[43])
+		self.user_one.user_permissions.add(self.permission[42])
 		
 		self.user_two = User.objects.create(
 			username='demo_user2',
