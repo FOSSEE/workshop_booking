@@ -17,7 +17,8 @@ from local_settings import (
                     EMAIL_PORT, 
                     EMAIL_HOST_USER, 
                     EMAIL_HOST_PASSWORD,
-                    EMAIL_USE_TLS
+                    EMAIL_USE_TLS,
+                    SENDER_EMAIL
                     )
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -141,13 +142,15 @@ MEDIA_URL = '/data/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "workshop_app", "data")
 
 
-#Email Connection Settings
+#Email Connection Settings from local_settings.py
 EMAIL_HOST = EMAIL_HOST
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_PORT = EMAIL_PORT
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_TIMEOUT = 300
+SENDER_EMAIL = SENDER_EMAIL
+
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Temp Solution
 
 #Change this to the production url

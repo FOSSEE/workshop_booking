@@ -16,8 +16,10 @@ from workshop_portal.settings import (
                     EMAIL_HOST_USER, 
                     EMAIL_HOST_PASSWORD,
                     EMAIL_USE_TLS,
-                    PRODUCTION_URL
+                    PRODUCTION_URL, 
+                    SENDER_EMAIL
                     )
+from django.core.mail import EmailMultiAlternatives
 
 def generate_activation_key(username):
 	"""Generates hashed secret key for email activation"""
@@ -101,7 +103,7 @@ def send_email(	request, call_on,
 			try:
 				send_mail(
 					"Instructor Registration - FOSSEE, IIT Bombay", message, 
-					EMAIL_HOST_USER, [request.user.email], fail_silently=False
+					SENDER_EMAIL, [request.user.email], fail_silently=False
 					)
 			except Exception: 
 				send_smtp_email(request=request, 
@@ -122,7 +124,7 @@ def send_email(	request, call_on,
 
 			try:
 				send_mail("New Instructor Registration - FOSSEE, IIT Bombay", 
-					message, EMAIL_HOST_USER, ['workshops@fossee.in'], 
+					message, SENDER_EMAIL, ['workshops@fossee.in'], 
 					fail_silently=False)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -147,7 +149,7 @@ def send_email(	request, call_on,
 
 			try:
 				send_mail(
-					"Coordinator Registration at FOSSEE, IIT Bombay", message, EMAIL_HOST_USER, 
+					"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
 					[request.user.email], fail_silently=False
 					)
 			except Exception:
@@ -167,17 +169,18 @@ def send_email(	request, call_on,
 					Workshop title:{5}
 
 					You may accept or reject this booking 
-					workshop.fossee.in .""".format(
+					{6}/my_workshops/ .""".format(
 					user_name, request.user.email, 
 					request.user.profile.phone_number,
 					request.user.profile.institute,
-					workshop_date, workshop_title
+					workshop_date, workshop_title, 
+					PRODUCTION_URL
 					))
 
 			try:
 				send_mail(
 			 		"New FOSSEE Workshop booking on {0}".format(workshop_date),
-			 		message, EMAIL_HOST_USER, [other_email], 
+			 		message, SENDER_EMAIL, [other_email], 
 			 		fail_silently=False
 			 		)
 			except Exception:
@@ -195,17 +198,17 @@ def send_email(	request, call_on,
 
 					Your request has been received and is awaiting instructor 
 					approval/disapproval. You will be notified about the status
-					via email and on your workshops.fossee.in 
+					via email and on {2}/my_workshops/
 
 					In case of queries regarding workshop booking(s), revert
 					to this email.""".format(
-					workshop_date, workshop_title
+					workshop_date, workshop_title, PRODUCTION_URL
 					))
 
 			try:
 				send_mail(
 					"Pending Request for New FOSSEE Workshop booking on {0}"
-					.format(workshop_date), message, EMAIL_HOST_USER, 
+					.format(workshop_date), message, SENDER_EMAIL, 
 					[request.user.email], fail_silently=False
 					)
 			except Exception:
@@ -229,11 +232,34 @@ def send_email(	request, call_on,
 			been sent to the coordinator. """.format(user_name, other_email, 
 				phone_number, institute, workshop_date, workshop_title))
 
+
+			subject = "FOSSEE Workshop booking confirmation  on {0}".\
+				format(workshop_date)
+			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
+			from django.conf import settings
+			from os import listdir, path
+			from email.mime.multipart import MIMEMultipart
+			from email.mime.text import MIMEText
+			from email.mime.base import MIMEBase
+			from email import encoders
+
+			files = listdir(settings.MEDIA_ROOT)
+			for f in files:
+				attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
+				part = MIMEBase('application', 'octet-stream')
+				part.set_payload((attachment).read())
+				encoders.encode_base64(part)
+				part.add_header('Content-Disposition', "attachment; filename= %s " % f)
+				msg.attach(part)
+			msg.send()
+
+			'''
 			send_smtp_email(request=request, 
 				subject="FOSSEE Workshop booking confirmation  on {0}".
 				format(workshop_date), message=message,
 				other_email=request.user.email, attachment=1
 				)
+			''' 
 		else:
 			message = dedent("""\
 				Instructor name:{0}
@@ -251,11 +277,35 @@ def send_email(	request, call_on,
 				phone_number, workshop_date, workshop_title
 				))
 
+			subject = "FOSSEE Workshop booking confirmation  on {0}".\
+				format(workshop_date)
+			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
+			from django.conf import settings
+			from os import listdir, path
+			from email.mime.multipart import MIMEMultipart
+			from email.mime.text import MIMEText
+			from email.mime.base import MIMEBase
+			from email import encoders
+
+			files = listdir(settings.MEDIA_ROOT)
+			for f in files:
+				attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
+				part = MIMEBase('application', 'octet-stream')
+				part.set_payload((attachment).read())
+				encoders.encode_base64(part)
+				part.add_header('Content-Disposition', "attachment; filename= %s " % f)
+				msg.attach(part)
+			msg.send()
+
+
+
+			'''
 			send_smtp_email(request=request, 
 				subject="FOSSEE Workshop booking confirmation  on {0}".
 				format(workshop_date), message=message,
 				other_email=other_email, attachment=1
 				)
+			'''
 
 	elif call_on == "Booking Request Rejected":
 		if user_position == "instructor":
@@ -274,7 +324,7 @@ def send_email(	request, call_on,
 
 			try:
 				send_mail("FOSSEE Workshop booking rejected for {0}"
-					.format(workshop_date), message, EMAIL_HOST_USER, 
+					.format(workshop_date), message, SENDER_EMAIL, 
 					[request.user.email], fail_silently=False)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -290,12 +340,12 @@ def send_email(	request, call_on,
 					We regret to inform you that your workshop booking
 					has been rejected due to unavailability of the
 					instructor. You may try booking other available 
-					slots workshops.fossee.in """
-					.format(workshop_date, workshop_title))
+					slots {2}/book/ """
+					.format(workshop_date, workshop_title, PRODUCTION_URL))
 
 			try:
 				send_mail("FOSSEE Workshop booking rejected for {0}".
-					format(workshop_date), message, EMAIL_HOST_USER, 
+					format(workshop_date), message, SENDER_EMAIL, 
 					[other_email], fail_silently=False)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -313,7 +363,7 @@ def send_email(	request, call_on,
 				.format(workshop_date, workshop_title))
 		try:
 			send_mail("FOSSEE workshop deleted for {0}".format(workshop_date),
-				message, EMAIL_HOST_USER, [request.user.email], 
+				message, SENDER_EMAIL, [request.user.email], 
 				fail_silently=False)
 		except Exception:
 			send_smtp_email(request=request, 
@@ -325,7 +375,7 @@ def send_email(	request, call_on,
 	else:
 		message = "Issue at Workshop Booking App please check"
 		try:
-			send_mail("Issue At Workshop Booking App Mailing", message, EMAIL_HOST_USER,
+			send_mail("Issue At Workshop Booking App Mailing", message, SENDER_EMAIL,
 				['doke.akshen@gmail.com', 'mahesh.p.gudi@gmail.com', 'aditya94palaparthy@gmail.com'], fail_silently=False)
 		except Exception:
 			send_smtp_email(request=request, 
