@@ -3,6 +3,7 @@ __author__ = "Akshen Doke"
 from django.core.mail import send_mail
 from textwrap import dedent
 from random import randint
+from smtplib import SMTP
 import hashlib 
 from django.utils.crypto import get_random_string
 from string import punctuation, digits
@@ -20,6 +21,12 @@ from workshop_portal.settings import (
                     SENDER_EMAIL
                     )
 from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+from os import listdir, path
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 def generate_activation_key(username):
 	"""Generates hashed secret key for email activation"""
@@ -35,12 +42,6 @@ def send_smtp_email(request=None, subject=None, message=None,
 	'''
 		Send email using SMTPLIB
 	'''
-
-	from smtplib import SMTP
-	from email.mime.multipart import MIMEMultipart
-	from email.mime.text import MIMEText
-	from email.mime.base import MIMEBase
-	from email import encoders
 
 	msg = MIMEMultipart()
 	msg['From'] = EMAIL_HOST_USER
@@ -236,12 +237,6 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
-			from django.conf import settings
-			from os import listdir, path
-			from email.mime.multipart import MIMEMultipart
-			from email.mime.text import MIMEText
-			from email.mime.base import MIMEBase
-			from email import encoders
 
 			files = listdir(settings.MEDIA_ROOT)
 			for f in files:
@@ -253,13 +248,6 @@ def send_email(	request, call_on,
 				msg.attach(part)
 			msg.send()
 
-			'''
-			send_smtp_email(request=request, 
-				subject="FOSSEE Workshop booking confirmation  on {0}".
-				format(workshop_date), message=message,
-				other_email=request.user.email, attachment=1
-				)
-			''' 
 		else:
 			message = dedent("""\
 				Instructor name:{0}
@@ -280,12 +268,6 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
-			from django.conf import settings
-			from os import listdir, path
-			from email.mime.multipart import MIMEMultipart
-			from email.mime.text import MIMEText
-			from email.mime.base import MIMEBase
-			from email import encoders
 
 			files = listdir(settings.MEDIA_ROOT)
 			for f in files:
@@ -297,15 +279,6 @@ def send_email(	request, call_on,
 				msg.attach(part)
 			msg.send()
 
-
-
-			'''
-			send_smtp_email(request=request, 
-				subject="FOSSEE Workshop booking confirmation  on {0}".
-				format(workshop_date), message=message,
-				other_email=other_email, attachment=1
-				)
-			'''
 
 	elif call_on == "Booking Request Rejected":
 		if user_position == "instructor":
@@ -374,11 +347,6 @@ def send_email(	request, call_on,
 		
 	else:
 		message = "Issue at Workshop Booking App please check"
-		try:
-			send_mail("Issue At Workshop Booking App Mailing", message, SENDER_EMAIL,
-				['doke.akshen@gmail.com', 'mahesh.p.gudi@gmail.com', 'aditya94palaparthy@gmail.com'], fail_silently=False)
-		except Exception:
-			send_smtp_email(request=request, 
-				subject="Issue at Workshop Booking App please check",
-				message=message, other_email='doke.akshen@gmail.com'
-				)
+		send_mail("Issue At Workshop Booking App Mailing", message, SENDER_EMAIL,
+				['your developer id'], fail_silently=False)
+		

@@ -142,7 +142,7 @@ MEDIA_URL = '/data/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "workshop_app", "data")
 
 
-#Email Connection Settings from local_settings.py
+#Email Connection Settings
 EMAIL_HOST = EMAIL_HOST
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
