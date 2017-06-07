@@ -18,8 +18,10 @@
 	  	</div>
 	  </nav>
   {% endblock %}
-  
+
+ 
 {% block content %}
+
 	<style type="text/css">
     	label.required::after {
     	content: "*";
@@ -34,7 +36,11 @@
 				<table class="table table-bordered">
 					{{ form.as_table }}
 				</table>
+
 				<button class="btn btn-primary" type="submit">Register</button>
-		</form>
+		</form><br>
+		<div class="alert alert-info">
+  			<strong>Info!</strong> Instructors, please wait for our admin approval, if your instructor account is not activated in 7 days, please mail us at workshops[at]fossee[dot]in
+		</div>
 	</div>
 {% endblock %}
