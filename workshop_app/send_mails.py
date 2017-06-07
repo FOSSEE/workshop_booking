@@ -267,7 +267,7 @@ def send_email(	request, call_on,
 
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
-			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
+			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [other_email])
 
 			files = listdir(settings.MEDIA_ROOT)
 			for f in files:
@@ -344,9 +344,3 @@ def send_email(	request, call_on,
 				format(workshop_date), message=message,
 				other_email=request.user.email
 				)
-		
-	else:
-		message = "Issue at Workshop Booking App please check"
-		send_mail("Issue At Workshop Booking App Mailing", message, SENDER_EMAIL,
-				['your developer id'], fail_silently=False)
-		
