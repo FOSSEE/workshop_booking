@@ -155,10 +155,10 @@ def book(request):
 			workshop_details = Workshop.objects.all()
 			
 			workshop_occurence_list = []
-
+			today = datetime.now()
 			for workshops in workshop_details:
 				dates = workshops.recurrences.between(
-					datetime(2017, 3, 12, 0, 0, 0),
+					today,
 		    		datetime(2040, 12, 31, 0, 0, 0), #Needs to be changed yearly
 		    		inc=True
 					)
@@ -335,9 +335,10 @@ def manage(request):
 													)
 
 				workshop_occurence_list = []
+				today = datetime.now()
 				for workshop in workshop_details:
 					workshop_occurence = workshop.recurrences.between(
-												datetime(2017, 3, 12, 0, 0, 0),
+												today,
 												datetime(2040, 12, 31, 0, 0, 0),
 												inc=True													
 												)
