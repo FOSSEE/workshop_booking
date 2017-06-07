@@ -44,10 +44,9 @@ class UserRegistrationForm(forms.Form):
                 help_text='Institute/Organization')
     department = forms.CharField(max_length=64, help_text='Department you work/\
                                 study')
-    position = forms.ChoiceField(help_text='Instructors, please wait \
-                                for our admin approval, if your instructor \
-                                account is not activated in 7 days, please\
-                                mail us at workshops[at]fossee[dot]in',
+    position = forms.ChoiceField(help_text='Select Coordinator if you want to organise a workshop\
+                                    in your college/school. <br> Select Instructor if you want to conduct\
+                                    a workshop.',
                                 choices=position_choices
                                  )
 

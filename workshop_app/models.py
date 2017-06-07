@@ -29,7 +29,10 @@ class Profile(models.Model):
                                 Up to 15 digits allowed.")
                             )]
                 ,null=False)
-    position = models.CharField(max_length=32, choices=position_choices)
+    position = models.CharField(max_length=32, choices=position_choices,
+                    help_text='Select Coordinator if you want to organise a workshop\
+                            in your college/school. <br> Select Instructor if you want to conduct\
+                            a workshop.')
     is_email_verified = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     key_expiry_time = models.DateTimeField(blank=True, null=True)
