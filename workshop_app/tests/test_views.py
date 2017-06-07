@@ -1,16 +1,15 @@
-from .views import view_profile, user_login, edit_profile
+from workshop_app.views import view_profile, user_login, edit_profile
 from django.test import TestCase
-from .models import Profile, User, Workshop, WorkshopType,\
+from workshop_app.models import Profile, User, Workshop, WorkshopType,\
                     RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,\
                     has_profile
-                    
 from datetime import datetime
 from json import dumps
 from django.test import Client
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
-from .forms import CreateWorkshop
+from workshop_app.forms import CreateWorkshop
 
 class TestProfile(TestCase):
 	def setUp(self):

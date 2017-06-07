@@ -1,7 +1,7 @@
 from django.test import TestCase
-from .models import (
-				Profile, User, Workshop, WorkshopType, 
-                RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
+from workshop_app.models import (
+                     Profile, User, Workshop, WorkshopType,
+                     RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
                     )
 from datetime import datetime
 

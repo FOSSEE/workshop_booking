@@ -17,4 +17,9 @@ install:
 script:
   - python manage.py makemigrations
   - python manage.py migrate
-  - python manage.py test
+  - coverage erase
+  - coverage run -p manage.py test -v2
+
+after_success:
+  - coverage combine
+  - coverage report
