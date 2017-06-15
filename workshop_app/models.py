@@ -124,9 +124,9 @@ class ProposeWorkshopDate(models.Model):
         Contains details of proposed date and workshop from coordinator
     """
 
-    condition_one = models.BooleanField(default=False, help_text='I will give\
-                                minimum 50 participants for the workshop.')
-    condition_two = models.BooleanField(default=False, help_text='I agree \
+    condition_one = models.BooleanField(default=False, help_text='We assure to\
+     give minimum 50 participants for the workshop.')
+    condition_two = models.BooleanField(default=False, help_text='We agree \
                                 that this booking won\'t be cancelled without \
                                 2days of prior notice to the instructor and fossee.')
     condition_three = models.BooleanField(default=False, help_text='This \

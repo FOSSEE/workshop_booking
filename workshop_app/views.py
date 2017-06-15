@@ -795,6 +795,8 @@ def how_to_participate(request):
 def pdf_view(request, workshop_title):
 	if workshop_title == 'ISCP':
 		pdf_file = open(path.join(settings.MEDIA_ROOT,'ISCP schedule.pdf'), 'rb')
+	elif workshop_title == 'structure':
+		pdf_file = open(path.join(settings.MEDIA_ROOT,'structure.pdf'), 'rb')
 	else:
 		pdf_file = open(path.join(settings.MEDIA_ROOT,'Basic Python Schedule.pdf'), 'rb')
 
