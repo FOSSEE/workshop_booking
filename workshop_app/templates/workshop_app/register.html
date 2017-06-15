@@ -8,7 +8,7 @@
 	 <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT }}/">Booking</a>
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/">Home</a>
 		</div>
 
 		<ul class="nav navbar-nav navbar-right">
@@ -27,9 +27,15 @@
     	content: "*";
     	color: red;
 		}
+		
+		.errorlist {
+      color: red;
+    }
 	</style>
 
 	<div class="container" >
+		<br>
+		<h3>Coordinator Registration Form</h3>
 		<br>
 		<form action="" method="post">
 			{% csrf_token %}
@@ -39,8 +45,9 @@
 
 				<button class="btn btn-primary" type="submit">Register</button>
 		</form><br>
-		<div class="alert alert-info">
+		<!-- Activate when Instructor registeration starts -->
+		<!-- <div class="alert alert-info">
   			<strong>Info!</strong> Instructors, please wait for our admin approval, if your instructor account is not activated in 7 days, please mail us at workshops[at]fossee[dot]in
-		</div>
+		</div> -->
 	</div>
 {% endblock %}

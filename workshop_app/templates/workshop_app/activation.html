@@ -8,7 +8,7 @@
 	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">SiteName</a>
+		  <a class="navbar-brand" href="#">Home</a>
 		</div>
 		<ul class="nav navbar-nav navbar-right">
 		{% if request.user.profile.is_email_verified %}
@@ -18,6 +18,17 @@
 		</ul>
 	  	</div>
     </nav>
+{% endblock %}
+
+{% block extra %}
+	
+	<script type="text/javascript">
+		window.setTimeout(function()
+		{   
+			location.href="{{ URL_ROOT }}/logout/"
+		}, 5000);
+	</script>
+
 {% endblock %}
 
 {% block content %}
@@ -32,7 +43,6 @@
 	<div class="container">
 			<div class="jumbotron">
 				<p> Your activation has expired please register again</p>
-				
 			</div>
 	</div>
 	{% elif status == '0' %}
@@ -46,7 +56,7 @@
 	<div class="container">
 		<div class="jumbotron">
 			<h1>Activation Awaiting</h1>      
-			<p>Please <strong>Logout</strong> and check your email to activate your account. The key expires in <strong>3days</strong> from the date of registeration</p>
+			<p>Please <strong>Logout</strong> and check your email to activate your account. The key expires in <strong>24hours</strong> from the date of registeration</p>
 		</div>
 	</div>
 	{% endif %}

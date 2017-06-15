@@ -9,22 +9,24 @@
       <div class="container-fluid">
         {% if request.user.profile.position == 'instructor' %}
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Instructor Profile</a>
+          <a class="navbar-brand" href="{{ URL_ROOT }}/manage/">Home</a>
         </div>
           <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
             <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
             <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
           </ul>
         {% else %}
         <div class="navbar-header">
-          <a class="navbar-brand" href="{{URL_ROOT}}/book/">Coordinator Profile</a>
+          <a class="navbar-brand" href="{{URL_ROOT}}/book/">Home</a>
         </div>
           <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
             <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a>
             <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li></li>
+            <li><a href="{{ URL_ROOT }}/faq/"> FAQ's</a></li>
+            <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+            <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
+            <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
           </ul>
         {% endif %}
         

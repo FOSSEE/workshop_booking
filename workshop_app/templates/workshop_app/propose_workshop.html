@@ -11,11 +11,14 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
+    var dateToday = new Date();
+    dateToday.setDate(dateToday.getDate() + 2);
       $(function() {
         $( ".datepicker" ).datepicker({
           changeMonth: true,
           changeYear: true,
-          yearRange: "1994:2049",
+          yearRange: "1994:2084",
+          minDate: dateToday,
           // You can put more options here.
         });
       });
@@ -26,12 +29,15 @@
   <nav class="navbar navbar-default navbar-custom">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Coordinator Profile</a>
+        <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Home</a>
       </div>
       <ul class="nav navbar-nav">
-        <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
        <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
        <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+       <li><a href="{{ URL_ROOT }}/faq/"> FAQ's</a></li>
+       <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+       <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
+       <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -42,6 +48,12 @@
 {% endblock %}
 
 {% block content %}
+  <style type="text/css">
+      .errorlist {
+      color: red;
+    }
+  </style>
+
   <div class="container">
     <form method="post">
       {% csrf_token %}

@@ -15,21 +15,39 @@
 {% block header %}
  <nav class="navbar navbar-default navbar-custom">
   <div class="container-fluid">
+  {% if request.user.profile.position == 'coordinator' %}
+  	<div class="navbar-header">
+		  <a class="navbar-brand"  href="{{ URL_ROOT}}/book/">Home</a>
+	</div>
+		<ul class="nav navbar-nav">
+		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
+		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+		  <li><a href="{{ URL_ROOT }}/faq/">FAQ</a></li>
+		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+		  <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		</ul>
+  {% else %}
 	<div class="navbar-header">
-	  <a class="navbar-brand" href="{{URL_ROOT}}/">Booking</a>
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">Home</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right">
 	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 	</ul>
+  {% endif %}
   	</div>
   </nav>
   {% endblock %}
 
 {% block content %}
 
-	<div class="container-fluid" style="margin-left:auto;">
-			<img src="{{ URL_ROOT }}/static/workshop_app/img/img2.jpg">
+	<div class="container-fluid text-center" >
+		<img src="{{ URL_ROOT }}/static/workshop_app/img/img2.jpg">
 	</div>
 
 {% endblock %}

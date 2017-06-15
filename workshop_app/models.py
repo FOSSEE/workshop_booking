@@ -9,6 +9,19 @@ position_choices = (
     ("instructor", "Instructor")
     )
 
+department_choices = (
+    ("computer", "Computer Science"),
+    ("information technology", "Information Technology"),
+    ("civil engineering", "Civil Engineering"),
+    ("electrical engineering", "Electrical Engineering"),
+    ("mechanical engineering", "Mechanical Engineering"),
+    ("chemical engineering", "Chemical Engineering"),
+    ("aerospace engineering", "Aerospace Engineering"),
+    ("biosciences and bioengineering", "Biosciences and  BioEngineering"),
+    ("electronics", "Electronics"),
+    ("energy science and engineering", "Energy Science and Engineering"),
+    ("others", "Others"),
+    )
 
 def has_profile(user):
     """ check if user has profile """
@@ -19,7 +32,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User)
     institute = models.CharField(max_length=150)
-    department = models.CharField(max_length=150)
+    department = models.CharField(max_length=150, choices=department_choices)
     phone_number = models.CharField(
                 max_length=15,
                 validators=[RegexValidator(
@@ -30,6 +43,7 @@ class Profile(models.Model):
                             )]
                 ,null=False)
     position = models.CharField(max_length=32, choices=position_choices,
+                    default='coordinator',
                     help_text='Select Coordinator if you want to organise a workshop\
                             in your college/school. <br> Select Instructor if you want to conduct\
                             a workshop.')
@@ -114,7 +128,7 @@ class ProposeWorkshopDate(models.Model):
                                 minimum 50 participants for the workshop.')
     condition_two = models.BooleanField(default=False, help_text='I agree \
                                 that this booking won\'t be cancelled without \
-                                prior notice to the instructor and fossee.')
+                                2days of prior notice to the instructor and fossee.')
     condition_three = models.BooleanField(default=False, help_text='This \
                     proposal is subject to FOSSEE and instructor approval.')
 
@@ -144,3 +158,20 @@ class BookedWorkshop(models.Model):
 
     booked_workshop_requested = models.ForeignKey(RequestedWorkshop, null=True) 
     booked_workshop_proposed = models.ForeignKey(ProposeWorkshopDate, null=True)
+
+class Testimonial(models.Model):
+    """
+    Contains Testimonals of Workshops
+    """
+
+    name = models.CharField(max_length=150)
+    institute = models.CharField(max_length=255)
+    department = models.CharField(max_length=150)
+    message = models.TextField()
+
+    def __str__(self):
+        return u"{0} | {1} ".format(
+                    self.name, 
+                    self.institute,
+                    self.department
+                    )

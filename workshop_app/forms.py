@@ -1,3 +1,4 @@
+
 from django import forms
 from django.utils import timezone
 from .models import (
@@ -23,13 +24,28 @@ position_choices = (
     ("instructor", "Instructor")
     )
 
+department_choices = (
+    ("computer", "Computer Science"),
+    ("information technology", "Information Technology"),
+    ("civil engineering", "Civil Engineering"),
+    ("electrical engineering", "Electrical Engineering"),
+    ("mechanical engineering", "Mechanical Engineering"),
+    ("chemical engineering", "Chemical Engineering"),
+    ("aerospace engineering", "Aerospace Engineering"),
+    ("biosciences and bioengineering", "Biosciences and  BioEngineering"),
+    ("electronics", "Electronics"),
+    ("energy science and engineering", "Energy Science and Engineering"),
+    ("others", "Others"),
+    )
+
 class UserRegistrationForm(forms.Form):
     """A Class to create new form for User's Registration.
     It has the various fields and functions required to register
     a new user to the system"""
     required_css_class = 'required'
+    errorlist_css_class = 'errorlist'
     username = forms.CharField(max_length=32, help_text='''Letters, digits,
-                               period only.''')
+                               period and underscore only.''')
     email = forms.EmailField()
     password = forms.CharField(max_length=32, widget=forms.PasswordInput())
     confirm_password = forms.CharField\
@@ -39,16 +55,18 @@ class UserRegistrationForm(forms.Form):
     phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
                                 error_message=("Phone number must be entered \
                                                   in the format: '+999999999'.\
-                                                 Up to 15 digits allowed."))
+                                                 Up to 10 digits allowed."))
     institute = forms.CharField(max_length=128, 
-                help_text='Institute/Organization')
-    department = forms.CharField(max_length=64, help_text='Department you work/\
-                                study')
-    position = forms.ChoiceField(help_text='Select Coordinator if you want to organise a workshop\
-                                    in your college/school. <br> Select Instructor if you want to conduct\
-                                    a workshop.',
-                                choices=position_choices
-                                 )
+                help_text='Please write full name of your Institute/Organization')
+    department = forms.ChoiceField(help_text='Department you work/study',
+                 choices=department_choices)
+
+    # Activate when instructor Registration Starts
+    # position = forms.ChoiceField(help_text='Select Coordinator if you want to organise a workshop\
+    #                                 in your college/school. <br> Select Instructor if you want to conduct\
+    #                                 a workshop.',
+    #                             choices=position_choices
+    #                              )
 
     def clean_username(self):
         u_name = self.cleaned_data["username"]
@@ -77,11 +95,11 @@ class UserRegistrationForm(forms.Form):
 
         return c_pwd
 
-    # def clean_email(self):
-    #     user_email = self.cleaned_data['email']
-    #     if User.objects.filter(email=user_email).exists():
-    #         raise forms.ValidationError("This email already exists")
-    #     return user_email
+    def clean_email(self):
+        user_email = self.cleaned_data['email']
+        if User.objects.filter(email=user_email).exists():
+            raise forms.ValidationError("This email already exists")
+        return user_email
 
     def save(self):
         u_name = self.cleaned_data["username"]
@@ -97,11 +115,11 @@ class UserRegistrationForm(forms.Form):
         new_profile = Profile(user=new_user)
         new_profile.institute = cleaned_data["institute"]
         new_profile.department = cleaned_data["department"]
-        new_profile.position = cleaned_data["position"]
+        #new_profile.position = cleaned_data["position"]
         new_profile.phone_number = cleaned_data["phone_number"]
         new_profile.activation_key = generate_activation_key(new_user.username)
         new_profile.key_expiry_time = timezone.now() + \
-                                    timezone.timedelta(days=3)
+                                    timezone.timedelta(days=1)
         new_profile.save()
         key = Profile.objects.get(user=new_user).activation_key
         return u_name, pwd, key
@@ -109,8 +127,11 @@ class UserRegistrationForm(forms.Form):
 class UserLoginForm(forms.Form):
     """Creates a form which will allow the user to log into the system."""
 
-    username = forms.CharField(max_length=32)
-    password = forms.CharField(max_length=32, widget=forms.PasswordInput())
+    username = forms.CharField(max_length=32,
+            widget=forms.TextInput(attrs={'placeholder': 'your username'}))
+
+    password = forms.CharField(max_length=32,
+            widget=forms.PasswordInput(attrs={'placeholder': 'your password'}))
 
     def clean(self):
         super(UserLoginForm, self).clean()
@@ -163,7 +184,7 @@ class ProposeWorkshopDateForm(forms.ModelForm):
     """
     Coordinators will propose a workshop and date 
     """ 
-        
+    errorlist_css_class = 'errorlist'
     def __init__( self, *args, **kwargs ):
         kwargs.setdefault('label_suffix', '')
         super(ProposeWorkshopDateForm, self).__init__(*args, **kwargs)
@@ -173,11 +194,14 @@ class ProposeWorkshopDateForm(forms.ModelForm):
         self.fields['condition_two'].required = True
         self.fields['condition_three'].label = ""
         self.fields['condition_three'].required = True
+        self.fields['proposed_workshop_title'].label = "Workshop :"
+        self.fields['proposed_workshop_date'].label = "Workshop Date :"
+        
 
     class Meta:
         model = ProposeWorkshopDate
-        fields = ['condition_one','condition_two','condition_three',
-                'proposed_workshop_title', 'proposed_workshop_date']
+        fields = ['proposed_workshop_title', 'proposed_workshop_date',
+                'condition_two','condition_three','condition_one']
         widgets = {
             'proposed_workshop_date': forms.DateInput(attrs={
                 'class':'datepicker'}),

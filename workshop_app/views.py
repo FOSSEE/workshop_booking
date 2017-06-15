@@ -7,7 +7,8 @@ from .models import (
 					Profile, User,
 					has_profile, Workshop, 
 					WorkshopType, RequestedWorkshop,
-					BookedWorkshop, ProposeWorkshopDate
+					BookedWorkshop, ProposeWorkshopDate,
+					Testimonial
 					)
 from django.template import RequestContext
 from datetime import datetime, date
@@ -23,10 +24,13 @@ from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
 from textwrap import dedent
+from django.conf import settings
+from os import listdir, path
+import datetime as dt
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
-                "Prathamesh Salunke", "Akshen Doke", "Kiran Kishore",
+                "Prathamesh Salunke", "Kiran Kishore",
                 "KhushalSingh Rajput", "Prabhu Ramachandran"]
 
 
@@ -42,7 +46,7 @@ def index(request):
 
 	user = request.user
 	form = UserLoginForm()
-	if user.is_authenticated():
+	if user.is_authenticated() and is_email_checked(user):
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		return redirect('/book/')
@@ -140,6 +144,8 @@ def user_register(request):
 						{"form": form}
 						)
 	else:
+		if request.user.is_authenticated() and is_email_checked(request.user):
+			return redirect('/my_workshops/')
 		form = UserRegistrationForm()
 	return render(request, "workshop_app/register.html", {"form": form})
 
@@ -155,7 +161,7 @@ def book(request):
 			workshop_details = Workshop.objects.all()
 			
 			workshop_occurence_list = []
-			today = datetime.now()
+			today = datetime.now() + dt.timedelta(days=3)
 			for workshops in workshop_details:
 				dates = workshops.recurrences.between(
 					today,
@@ -315,9 +321,9 @@ def book_workshop(request):
 							phone_number=phone_number)
 								
 						return HttpResponse(dedent("""\
-						Thank You, Please check 
-						your email for further information. Your number on the
-						queue for this book is {0}""".format(str(queue))))
+						Your request has been successful, Please check 
+						your email for further information. Your request is number
+						{0} in the queue.""".format(str(queue))))
 	else:
 		return HttpResponse("Some Error Occurred.")
 
@@ -335,7 +341,7 @@ def manage(request):
 													)
 
 				workshop_occurence_list = []
-				today = datetime.now()
+				today = datetime.now()  + dt.timedelta(days=3)
 				for workshop in workshop_details:
 					workshop_occurence = workshop.recurrences.between(
 												today,
@@ -657,7 +663,11 @@ def propose_workshop(request):
 @login_required
 def view_profile(request):
 	""" view instructor and coordinator profile """
-	return render(request, "workshop_app/view_profile.html")
+	user = request.user
+	if is_email_checked(user):
+		return render(request, "workshop_app/view_profile.html")
+	else:
+		return redirect('/login/')
 
 
 @login_required
@@ -781,3 +791,45 @@ def faq(request):
 
 def how_to_participate(request):
 	return render(request, 'workshop_app/how_to_participate.html')
+
+def pdf_view(request, workshop_title):
+	if workshop_title == 'ISCP':
+		pdf_file = open(path.join(settings.MEDIA_ROOT,'ISCP schedule.pdf'), 'rb')
+	else:
+		pdf_file = open(path.join(settings.MEDIA_ROOT,'Basic Python Schedule.pdf'), 'rb')
+
+	return HttpResponse(pdf_file, content_type="application/pdf")
+
+def testimonials(request):
+	testimonials = Testimonial.objects.all().order_by('-id')
+	paginator = Paginator(testimonials, 3) #Show upto 12 workshops per page
+
+	page = request.GET.get('page')
+	try:
+		messages = paginator.page(page)
+	except PageNotAnInteger:
+		#If page is not an integer, deliver first page.
+		messages = paginator.page(1)
+	except EmptyPage:
+		#If page is out of range(e.g 999999), deliver last page.
+		messages = paginator.page(paginator.num_pages)
+	return render(request, 'workshop_app/testimonals.html', {"messages":messages})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
