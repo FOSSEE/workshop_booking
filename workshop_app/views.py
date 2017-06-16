@@ -96,21 +96,31 @@ def user_logout(request):
 	return render(request, 'workshop_app/logout.html')
 
 
-def activate_user(request, key):
+def activate_user(request, key=None):
+	user = request.user
+	if key is None:
+		if user.is_authenticated() and user.profile.is_email_verified==0 and \
+		timezone.now() > user.profile.key_expiry_time:
+			status = "1"
+			Profile.objects.get(user_id=user.profile.user_id).delete()
+			User.objects.get(id=user.profile.user_id).delete()
+			return render(request, 'workshop_app/activation.html', 
+						{'status':status})
+		elif user.is_authenticated() and user.profile.is_email_verified==0:
+			return render(request, 'workshop_app/activation.html')
+		elif user.is_authenticated() and user.profile.is_email_verified:
+			status = "2"
+			return render(request, 'workshop_app/activation.html', 
+						{'status':status})
+		else:
+			return redirect('/register/')
+
 	try:
 		user = Profile.objects.get(activation_key=key)	
 	except:
 		return redirect('/register/')
-
-	if user.is_email_verified:
-		status = "2"
-	elif timezone.now() > user.key_expiry_time:
-		status = "1"
-		Profile.objects.get(user_id=user.user_id).delete()
-		User.objects.get(id=user.user_id).delete()
-		return render(request, 'workshop_app/activation.html',
-					{"status": status})
-	elif key == user.activation_key:
+		
+	if key == user.activation_key:
 		user.is_email_verified = True
 		user.save()
 		status = "0"
@@ -139,6 +149,8 @@ def user_register(request):
 			
 			return render(request, 'workshop_app/activation.html')
 		else:
+			if request.user.is_authenticated():
+				return redirect('/view_profile/')
 			return render(
 						request, "workshop_app/register.html", 
 						{"form": form}
@@ -146,6 +158,8 @@ def user_register(request):
 	else:
 		if request.user.is_authenticated() and is_email_checked(request.user):
 			return redirect('/my_workshops/')
+		elif request.user.is_authenticated():
+			return render(request, 'workshop_app/activation.html') 
 		form = UserRegistrationForm()
 	return render(request, "workshop_app/register.html", {"form": form})
 
@@ -231,7 +245,7 @@ def book(request):
 						{"workshop_details": workshop_occurences}
 						 )
 		else:
-			return render(request, "workshop_app/activation.html")
+			return redirect('/activate_user/')
 	else:
 		return redirect('/login/')
 
@@ -325,6 +339,7 @@ def book_workshop(request):
 						your email for further information. Your request is number
 						{0} in the queue.""".format(str(queue))))
 	else:
+		logout(request)
 		return HttpResponse("Some Error Occurred.")
 
 
@@ -392,7 +407,7 @@ def manage(request):
 
 		return redirect('/book/')
 	else:
-		return redirect('/login/')
+		return redirect('/activate_user/')
 
 
 @login_required
@@ -590,7 +605,7 @@ def my_workshops(request):
 				workshops.append(p)
 
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshops, 12)
+			paginator = Paginator(workshops[::-1], 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -618,7 +633,7 @@ def my_workshops(request):
 				workshops.append(p)			
 
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshops, 12)
+			paginator = Paginator(workshops[::-1], 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -664,10 +679,17 @@ def propose_workshop(request):
 def view_profile(request):
 	""" view instructor and coordinator profile """
 	user = request.user
-	if is_email_checked(user):
+	if is_email_checked(user) and user.is_authenticated():
 		return render(request, "workshop_app/view_profile.html")
 	else:
-		return redirect('/login/')
+		if user.is_authenticated():
+			return render(request, 'workshop_app/activation.html')
+		else:
+			try:
+				logout(request)
+				return redirect('/login/')
+			except:
+				return redirect('/register/')
 
 
 @login_required
@@ -675,11 +697,18 @@ def edit_profile(request):
 	""" edit profile details facility for instructor and coordinator """
 
 	user = request.user
-	if is_instructor(user) and is_email_checked(user):
-		template = 'workshop_app/manage.html'
-	else:
-		if is_email_checked(user):
+	if is_email_checked(user):
+		if is_instructor(user):
+			template = 'workshop_app/manage.html'
+		else:
 			template = 'workshop_app/booking.html'
+	else:
+		try:
+			logout(request)
+			return redirect('/login/')
+		except:
+			return redirect('/register/')
+
 	context = {'template': template}
 	if has_profile(user) and is_email_checked(user):
 		profile = Profile.objects.get(user_id=user.id)
@@ -697,16 +726,14 @@ def edit_profile(request):
 			form_data.save()
 
 			return render(
-						request, 'workshop_app/profile_updated.html', 
-						context
+						request, 'workshop_app/profile_updated.html'
 						)
 		else:
 			context['form'] = form
 			return render(request, 'workshop_app/edit_profile.html', context)
 	else:
 		form = ProfileForm(user=user, instance=profile)
-		context['form'] = form
-		return render(request, 'workshop_app/edit_profile.html', context)
+		return render(request, 'workshop_app/edit_profile.html', {'form':form})
 
 
 @login_required
