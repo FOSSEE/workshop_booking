@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from recurrence.fields import RecurrenceField
+import os
 
 position_choices = (
     ("coordinator", "Coordinator"),
@@ -26,6 +27,9 @@ department_choices = (
 def has_profile(user):
     """ check if user has profile """
     return True if hasattr(user, 'profile') else False
+
+def attachments(instance, filename):
+    return os.sep.join((instance.workshoptype_name.replace(" ", '_'), filename))
 
 class Profile(models.Model):
     """Profile for users(instructors and coordinators)"""
@@ -70,6 +74,11 @@ class WorkshopType(models.Model):
     workshoptype_duration = models.CharField(max_length=32, 
                     help_text='Please write this in \
                     following format eg: 3days, 8hours a day')
+    workshoptype_attachments = models.FileField(upload_to=attachments, blank=True,
+                    help_text='Please upload workshop documents one by one, \
+                    ie.workshop schedule, instructions etc. \
+                    Please Note: Name of Schedule file should be similar to \
+                    WorkshopType Name')
 
     def __str__(self):
         return u"{0} {1}".format(self.workshoptype_name, 

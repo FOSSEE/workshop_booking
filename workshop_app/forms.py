@@ -1,4 +1,3 @@
-
 from django import forms
 from django.utils import timezone
 from .models import (
@@ -25,7 +24,7 @@ position_choices = (
     )
 
 department_choices = (
-    ("computer", "Computer Science"),
+    ("computer engineering", "Computer Science"),
     ("information technology", "Information Technology"),
     ("civil engineering", "Civil Engineering"),
     ("electrical engineering", "Electrical Engineering"),

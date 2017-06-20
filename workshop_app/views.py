@@ -820,12 +820,13 @@ def how_to_participate(request):
 	return render(request, 'workshop_app/how_to_participate.html')
 
 def pdf_view(request, workshop_title):
-	if workshop_title == 'ISCP':
-		pdf_file = open(path.join(settings.MEDIA_ROOT,'ISCP schedule.pdf'), 'rb')
-	elif workshop_title == 'structure':
-		pdf_file = open(path.join(settings.MEDIA_ROOT,'structure.pdf'), 'rb')
+	filename = WorkshopType.objects.filter(workshoptype_name=workshop_title)
+	if filename.exists():
+		attachment_path = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
+		pdf_file = open(path.join(attachment_path, \
+					'{0}.pdf'.format(workshop_title.replace(" ","_"))), 'rb')
 	else:
-		pdf_file = open(path.join(settings.MEDIA_ROOT,'Basic Python Schedule.pdf'), 'rb')
+		pdf_file = open(path.join(settings.MEDIA_ROOT,'flowchart.pdf'), 'rb')
 
 	return HttpResponse(pdf_file, content_type="application/pdf")
 

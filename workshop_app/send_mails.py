@@ -28,6 +28,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from time import sleep
+from .models import WorkshopType
 
 def generate_activation_key(username):
 	"""Generates hashed secret key for email activation"""
@@ -239,20 +240,16 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
-
-			files = listdir(settings.MEDIA_ROOT)
+			attachment_paths = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
+			files = listdir(attachment_paths)
 			for f in files:
-				print(f, workshop_title)
-				if f == workshop_title+' schedule.pdf' or \
-				f == 'instructions-for-coordinators.pdf' or \
-				f == 'instructions-for-participants.pdf':
-					attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
-					part = MIMEBase('application', 'octet-stream')
-					part.set_payload((attachment).read())
-					encoders.encode_base64(part)
-					part.add_header('Content-Disposition', "attachment; filename= %s " % f)
-					msg.attach(part)
-					sleep(1)
+				attachment = open(path.join(attachment_paths, f), 'rb')
+				part = MIMEBase('application', 'octet-stream')
+				part.set_payload((attachment).read())
+				encoders.encode_base64(part)
+				part.add_header('Content-Disposition', "attachment; filename= %s " % f)
+				msg.attach(part)
+				sleep(1)
 			msg.send()
 
 		else:
@@ -275,10 +272,10 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [other_email])
-
-			files = listdir(settings.MEDIA_ROOT)
+			attachment_paths = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
+			files = listdir(attachment_paths)
 			for f in files:
-				attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
+				attachment = open(path.join(attachment_paths, f), 'rb')
 				part = MIMEBase('application', 'octet-stream')
 				part.set_payload((attachment).read())
 				encoders.encode_base64(part)
