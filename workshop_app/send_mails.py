@@ -27,6 +27,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+from time import sleep
+from .models import WorkshopType
 
 def generate_activation_key(username):
 	"""Generates hashed secret key for email activation"""
@@ -55,7 +57,6 @@ def send_smtp_email(request=None, subject=None, message=None,
 		from os import listdir, path
 		files = listdir(settings.MEDIA_ROOT)
 		for f in files:
-			print(path.join(settings.MEDIA_ROOT,f))
 			attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
 			part = MIMEBase('application', 'octet-stream')
 			part.set_payload((attachment).read())
@@ -137,7 +138,6 @@ def send_email(	request, call_on,
 			message = dedent("""\
 						Thank you for registering as a coordinator with us. 
 
-						Your request as a coordinator has been accepted.
 						Please click on the below link to 
 						activate your account
 						{0}/activate_user/{1}
@@ -151,7 +151,7 @@ def send_email(	request, call_on,
 			try:
 				send_mail(
 					"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
-					[request.user.email], fail_silently=False
+					[request.user.email, 'workshops@fossee.in'], fail_silently=False
 					)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -201,6 +201,9 @@ def send_email(	request, call_on,
 					approval/disapproval. You will be notified about the status
 					via email and on {2}/my_workshops/
 
+					Please Note: Unless you get a confirmation email for this workshop with 
+					the list of instructions, your workshop shall be in the waiting list.
+					 
 					In case of queries regarding workshop booking(s), revert
 					to this email.""".format(
 					workshop_date, workshop_title, PRODUCTION_URL
@@ -237,15 +240,16 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [request.user.email])
-
-			files = listdir(settings.MEDIA_ROOT)
+			attachment_paths = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
+			files = listdir(attachment_paths)
 			for f in files:
-				attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
+				attachment = open(path.join(attachment_paths, f), 'rb')
 				part = MIMEBase('application', 'octet-stream')
 				part.set_payload((attachment).read())
 				encoders.encode_base64(part)
 				part.add_header('Content-Disposition', "attachment; filename= %s " % f)
 				msg.attach(part)
+				sleep(1)
 			msg.send()
 
 		else:
@@ -268,10 +272,10 @@ def send_email(	request, call_on,
 			subject = "FOSSEE Workshop booking confirmation  on {0}".\
 				format(workshop_date)
 			msg = EmailMultiAlternatives(subject, message, SENDER_EMAIL, [other_email])
-
-			files = listdir(settings.MEDIA_ROOT)
+			attachment_paths = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
+			files = listdir(attachment_paths)
 			for f in files:
-				attachment = open(path.join(settings.MEDIA_ROOT,f), 'rb')
+				attachment = open(path.join(attachment_paths, f), 'rb')
 				part = MIMEBase('application', 'octet-stream')
 				part.set_payload((attachment).read())
 				encoders.encode_base64(part)

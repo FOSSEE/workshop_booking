@@ -1,120 +1,147 @@
+
 <!DOCTYPE html>
-<html>
-  <head>
-  <title>Welcome</title>
-  </head>
+<html lang="en">
 
-  <!-- Bootstrap CDN -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<head>
 
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Akshen Doke" content="">
 
-  <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+    <title>Welcome</title>
 
-  <body> 
-  <div class="container" style="width: 90%; height:90%;background:#C8C5B6;">
-     <div class="row">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+    
       
-      <div class="col-md-4">
-        <div class="fossee-label">FOSSEE Workshop</div>
-          <div class="logo">
-            <img src="{{ URL_ROOT }}/static/workshop_app/img/python_logo.png" >  
-          </div>
-        </div>
+        <div class="container">
 
-      <div class="login col-md-8">
-        <div class="label-bar"><a href="http://python.fossee.in/about/"
-        target="_blank" style="color: #6D5847;">About </a>|<a href="" style="color: #6D5847;">Blog </a>| <a href="http://python.fossee.in/gallery/" target="_blank" style="color: #6D5847;">Gallery</a></div>
-        <img src=" {{ URL_ROOT }}/static/workshop_app/img/img_1.png" style="margin-left: 40%;padding-top: 25%;"><br>
+        <!-- Heading Row -->
+        <div class="row">
+            <div class="col-md-5 fossee-label">
+                FOSSEE <br>Workshops
+
+            </div>
+            <div class="login col-md-7">
+            <div id="first-right">
+               <div class="label-bar">
+               <a href="http://python.fossee.in/about/"
+        target="_blank" >About </a>|<a href="{{ URL_ROOT }}/testimonials/"> Testimonials </a>| <a href="http://fossee.in/fossee-stats" target="_blank" > Past Workshops</a>
+        </div>
+        <br> <br>
+        <img src=" {{ URL_ROOT }}/static/workshop_app/img/img_1.png" ><br>
         <div id="rectbox">
             
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-              <button class="btn btn-default btn-sm" style="margin-left: 35%;"  type="submit">Login</button>
-            <br>
+              <button class="btn btn-default btn-sm"   type="submit">Login</button>
+              <a href="{{URL_ROOT}}/forgotpassword/" class="btn btn-default btn-sm" >Forgot Password</a>
          </form>
         </div>
-
-        <h4 style="margin-left: 27%; color: grey;">If not Registered yet, <br> please <a href="{{ URL_ROOT}}/register/" target="_blank">register here.</a></h4>
-        <br><br>
-        
-      </div>
-
-    </div>   
-
-    <div class="row">
-      <div class="icons col-sm-12">
-
-        <figure class="item" style="margin-left: 10%;">
-        <a href="{{ URL_ROOT }}/view_workshoptype_details/" style="color: #6D5847;">
-          <img class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/list.png" >
-          <figcaption class="caption">Course List</figcaption>
-        </a>
-        </figure>
-
-        <figure class="item" style="margin-left: 15%;">
-        <a href="{{ URL_ROOT }}/benefits/" style="color: #6D5847;">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/bnft.png" >
-          <figcaption class="caption" >Benefits</figcaption>
-        </a>
-      </figure>
-
-      <figure class="item" style="margin-left: 15%;">
-      <a href="{{ URL_ROOT }}/faq/" style="color: #6D5847;">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/faq.png" >
-          <figcaption class="caption" >FAQs</figcaption>
-      </a>
-      </figure>
-
-      <figure class="item" style="margin-left: 15%; ">
-      <a href="{{ URL_ROOT }}/how_to_participate/" style="color: #6D5847;">
-          <img  class="caption-img" src="{{ URL_ROOT }}/static/workshop_app/img/part.png" >
-          <figcaption class="caption">How to Participate</figcaption>
-        </a>
-      </figure>
-
-      </div>
-    </div>
-
-    
-    <!-- Bottom 3 cols -->
-    <div class="row">
-    <!-- Logo -->
-      <div class="org-logo col-sm-4">
-      <span >Organized By:</span><br>
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/fossee_logo.png">
-
-        <img src="{{ URL_ROOT }}/static/workshop_app/img/iitb_logo.png" >
         <br>
-      </div>
+        <p style="font-size: 15pt;">If not registered yet, <br> please <a href="{{ URL_ROOT}}/register/" >register here.</a></p>
+        <br><br>
 
-      <!-- Related Links -->
-      <div class="related-links col-sm-4">
-        Related Links<br>
-        <a href="http://fossee.in" target="_blank" >fossee.in</a><br>
-        <a href="http://yaksh.fossee.in" target="_blank" >yaksh.fossee.in</a><br>
-        <a href="http://python.fossee.in" target="_blank" >python.fossee.in</a>
-      </div>
+            </div>
+            </div>
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
 
-      <!-- Contact Us -->
-      <div class="contact-us col-sm-4">
-        Contact Us:<br>
-        FOSSEE, IIT-Bombay<br>
-        Mumbai, India<br>
+        <!-- Call to Action Well -->
+        <div class="row icons" style="align-items: center;">
+          <div class="text-center">
+            <div class="col-md-3" style="align-items: center;">
+                <a href="{{ URL_ROOT }}/faq/"><img src="{{ URL_ROOT}}/static/workshop_app/img/faq.png"><br><br>
+                FAQ's</a>
+                <br><br>
+            </div>
+            <div class="col-md-3" style="align-items: center;">
+              <a href="{{ URL_ROOT }}/file_view/flowchart" >
+                <img src="{{ URL_ROOT}}/static/workshop_app/img/part.png"><br><br>
+                How to Participate</a>
+                <br><br>
+            </div>
+            <div class="col-md-3">
+            <a href="{{ URL_ROOT }}/benefits/">
+                <img src="{{ URL_ROOT}}/static/workshop_app/img/bnft.png"><br><br>
+                Benefits</a>
+                <br><br>
+            </div>
+            <div class="col-md-3">
+            <a href="{{ URL_ROOT }}/view_workshoptype_details/">
+                <img src="{{ URL_ROOT}}/static/workshop_app/img/list.png"><br><br>
+                Workshops List</a>
+                <br><br>
+            </div>
+            <!-- /.col-lg-12 -->
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Content Row -->
+        <div class="row" id="bottom">
+            <div class="col-md-4">
+                <br><br>
+                <h4>Organized By:</h4>
+                <img src="{{ URL_ROOT}}/static/workshop_app/img/fossee_logo.png">
+                &nbsp; &nbsp;
+                <img src="{{ URL_ROOT}}/static/workshop_app/img/iitb_logo.png">
+            </div>
+            <!-- /.col-md-4 -->
+            <div class="col-md-4">
+                <br>
+                <h3>Related Links</h3>
+                <a href="http://fossee.in" target="_blank" >fossee.in</a><br>
+                <a href="http://yaksh.fossee.in" target="_blank" >yaksh.fossee.in</a><br>
+                <a href="http://python.fossee.in" target="_blank" >python.fossee.in</a>
+            </div>
+            <!-- /.col-md-4 -->
+            <div class="col-md-4">
+                <h3>Contact Us</h3>
+                FOSSEE, IIT-Bombay<br>
+                Mumbai, India <br> <br>
         
-        Phone: (+91) 22 2576
-        4133<br>
-        Email: workshops[at]fossee[dot]in 
-      </div>
-    </div>
-    
+                Phone: (+91) 22 2576 4133<br>
+                Email: workshops[at]fossee[dot]in
+                </div>
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
 
-    <div class="footer">
-    <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" style="width:5%;height:3%;">
-      This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License
+        <!-- Footer -->
+        <footer>
+            <div class="footer row">
+                <div class="col-lg-12">
+                <img src="" style="height: 40px;" >
+                    <img src="{{ URL_ROOT }}/static/workshop_app/img/cc.png" > &nbsp; &nbsp;
+                    This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License                
+                </div>
+            </div>
+        </footer>
+
     </div>
-  </div>
-  </body>
+    <!-- /.container -->
+
+</body>
+
 </html>

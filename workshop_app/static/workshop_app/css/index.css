@@ -3,92 +3,79 @@ body {
   background-color: grey;
 }
 
-.fossee-label {
-  padding-top: 20%;
-  margin-left: 9%;
-  color: #6D5847;
-  font-size: 400%;
+.container {
+  background-color: #C8C5B6;
+  width: 90%;
 }
 
-.logo {
-    float: left;
-    margin-top: 9%;
-    margin-left: 15%;
+.fossee-label {
+  color: #6D5847;
+  text-align: center;
+  font-size: 400%;
+  margin-top: 12%;
 }
 
 .label-bar {
   color: #6D5847;
-  float: right;
   margin-top: 9%;
   font-size: 120%;
-  margin-right: 3%;
+  background-color: white;
+  text-align:right;
+
 }
 
+.label-bar a {
+  color: #6D5847;
+}
 
 .login {
-    margin-left: auto;
-    margin-right: 1%;
-    width: 40%;
-    height: 90%;
-    background: white;
+
+}
+
+#first-right {
+  background-color: white;
+  width:90%;
+  margin: auto;
+  padding: 5%;
+  text-align: center;
 }
 
 #rectbox {
-    border-radius: 9%;
+    border-radius: 15px 15px 15px 15px;
     background: #6D5847;
-    padding: 3%; 
-    margin-left: 10%;
+    margin-left: 15%;
     margin-top: 3%;
     width: 75%;
-    height: 60%;    
-}
+    height: 60%;
+    padding-top: 8%;
+    padding-bottom: 8%; 
 
+}
 
 
 /* Icons with their respective Images */
 .icons {
     background: white;
     margin-top: 3%;
+    padding-top: 2%;
+    font-size: 15pt;
+    color: #6D5847;
 }
 
-figure.item {
-    /* To correctly align image, regardless of content height: */
-    vertical-align: top;
-    display: inline-block;
-    /* To horizontally center images and caption */
-    text-align: center;
-    /* The width of the container also implies margin around the images. */
+.icons a {
+  color: #6D5847;
 }
 
-
-
+label {
+  color:white !important;
+}
 
 
 /* Contact Us, Related Links and Organization Logo css*/
 
 
-.org-logo {
-	margin-top: 1%;
-
-  float: left;
-  color: #5A3700;
-  
-}
-
-.related-links {
-  font-size: 120%;
-	color: #5A3700;
-  text-align: center;
-  margin-top: 1%;
-}
-
-.contact-us {
-	font-size: 140%;
-  color: #5A3700;
-  margin-top: 1%;
-
-  float: right;
-
+#bottom a{
+  color: #6D5847;
 }
 
 /* Footer */

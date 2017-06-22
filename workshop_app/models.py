@@ -3,23 +3,40 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from recurrence.fields import RecurrenceField
+import os
 
 position_choices = (
     ("coordinator", "Coordinator"),
     ("instructor", "Instructor")
     )
 
+department_choices = (
+    ("computer", "Computer Science"),
+    ("information technology", "Information Technology"),
+    ("civil engineering", "Civil Engineering"),
+    ("electrical engineering", "Electrical Engineering"),
+    ("mechanical engineering", "Mechanical Engineering"),
+    ("chemical engineering", "Chemical Engineering"),
+    ("aerospace engineering", "Aerospace Engineering"),
+    ("biosciences and bioengineering", "Biosciences and  BioEngineering"),
+    ("electronics", "Electronics"),
+    ("energy science and engineering", "Energy Science and Engineering"),
+    ("others", "Others"),
+    )
 
 def has_profile(user):
     """ check if user has profile """
     return True if hasattr(user, 'profile') else False
+
+def attachments(instance, filename):
+    return os.sep.join((instance.workshoptype_name.replace(" ", '_'), filename))
 
 class Profile(models.Model):
     """Profile for users(instructors and coordinators)"""
 
     user = models.OneToOneField(User)
     institute = models.CharField(max_length=150)
-    department = models.CharField(max_length=150)
+    department = models.CharField(max_length=150, choices=department_choices)
     phone_number = models.CharField(
                 max_length=15,
                 validators=[RegexValidator(
@@ -30,6 +47,7 @@ class Profile(models.Model):
                             )]
                 ,null=False)
     position = models.CharField(max_length=32, choices=position_choices,
+                    default='coordinator',
                     help_text='Select Coordinator if you want to organise a workshop\
                             in your college/school. <br> Select Instructor if you want to conduct\
                             a workshop.')
@@ -56,6 +74,11 @@ class WorkshopType(models.Model):
     workshoptype_duration = models.CharField(max_length=32, 
                     help_text='Please write this in \
                     following format eg: 3days, 8hours a day')
+    workshoptype_attachments = models.FileField(upload_to=attachments, blank=True,
+                    help_text='Please upload workshop documents one by one, \
+                    ie.workshop schedule, instructions etc. \
+                    Please Note: Name of Schedule file should be similar to \
+                    WorkshopType Name')
 
     def __str__(self):
         return u"{0} {1}".format(self.workshoptype_name, 
@@ -110,11 +133,11 @@ class ProposeWorkshopDate(models.Model):
         Contains details of proposed date and workshop from coordinator
     """
 
-    condition_one = models.BooleanField(default=False, help_text='I will give\
-                                minimum 50 participants for the workshop.')
-    condition_two = models.BooleanField(default=False, help_text='I agree \
+    condition_one = models.BooleanField(default=False, help_text='We assure to\
+     give minimum 50 participants for the workshop.')
+    condition_two = models.BooleanField(default=False, help_text='We agree \
                                 that this booking won\'t be cancelled without \
-                                prior notice to the instructor and fossee.')
+                                2days of prior notice to the instructor and fossee.')
     condition_three = models.BooleanField(default=False, help_text='This \
                     proposal is subject to FOSSEE and instructor approval.')
 
@@ -144,3 +167,20 @@ class BookedWorkshop(models.Model):
 
     booked_workshop_requested = models.ForeignKey(RequestedWorkshop, null=True) 
     booked_workshop_proposed = models.ForeignKey(ProposeWorkshopDate, null=True)
+
+class Testimonial(models.Model):
+    """
+    Contains Testimonals of Workshops
+    """
+
+    name = models.CharField(max_length=150)
+    institute = models.CharField(max_length=255)
+    department = models.CharField(max_length=150)
+    message = models.TextField()
+
+    def __str__(self):
+        return u"{0} | {1} ".format(
+                    self.name, 
+                    self.institute,
+                    self.department
+                    )

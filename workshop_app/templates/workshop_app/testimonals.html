@@ -1,0 +1,74 @@
+{% extends 'workshop_app/base.html' %}
+
+	{% block title %}
+		Testimonals
+	{% endblock %}
+
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{ URL_ROOT }}/">Home</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+{% endblock %}
+
+	{% block extra %}
+		<link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/testimonials.css" type="text/css" />
+	{% endblock %}
+	{% block content %}
+
+	<div class="container content">
+		<div class="row">
+		    <div class="col-md-6 col-md-offset-3">
+		        <div class="testimonials">
+		        	{% for m in messages %}
+		        	<div class="active item">
+		        	<div class="carousel-info">
+		                <div class="pull-left">
+		                  <span class="testimonials-name">{{ m.name }},</span>
+		                  <span class="testimonials-post">{{ m.institute }}</span><br>
+		                </div>
+		              </div>
+		              <blockquote><p>{{m.message}}</p></blockquote>
+		            </div>
+		           	{% endfor %}
+		        </div>
+		    </div>
+		</div>
+	</div>
+
+	<!-- Page Navigation -->
+	<div class="container">
+		
+		<div class="Page-Nav" align="center">
+		<nav aria-label="Page navigation">
+		 	<ul class="pagination pagination-sm">
+			  	<li class="page-item">
+			      {% if messages.has_previous %}
+					<a class="page-link" tabindex="-1" 
+							href="?page={{ messages.previous_page_number }}">Previous</a>
+				{% endif %}
+			    </li>
+			    <li class="page-item">
+			    <span class="current">
+				Page {{ messages.number }} of {{ messages.paginator.num_pages }}
+					</span>
+				</li>
+			    <li class="page-item">
+			    {% if messages.has_next %}
+					<a class="page-link" href="?page={{ messages.next_page_number }}">Next
+					</a>	
+				{% endif %}
+			    </li>
+		  	</ul>
+		</nav>
+		</div>
+	</div>
+	{% endblock %}

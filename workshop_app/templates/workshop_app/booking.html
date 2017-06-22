@@ -37,9 +37,9 @@
 			var $dialog = $('<div></div').html(
 				'<form id="myform" action="">\
 				<input type="checkbox" id="one"\
-				name="one" value="one"/> I will give minimum 50 participants for the workshop.<br/>\
-				<input type="checkbox" id="two" name="two" value="two" /> I agree that this booking won\'t be cancelled without prior notice to the instructor and fossee.<br/>\
-				<input type="checkbox" id="three" name="three" value="three"/> I am '+ check_count +' in the queue.\
+				name="one" value="one"/> We assure to give minimum 50 participants for the workshop.<br/>\
+				<input type="checkbox" id="two" name="two" value="two" /> We agree that this booking won\'t be cancelled without prior notice of 2days to the instructor and fossee.<br/>\
+				<input type="checkbox" id="three" name="three" value="three"/> Your request will be number '+ check_count +' in the queue.\
 				</form> ')
 				.dialog({
 					autoOpen: false,
@@ -85,13 +85,16 @@
 
 	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">Coordinator Profile</a>
+		<div class="navbar-header" class="active">
+		  <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Home</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li class="active"><a href="{{ URL_ROOT}}/book/">Book</a></li>
 		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
 		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+		  <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
+		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+		  <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
+		  <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -102,7 +105,7 @@
 {% endblock %}
 
 {% block content %}
-	<h4 align="center">This is the list of events available, if you haved booked a workshop please goto My Workshops and check your workshop status.</h4>
+	<h3 align="center">List of Available Workshops </h3>
 	<br>
 	<div class="container">
 		<table class="table table-hover ">
@@ -121,27 +124,13 @@
 
 						<tr >
 							<td id="instructor-name">{{ workshop.1 }}</td>
-							<td class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}"
-							id="workshop-name">{{ workshop.2 }}<a href="#">
+							<td 
+							id="workshop-name">{{ workshop.2 }} <a href="{{URL_ROOT}}/file_view/{{workshop.4}}" >
           					<span class="glyphicon glyphicon-info-sign"></span>
-        					</a></td>
+        					</a> </td>
 							<td id="workshop-date{{ forloop.counter }}">{{ workshop.0 }}</td>
 							<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.0}},{{workshop.3}},{{workshop.4}}')" > Book</button></td>
 						</tr>
-
-						  <tr>
-					   <td colspan="12" class="hiddenRow">
-						   <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
-						   <table class="table table-striped">
-						   	<tbody>
-						   		<tr>
-						   		<td>{{ workshop.5|safe }}</td>
-						   		</tr>
-						   	</tbody>
-						   	</table>
-						   </div>
-					   </td>
-					   </tr>
 					</tbody>
 			{% endfor %}
 		</table>

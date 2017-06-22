@@ -7,7 +7,8 @@ from .models import (
 					Profile, User,
 					has_profile, Workshop, 
 					WorkshopType, RequestedWorkshop,
-					BookedWorkshop, ProposeWorkshopDate
+					BookedWorkshop, ProposeWorkshopDate,
+					Testimonial
 					)
 from django.template import RequestContext
 from datetime import datetime, date
@@ -23,10 +24,18 @@ from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
 from textwrap import dedent
+from django.conf import settings
+from os import listdir, path, sep
+import datetime as dt
+from zipfile import ZipFile
+try:
+    from StringIO import StringIO as string_io
+except ImportError:
+    from io import BytesIO as string_io
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
-                "Prathamesh Salunke", "Akshen Doke", "Kiran Kishore",
+                "Prathamesh Salunke", "Kiran Kishore",
                 "KhushalSingh Rajput", "Prabhu Ramachandran"]
 
 
@@ -42,7 +51,7 @@ def index(request):
 
 	user = request.user
 	form = UserLoginForm()
-	if user.is_authenticated():
+	if user.is_authenticated() and is_email_checked(user):
 		if user.groups.filter(name='instructor').count() > 0:
 			return redirect('/manage/')
 		return redirect('/book/')
@@ -92,21 +101,31 @@ def user_logout(request):
 	return render(request, 'workshop_app/logout.html')
 
 
-def activate_user(request, key):
+def activate_user(request, key=None):
+	user = request.user
+	if key is None:
+		if user.is_authenticated() and user.profile.is_email_verified==0 and \
+		timezone.now() > user.profile.key_expiry_time:
+			status = "1"
+			Profile.objects.get(user_id=user.profile.user_id).delete()
+			User.objects.get(id=user.profile.user_id).delete()
+			return render(request, 'workshop_app/activation.html', 
+						{'status':status})
+		elif user.is_authenticated() and user.profile.is_email_verified==0:
+			return render(request, 'workshop_app/activation.html')
+		elif user.is_authenticated() and user.profile.is_email_verified:
+			status = "2"
+			return render(request, 'workshop_app/activation.html', 
+						{'status':status})
+		else:
+			return redirect('/register/')
+
 	try:
 		user = Profile.objects.get(activation_key=key)	
 	except:
 		return redirect('/register/')
-
-	if user.is_email_verified:
-		status = "2"
-	elif timezone.now() > user.key_expiry_time:
-		status = "1"
-		Profile.objects.get(user_id=user.user_id).delete()
-		User.objects.get(id=user.user_id).delete()
-		return render(request, 'workshop_app/activation.html',
-					{"status": status})
-	elif key == user.activation_key:
+		
+	if key == user.activation_key:
 		user.is_email_verified = True
 		user.save()
 		status = "0"
@@ -135,11 +154,17 @@ def user_register(request):
 			
 			return render(request, 'workshop_app/activation.html')
 		else:
+			if request.user.is_authenticated():
+				return redirect('/view_profile/')
 			return render(
 						request, "workshop_app/register.html", 
 						{"form": form}
 						)
 	else:
+		if request.user.is_authenticated() and is_email_checked(request.user):
+			return redirect('/my_workshops/')
+		elif request.user.is_authenticated():
+			return render(request, 'workshop_app/activation.html') 
 		form = UserRegistrationForm()
 	return render(request, "workshop_app/register.html", {"form": form})
 
@@ -155,11 +180,12 @@ def book(request):
 			workshop_details = Workshop.objects.all()
 			
 			workshop_occurence_list = []
-			today = datetime.now()
+			today = datetime.now() + dt.timedelta(days=3)
+			upto = datetime.now() + dt.timedelta(weeks=52)
 			for workshops in workshop_details:
 				dates = workshops.recurrences.between(
 					today,
-		    		datetime(2040, 12, 31, 0, 0, 0), #Needs to be changed yearly
+		    		upto,
 		    		inc=True
 					)
 				
@@ -225,7 +251,7 @@ def book(request):
 						{"workshop_details": workshop_occurences}
 						 )
 		else:
-			return render(request, "workshop_app/activation.html")
+			return redirect('/activate_user/')
 	else:
 		return redirect('/login/')
 
@@ -256,11 +282,12 @@ def book_workshop(request):
 										workshop_instructor=client_data[1],
 										workshop_title_id=client_data[2]
 										)
-
+		today = datetime.now() + dt.timedelta(days=3)
+		upto = datetime.now() + dt.timedelta(weeks=52)
 		for workshop in workshops_list:
 			workshop_recurrence_list =  workshop.recurrences.between(
-										datetime(2017, 3, 12, 0, 0, 0),
-										datetime(2040, 12, 31, 0, 0, 0),
+										today,
+										upto,
 										inc=True
 										)
 
@@ -315,10 +342,11 @@ def book_workshop(request):
 							phone_number=phone_number)
 								
 						return HttpResponse(dedent("""\
-						Thank You, Please check 
-						your email for further information. Your number on the
-						queue for this book is {0}""".format(str(queue))))
+						Your request has been successful, Please check 
+						your email for further information. Your request is number
+						{0} in the queue.""".format(str(queue))))
 	else:
+		logout(request)
 		return HttpResponse("Some Error Occurred.")
 
 
@@ -335,11 +363,12 @@ def manage(request):
 													)
 
 				workshop_occurence_list = []
-				today = datetime.now()
+				today = datetime.now() + dt.timedelta(days=3)
+				upto = datetime.now() + dt.timedelta(weeks=52)
 				for workshop in workshop_details:
 					workshop_occurence = workshop.recurrences.between(
 												today,
-												datetime(2040, 12, 31, 0, 0, 0),
+												upto,
 												inc=True													
 												)
 					for i in range(len(workshop_occurence)):
@@ -386,7 +415,7 @@ def manage(request):
 
 		return redirect('/book/')
 	else:
-		return redirect('/login/')
+		return redirect('/activate_user/')
 
 
 @login_required
@@ -452,10 +481,12 @@ def my_workshops(request):
 											workshop_title_id=client_data[2]
 											)
 					
+					today = datetime.now() + dt.timedelta(days=3)
+					upto = datetime.now() + dt.timedelta(weeks=52)
 					for workshop in workshops_list:
 						workshop_recurrence_list = workshop.recurrences.between(
-													datetime(2017, 3, 12, 0, 0, 0),
-													datetime(2040, 12, 31, 0, 0, 0),
+													today,
+													upto,
 													inc=True
 													)
 
@@ -584,7 +615,7 @@ def my_workshops(request):
 				workshops.append(p)
 
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshops, 12)
+			paginator = Paginator(workshops[::-1], 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -612,7 +643,7 @@ def my_workshops(request):
 				workshops.append(p)			
 
 			#Show upto 12 Workshops per page
-			paginator = Paginator(workshops, 12)
+			paginator = Paginator(workshops[::-1], 12)
 			page = request.GET.get('page')
 			try:
 				workshop_occurences = paginator.page(page)
@@ -657,7 +688,18 @@ def propose_workshop(request):
 @login_required
 def view_profile(request):
 	""" view instructor and coordinator profile """
-	return render(request, "workshop_app/view_profile.html")
+	user = request.user
+	if is_email_checked(user) and user.is_authenticated():
+		return render(request, "workshop_app/view_profile.html")
+	else:
+		if user.is_authenticated():
+			return render(request, 'workshop_app/activation.html')
+		else:
+			try:
+				logout(request)
+				return redirect('/login/')
+			except:
+				return redirect('/register/')
 
 
 @login_required
@@ -665,11 +707,18 @@ def edit_profile(request):
 	""" edit profile details facility for instructor and coordinator """
 
 	user = request.user
-	if is_instructor(user) and is_email_checked(user):
-		template = 'workshop_app/manage.html'
-	else:
-		if is_email_checked(user):
+	if is_email_checked(user):
+		if is_instructor(user):
+			template = 'workshop_app/manage.html'
+		else:
 			template = 'workshop_app/booking.html'
+	else:
+		try:
+			logout(request)
+			return redirect('/login/')
+		except:
+			return redirect('/register/')
+
 	context = {'template': template}
 	if has_profile(user) and is_email_checked(user):
 		profile = Profile.objects.get(user_id=user.id)
@@ -687,16 +736,14 @@ def edit_profile(request):
 			form_data.save()
 
 			return render(
-						request, 'workshop_app/profile_updated.html', 
-						context
+						request, 'workshop_app/profile_updated.html'
 						)
 		else:
 			context['form'] = form
 			return render(request, 'workshop_app/edit_profile.html', context)
 	else:
 		form = ProfileForm(user=user, instance=profile)
-		context['form'] = form
-		return render(request, 'workshop_app/edit_profile.html', context)
+		return render(request, 'workshop_app/edit_profile.html', {'form':form})
 
 
 @login_required
@@ -781,3 +828,41 @@ def faq(request):
 
 def how_to_participate(request):
 	return render(request, 'workshop_app/how_to_participate.html')
+
+def file_view(request, workshop_title):
+	if workshop_title =='flowchart':
+		pdf_file = open(path.join(settings.MEDIA_ROOT,'flowchart.pdf'), 'rb')
+		return HttpResponse(pdf_file, content_type="application/pdf")
+	else:
+		filename = WorkshopType.objects.get(id=workshop_title)
+		attachment_path = path.dirname(filename.workshoptype_attachments.path)
+		zipfile_name = string_io()
+		zipfile = ZipFile(zipfile_name, "w")
+		attachments = listdir(attachment_path)
+		for file in attachments:
+			file_path = sep.join((attachment_path, file))
+			zipfile.write(file_path, path.basename(file_path))
+		zipfile.close()
+		zipfile_name.seek(0)
+		response = HttpResponse(content_type='application/zip')
+		response['Content-Disposition'] = 'attachment; filename={0}.zip'.format(
+			filename.workshoptype_name.replace(" ", "_")
+	        )
+		response.write(zipfile_name.read())
+		return response
+
+def testimonials(request):
+	testimonials = Testimonial.objects.all().order_by('-id')
+	paginator = Paginator(testimonials, 3) #Show upto 12 workshops per page
+
+	page = request.GET.get('page')
+	try:
+		messages = paginator.page(page)
+	except PageNotAnInteger:
+		#If page is not an integer, deliver first page.
+		messages = paginator.page(1)
+	except EmptyPage:
+		#If page is out of range(e.g 999999), deliver last page.
+		messages = paginator.page(paginator.num_pages)
+	return render(request, 'workshop_app/testimonals.html', {"messages":messages})
+

@@ -8,16 +8,21 @@
 	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">SiteName</a>
+		  <a class="navbar-brand" href="#">Home</a>
 		</div>
 		<ul class="nav navbar-nav navbar-right">
 		{% if request.user.profile.is_email_verified %}
 		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-		{% endif %}
+		
 		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		{% endif %}
 		</ul>
 	  	</div>
     </nav>
+{% endblock %}
+
+{% block extra %}
+
 {% endblock %}
 
 {% block content %}
@@ -29,10 +34,15 @@
 			</div>
 	</div>
 	{% elif status == '1' %}
+	<script type="text/javascript">
+		window.setTimeout(function()
+		{   
+			location.href="{{ URL_ROOT }}/register/"
+		}, 3000);
+	</script>
 	<div class="container">
 			<div class="jumbotron">
 				<p> Your activation has expired please register again</p>
-				
 			</div>
 	</div>
 	{% elif status == '0' %}
@@ -43,10 +53,17 @@
 			</div>
 	</div>
 	{% else %}
+	<script type="text/javascript">
+		window.setTimeout(function()
+		{   
+			location.href="{{ URL_ROOT }}/logout/"
+		}, 5000);
+	</script>
+
 	<div class="container">
 		<div class="jumbotron">
 			<h1>Activation Awaiting</h1>      
-			<p>Please <strong>Logout</strong> and check your email to activate your account. The key expires in <strong>3days</strong> from the date of registeration</p>
+			<p>Please check your email to activate your account. The key expires in <strong>24hours</strong> from the date of registeration. You will be logged out automatically.</p>
 		</div>
 	</div>
 	{% endif %}

@@ -23,10 +23,12 @@ js_info_dict = {
 }
 
 
+
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^register/$', views.user_register),
     url(r'^activate_user/(?P<key>.+)$', views.activate_user),
+    url(r'^activate_user/$', views.activate_user),
     url(r'^login/$', views.user_login),
     url(r'^logout/$', views.user_logout),
     url(r'^view_profile/$', views.view_profile),
@@ -42,6 +44,8 @@ urlpatterns = [
     url(r'^view_workshoptype_details/$', views.view_workshoptype_details),
     url(r'^create_workshop/$', views.create_workshop),
     url(r'^propose_workshop/$', views.propose_workshop),
+    url(r'^testimonials/$', views.testimonials),
+    url(r'^file_view/(?P<workshop_title>[\w|\W]+)$', views.file_view),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
 
 ]

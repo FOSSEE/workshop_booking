@@ -15,12 +15,11 @@
   <nav class="navbar navbar-default navbar-custom">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#">Instructor Profile</a>
+        <a class="navbar-brand" href="{{URL_ROOT}}/manage/">Home</a>
       </div>
       <ul class="nav navbar-nav">
-        <li ><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
         <li class="active"><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-        <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+        <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
        <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -39,6 +38,10 @@
       {{ form.media }}
       {{ form.as_p }}
       <br><br>
+      <div class="alert alert-info">
+        <strong>Please Note:!</strong> While Making Recurring Workshops please also fill <strong>Repeat Until </strong> and while creating single event please set it <strong>4days after the current date.</strong>
+      </div>
+      <br>
       <button class="btn btn-success" type="submit">Save</button>
     </form>
   </div>

@@ -7,22 +7,43 @@
 {% block extra %}
 
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-
+	
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block header %}
  <nav class="navbar navbar-default navbar-custom">
+ {% if request.user.profile.position == 'coordinator' %}
+ 	<div class="container-fluid">
+  	<div class="navbar-header">
+		  <a class="navbar-brand"  href="{{ URL_ROOT}}/book/">Home</a>
+	</div>
+		<ul class="nav navbar-nav">
+		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
+		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+		  <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
+		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a>
+		  <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
+		  <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+		  </li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		</ul>
+	</div>
+ {% else %}
   <div class="container-fluid">
 	<div class="navbar-header">
-	  <a class="navbar-brand" href="{{URL_ROOT}}/">Booking</a>
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">Home</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right">
 	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 	</ul>
   	</div>
+  	{% endif %}
   </nav>
   {% endblock %}
 
@@ -30,7 +51,7 @@
 
 	<div class="container">
 		
-		<table class="table table-hover" style="border-collapse:collapse;">
+		<table class="table table-hover">
 		  <thead>
 		    <tr>
 		      <th>id</th>
@@ -45,26 +66,12 @@
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
 		      <td>{{ w.workshoptype_name }}</td>
 		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><button class="btn btn-default btn-sm" class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}">View Workshop Details</button></td>
+		      <td><a href="{{URL_ROOT}}/file_view/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
 		    </tr>
-
-		   <tr>
-		   <td colspan="12" class="hiddenRow">
-			   <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
-			   <table class="table table-striped">
-			   	<tbody>
-			   		<tr>
-			   		<td>{{ w.workshoptype_description|safe }}</td>
-			   		</tr>
-			   	</tbody>
-			   	</table>
-			   </div>
-		   </td>
-		   </tr>
 		  </tbody>
 		 {% endfor %}
 		</table>
-		
+		<a style="color: white;" href="{{ URL_ROOT }}/book/"><button class="btn btn-primary btn-lg" style="float: right;">Start Booking Now</button></a>
 	</div>
 
 <!-- Page Navigation -->

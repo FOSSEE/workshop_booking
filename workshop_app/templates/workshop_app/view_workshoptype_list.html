@@ -10,17 +10,16 @@
 	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">WebSiteName</a>
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/manage/">Home</a>
 		</div>
 		<ul class="nav navbar-nav">
 		{% if request.user.profile.position == 'instructor'%}
-		  <li><a href="{{ URL_ROOT }}/manage/">Manage</a></li>
 		  <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
 		{% else %}
 		  <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
 		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
 		{% endif %}
-		  <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">View Workshop List</a></li>
+		  <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
 		  <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
 		</ul>
 
@@ -44,7 +43,7 @@
 
 	<div class="container">
 		
-		<table class="table table-hover" style="border-collapse:collapse;">
+		<table class="table table-hover" >
 		  <thead>
 		    <tr>
 		      <th>id</th>
@@ -55,29 +54,14 @@
 
 		{% for w in workshoptype %}
 		  <tbody>
-		    <tr  >
+		    <tr>
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
 		      <td>{{ w.workshoptype_name }}</td>
 		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><button class="btn btn-default btn-sm" class="accordion-toggle"  data-toggle="collapse" href="#collapseOne{{ forloop.counter }}">View Workshop Details</button></td>
+		      <td><a class="btn btn-default btn-sm" href="{{URL_ROOT}}/file_view/{{ w.id }}">View Workshop Details</a></td>
 		      {% if request.user.profile.position == 'coordinator' %}
-		      <td><button class="btn btn-default btn-sm" ><a href="{{ URL_ROOT }}/book/">Book</a></button></td>
 		      {% endif %}
 		    </tr>
-
-		   <tr>
-		   <td colspan="12" class="hiddenRow">
-			   <div id="collapseOne{{ forloop.counter }}" class="accordion-body collapse">
-			   <table class="table table-striped">
-			   	<tbody>
-			   		<tr>
-			   		<td>{{ w.workshoptype_description|safe }}</td>
-			   		</tr>
-			   	</tbody>
-			   	</table>
-			   </div>
-		   </td>
-		   </tr>
 		  </tbody>
 		 {% endfor %}
 		</table>
