@@ -66,7 +66,7 @@
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
 		      <td>{{ w.workshoptype_name }}</td>
 		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><a href="{{URL_ROOT}}/pdf_view/{{ w.workshoptype_name }}"class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
+		      <td><a href="{{URL_ROOT}}/file_view/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
 		    </tr>
 		  </tbody>
 		 {% endfor %}

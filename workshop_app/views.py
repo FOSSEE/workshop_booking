@@ -25,8 +25,13 @@ from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
 from textwrap import dedent
 from django.conf import settings
-from os import listdir, path
+from os import listdir, path, sep
 import datetime as dt
+from zipfile import ZipFile
+try:
+    from StringIO import StringIO as string_io
+except ImportError:
+    from io import BytesIO as string_io
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
@@ -819,16 +824,27 @@ def faq(request):
 def how_to_participate(request):
 	return render(request, 'workshop_app/how_to_participate.html')
 
-def pdf_view(request, workshop_title):
-	filename = WorkshopType.objects.filter(workshoptype_name=workshop_title)
-	if filename.exists():
-		attachment_path = path.join(settings.MEDIA_ROOT, workshop_title.replace(" ","_"))
-		pdf_file = open(path.join(attachment_path, \
-					'{0}.pdf'.format(workshop_title.replace(" ","_"))), 'rb')
-	else:
+def file_view(request, workshop_title):
+	if workshop_title =='flowchart':
 		pdf_file = open(path.join(settings.MEDIA_ROOT,'flowchart.pdf'), 'rb')
-
-	return HttpResponse(pdf_file, content_type="application/pdf")
+		return HttpResponse(pdf_file, content_type="application/pdf")
+	else:
+		filename = WorkshopType.objects.get(id=workshop_title)
+		attachment_path = path.dirname(filename.workshoptype_attachments.path)
+		zipfile_name = string_io()
+		zipfile = ZipFile(zipfile_name, "w")
+		attachments = listdir(attachment_path)
+		for file in attachments:
+			file_path = sep.join((attachment_path, file))
+			zipfile.write(file_path, path.basename(file_path))
+		zipfile.close()
+		zipfile_name.seek(0)
+		response = HttpResponse(content_type='application/zip')
+		response['Content-Disposition'] = 'attachment; filename={0}.zip'.format(
+			filename.workshoptype_name.replace(" ", "_")
+	        )
+		response.write(zipfile_name.read())
+		return response
 
 def testimonials(request):
 	testimonials = Testimonial.objects.all().order_by('-id')
@@ -844,22 +860,4 @@ def testimonials(request):
 		#If page is out of range(e.g 999999), deliver last page.
 		messages = paginator.page(paginator.num_pages)
 	return render(request, 'workshop_app/testimonals.html', {"messages":messages})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

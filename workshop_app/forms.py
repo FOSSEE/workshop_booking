@@ -60,12 +60,6 @@ class UserRegistrationForm(forms.Form):
     department = forms.ChoiceField(help_text='Department you work/study',
                  choices=department_choices)
 
-    # Activate when instructor Registration Starts
-    # position = forms.ChoiceField(help_text='Select Coordinator if you want to organise a workshop\
-    #                                 in your college/school. <br> Select Instructor if you want to conduct\
-    #                                 a workshop.',
-    #                             choices=position_choices
-    #                              )
 
     def clean_username(self):
         u_name = self.cleaned_data["username"]
@@ -199,8 +193,8 @@ class ProposeWorkshopDateForm(forms.ModelForm):
 
     class Meta:
         model = ProposeWorkshopDate
-        fields = ['proposed_workshop_title', 'proposed_workshop_date',
-                'condition_two','condition_three','condition_one']
+        exclude = ['status', 'proposed_workshop_instructor', 
+                    'proposed_workshop_coordinator']
         widgets = {
             'proposed_workshop_date': forms.DateInput(attrs={
                 'class':'datepicker'}),

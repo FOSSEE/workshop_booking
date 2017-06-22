@@ -58,7 +58,7 @@
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
 		      <td>{{ w.workshoptype_name }}</td>
 		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><a class="btn btn-default btn-sm" href="{{URL_ROOT}}/pdf_view/{{ w.workshoptype_name }}">View Workshop Details</a></td>
+		      <td><a class="btn btn-default btn-sm" href="{{URL_ROOT}}/file_view/{{ w.id }}">View Workshop Details</a></td>
 		      {% if request.user.profile.position == 'coordinator' %}
 		      {% endif %}
 		    </tr>
