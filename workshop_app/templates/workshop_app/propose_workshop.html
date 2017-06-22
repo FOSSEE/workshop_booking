@@ -12,13 +12,17 @@
 
     <script>
     var dateToday = new Date();
+    var upto = new Date();
+
     dateToday.setDate(dateToday.getDate() + 3);
+    upto.setFullYear(dateToday.getFullYear() + 1);
+
       $(function() {
         $( ".datepicker" ).datepicker({
           changeMonth: true,
           changeYear: true,
-          yearRange: "1994:2084",
           minDate: dateToday,
+          maxDate: upto
           // You can put more options here.
         });
       });

@@ -181,10 +181,11 @@ def book(request):
 			
 			workshop_occurence_list = []
 			today = datetime.now() + dt.timedelta(days=3)
+			upto = datetime.now() + dt.timedelta(weeks=52)
 			for workshops in workshop_details:
 				dates = workshops.recurrences.between(
 					today,
-		    		datetime(2018, 12, 31, 0, 0, 0), #Needs to be changed yearly
+		    		upto,
 		    		inc=True
 					)
 				
@@ -281,11 +282,12 @@ def book_workshop(request):
 										workshop_instructor=client_data[1],
 										workshop_title_id=client_data[2]
 										)
-
+		today = datetime.now() + dt.timedelta(days=3)
+		upto = datetime.now() + dt.timedelta(weeks=52)
 		for workshop in workshops_list:
 			workshop_recurrence_list =  workshop.recurrences.between(
-										datetime(2017, 3, 12, 0, 0, 0),
-										datetime(2018, 12, 31, 0, 0, 0), #Needs to be changed yearly
+										today,
+										upto,
 										inc=True
 										)
 
@@ -362,10 +364,11 @@ def manage(request):
 
 				workshop_occurence_list = []
 				today = datetime.now() + dt.timedelta(days=3)
+				upto = datetime.now() + dt.timedelta(weeks=52)
 				for workshop in workshop_details:
 					workshop_occurence = workshop.recurrences.between(
 												today,
-												datetime(2018, 12, 31, 0, 0, 0), #Needs to be changed yearly
+												upto,
 												inc=True													
 												)
 					for i in range(len(workshop_occurence)):
@@ -478,10 +481,12 @@ def my_workshops(request):
 											workshop_title_id=client_data[2]
 											)
 					
+					today = datetime.now() + dt.timedelta(days=3)
+					upto = datetime.now() + dt.timedelta(weeks=52)
 					for workshop in workshops_list:
 						workshop_recurrence_list = workshop.recurrences.between(
-													datetime(2017, 3, 12, 0, 0, 0),
-													datetime(2018, 12, 31, 0, 0, 0), #Needs to be changed yearly
+													today,
+													upto,
 													inc=True
 													)
 
