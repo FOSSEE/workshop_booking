@@ -51,9 +51,9 @@ class UserRegistrationForm(forms.Form):
                        (max_length=32, widget=forms.PasswordInput())
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
-    phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
+    phone_number = forms.RegexField(regex=r'^.{10}$', 
                                 error_message=("Phone number must be entered \
-                                                  in the format: '+999999999'.\
+                                                  in the format: '9999999999'.\
                                                  Up to 10 digits allowed."))
     institute = forms.CharField(max_length=128, 
                 help_text='Please write full name of your Institute/Organization')
