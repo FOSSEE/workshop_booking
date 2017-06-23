@@ -11,7 +11,7 @@ position_choices = (
     )
 
 department_choices = (
-    ("computer", "Computer Science"),
+    ("computer engineering", "Computer Science"),
     ("information technology", "Information Technology"),
     ("civil engineering", "Civil Engineering"),
     ("electrical engineering", "Electrical Engineering"),
@@ -23,6 +23,7 @@ department_choices = (
     ("energy science and engineering", "Energy Science and Engineering"),
     ("others", "Others"),
     )
+
 
 def has_profile(user):
     """ check if user has profile """
@@ -38,12 +39,12 @@ class Profile(models.Model):
     institute = models.CharField(max_length=150)
     department = models.CharField(max_length=150, choices=department_choices)
     phone_number = models.CharField(
-                max_length=15,
+                max_length=10,
                 validators=[RegexValidator(
-                                regex=r'^.{9}$', message=(
+                                regex=r'^.{10}$', message=(
                                 "Phone number must be entered \
-                                in the format: '+99999999'.\
-                                Up to 15 digits allowed.")
+                                in the format: '9999999999'.\
+                                Up to 10 digits allowed.")
                             )]
                 ,null=False)
     position = models.CharField(max_length=32, choices=position_choices,
