@@ -128,6 +128,12 @@ class RequestedWorkshop(models.Model):
                             on_delete=models.CASCADE
                             )
 
+    def __str__(self):
+        return u"{0} | {1} | {2}".format(
+                    self.requested_workshop_date, 
+                    self.requested_workshop_title,
+                    self.requested_workshop_coordinator,
+                    )
 
 class ProposeWorkshopDate(models.Model):
     """
@@ -160,6 +166,13 @@ class ProposeWorkshopDate(models.Model):
                     max_length=32, default="Pending"
                     )
 
+    def __str__(self):
+        return u"{0} | {1} | {2}".format(
+                    self.proposed_workshop_date, 
+                    self.proposed_workshop_title,
+                    self.proposed_workshop_coordinator,
+                    )
+
 
 class BookedWorkshop(models.Model):
     """
@@ -168,6 +181,13 @@ class BookedWorkshop(models.Model):
 
     booked_workshop_requested = models.ForeignKey(RequestedWorkshop, null=True) 
     booked_workshop_proposed = models.ForeignKey(ProposeWorkshopDate, null=True)
+
+    def __str__(self):
+        return u"{0} | {1} |".format(
+                    self.booked_workshop_requested, 
+                    self.booked_workshop_proposed,
+                    
+                    )
 
 class Testimonial(models.Model):
     """
