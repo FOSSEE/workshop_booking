@@ -18,7 +18,8 @@ from workshop_portal.settings import (
                     EMAIL_HOST_PASSWORD,
                     EMAIL_USE_TLS,
                     PRODUCTION_URL, 
-                    SENDER_EMAIL
+                    SENDER_EMAIL,
+                    ADMIN_EMAIL
                     )
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -126,12 +127,12 @@ def send_email(	request, call_on,
 
 			try:
 				send_mail("New Instructor Registration - FOSSEE, IIT Bombay", 
-					message, SENDER_EMAIL, ['workshops@fossee.in'], 
+					message, SENDER_EMAIL, [ADMIN_EMAIL], 
 					fail_silently=False)
 			except Exception:
 				send_smtp_email(request=request, 
 					subject="Instructor Registration - FOSSEE, IIT Bombay", 
-					message=message, other_email='workshops@fossee.in',
+					message=message, other_email=ADMIN_EMAIL,
 					)
 			
 		else:
@@ -151,8 +152,9 @@ def send_email(	request, call_on,
 			try:
 				send_mail(
 					"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
-					[request.user.email, 'workshops@fossee.in'], fail_silently=False
+					[request.user.email], fail_silently=False
 					)
+
 			except Exception:
 				send_smtp_email(request=request, 
 					subject="Coordinator Registration - FOSSEE, IIT Bombay", 

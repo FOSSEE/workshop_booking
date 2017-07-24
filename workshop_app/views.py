@@ -1,4 +1,3 @@
-
 from .forms import (
 					UserRegistrationForm, UserLoginForm, 
 					ProfileForm, CreateWorkshop,
