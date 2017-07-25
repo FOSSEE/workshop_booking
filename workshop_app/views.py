@@ -137,7 +137,7 @@ def activate_user(request, key=None):
 
 
 def user_register(request):
-	'''User Registeration form'''
+	'''User Registration form'''
 	if request.method == 'POST':
 		form = UserRegistrationForm(request.POST)
 		if form.is_valid():
@@ -157,7 +157,7 @@ def user_register(request):
 			if request.user.is_authenticated():
 				return redirect('/view_profile/')
 			return render(
-						request, "workshop_app/register.html", 
+						request, "workshop_app/registration/register.html", 
 						{"form": form}
 						)
 	else:
@@ -166,7 +166,7 @@ def user_register(request):
 		elif request.user.is_authenticated():
 			return render(request, 'workshop_app/activation.html') 
 		form = UserRegistrationForm()
-	return render(request, "workshop_app/register.html", {"form": form})
+	return render(request, "workshop_app/registration/register.html", {"form": form})
 
 
 #This is shown to coordinator for booking workshops
@@ -673,9 +673,15 @@ def propose_workshop(request):
 				if form.is_valid():
 					form_data = form.save(commit=False)
 					form_data.proposed_workshop_coordinator = user
-					form_data.proposed_workshop_coordinator.save()
-					form_data.save()
-					return redirect('/my_workshops/')
+					#Avoiding Duplicate workshop entries for same date and workshop_title
+					if ProposeWorkshopDate.objects.filter(proposed_workshop_date=form_data.proposed_workshop_date,
+						proposed_workshop_title=form_data.proposed_workshop_title,
+						proposed_workshop_coordinator=form_data.proposed_workshop_coordinator).exists():
+						return redirect('/my_workshops/')
+					else:
+						form_data.proposed_workshop_coordinator.save()
+						form_data.save()
+						return redirect('/my_workshops/')
 			else:
 				form = ProposeWorkshopDateForm()
 			return render(

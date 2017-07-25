@@ -18,7 +18,8 @@ from workshop_portal.settings import (
                     EMAIL_HOST_PASSWORD,
                     EMAIL_USE_TLS,
                     PRODUCTION_URL, 
-                    SENDER_EMAIL
+                    SENDER_EMAIL,
+                    ADMIN_EMAIL
                     )
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -88,76 +89,30 @@ def send_email(	request, call_on,
 	'''
 
 	if call_on == "Registration":
-		if user_position == "instructor":
-			message = dedent("""\
-					Your request as an Instructor at FOSSEE, IIT Bombay 
-					has been received. Please click on the below link to 
+		message = dedent("""\
+					Thank you for registering as a coordinator with us. 
+
+					Please click on the below link to 
 					activate your account
 					{0}/activate_user/{1}
+					
+					After activation you can proceed to book your dates for 
+					the workshop(s).
 
-					You will be notified via email on
-					approval of your instructor account
-					within 3 working days.
+					In case of queries regarding workshop booking(s), 
+					revert to this email.""".format(PRODUCTION_URL, key))
 
-					In case of queries regarding the same revert to this 
-					email.""".format(PRODUCTION_URL, key))
+		try:
+			send_mail(
+				"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
+				[request.user.email], fail_silently=False
+				)
 
-			try:
-				send_mail(
-					"Instructor Registration - FOSSEE, IIT Bombay", message, 
-					SENDER_EMAIL, [request.user.email], fail_silently=False
-					)
-			except Exception: 
-				send_smtp_email(request=request, 
-					subject="Instructor Registration - FOSSEE, IIT Bombay", 
-					message=message, other_email=request.user.email,
-					)
-			
-
-			#Send a mail to admin as well.
-			message = dedent("""\
-					A new instructor request has been received.
-
-					Instructor name: {0}
-					Instructor email: {1}
-
-					Please verify the profile and mail the user within 2
-					working days.""".format(request.user, request.user.email))
-
-			try:
-				send_mail("New Instructor Registration - FOSSEE, IIT Bombay", 
-					message, SENDER_EMAIL, ['workshops@fossee.in'], 
-					fail_silently=False)
-			except Exception:
-				send_smtp_email(request=request, 
-					subject="Instructor Registration - FOSSEE, IIT Bombay", 
-					message=message, other_email='workshops@fossee.in',
-					)
-			
-		else:
-			message = dedent("""\
-						Thank you for registering as a coordinator with us. 
-
-						Please click on the below link to 
-						activate your account
-						{0}/activate_user/{1}
-						
-						After activation you can proceed to book your dates for 
-						the workshop(s).
-
-						In case of queries regarding workshop booking(s), 
-						revert to this email.""".format(PRODUCTION_URL, key))
-
-			try:
-				send_mail(
-					"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
-					[request.user.email, 'workshops@fossee.in'], fail_silently=False
-					)
-			except Exception:
-				send_smtp_email(request=request, 
-					subject="Coordinator Registration - FOSSEE, IIT Bombay", 
-					message=message, other_email=request.user.email,
-					)
+		except Exception:
+			send_smtp_email(request=request, 
+				subject="Coordinator Registration - FOSSEE, IIT Bombay", 
+				message=message, other_email=request.user.email,
+				)
 
 	elif call_on == "Booking":
 		if user_position == "instructor":
