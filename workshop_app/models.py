@@ -129,10 +129,11 @@ class RequestedWorkshop(models.Model):
                             )
 
     def __str__(self):
-        return u"{0} | {1} | {2}".format(
+        return u"{0} | {1} | {2}| {3}".format(
                     self.requested_workshop_date, 
                     self.requested_workshop_title,
                     self.requested_workshop_coordinator,
+                    self.status
                     )
 
 class ProposeWorkshopDate(models.Model):
@@ -167,10 +168,11 @@ class ProposeWorkshopDate(models.Model):
                     )
 
     def __str__(self):
-        return u"{0} | {1} | {2}".format(
+        return u"{0} | {1} | {2}| {3}".format(
                     self.proposed_workshop_date, 
                     self.proposed_workshop_title,
                     self.proposed_workshop_coordinator,
+                    self.status
                     )
 
 
@@ -185,8 +187,7 @@ class BookedWorkshop(models.Model):
     def __str__(self):
         return u"{0} | {1} |".format(
                     self.booked_workshop_requested, 
-                    self.booked_workshop_proposed,
-                    
+                    self.booked_workshop_proposed
                     )
 
 class Testimonial(models.Model):
