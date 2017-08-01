@@ -26,8 +26,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from textwrap import dedent
 from django.conf import settings
 from os import listdir, path, sep
-import datetime as dt
 from zipfile import ZipFile
+import datetime as dt
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -36,7 +36,8 @@ except ImportError:
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                 "Prathamesh Salunke", "Kiran Kishore",
-                "KhushalSingh Rajput", "Prabhu Ramachandran"]
+                "KhushalSingh Rajput", "Prabhu Ramachandran",
+                "Arun KP"]
 
 
 def is_email_checked(user):
@@ -329,7 +330,7 @@ def book_workshop(request):
 									   user_position='instructor', 
 									   workshop_date=workshop_date,
 									   workshop_title=workshop.workshop_title.workshoptype_name,
-									   user_name=str(request.user),
+									   user_name=str(request.user.get_full_name()),
 									   other_email=workshop.workshop_instructor.email
 									   )
 						phone_number = workshop.workshop_instructor.profile.phone_number
@@ -337,7 +338,7 @@ def book_workshop(request):
 						send_email(request, call_on='Booking',
 							workshop_date=workshop_date,
 							workshop_title=workshop.workshop_title.workshoptype_name,
-							user_name=workshop.workshop_instructor.username,
+							user_name=workshop.workshop_instructor.profile.user.get_full_name(),
 							other_email=workshop.workshop_instructor.email,
 							phone_number=phone_number)
 								
@@ -353,6 +354,7 @@ def book_workshop(request):
 @login_required
 def manage(request):
 	user = request.user
+
 	if user.is_authenticated() and is_email_checked(user):
 		#Move user to the group via admin
 		if user.groups.filter(name='instructor').count() > 0:
@@ -448,13 +450,13 @@ def my_workshops(request):
 					booked_workshop_obj = BookedWorkshop()
 					booked_workshop_obj.booked_workshop_requested = workshop_status
 					booked_workshop_obj.save()
-
-					cmail = workshop_status.requested_workshop_coordinator.email
-					cname = workshop_status.requested_workshop_coordinator.username
-					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
-					cinstitute = workshop_status.requested_workshop_coordinator.profile.institute
+					ws = workshop_status
+					cmail = ws.requested_workshop_coordinator.email
+					cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
+					cnum = ws.requested_workshop_coordinator.profile.phone_number
+					cinstitute = ws.requested_workshop_coordinator.profile.institute
 					inum = request.user.profile.phone_number
-					wtitle = workshop_status.requested_workshop_title.workshoptype_name
+					wtitle = ws.requested_workshop_title.workshoptype_name
 
 					#For Instructor
 					send_email(request, call_on='Booking Confirmed', 
@@ -530,13 +532,13 @@ def my_workshops(request):
 					booked_workshop_obj = BookedWorkshop()
 					booked_workshop_obj.booked_workshop_proposed = workshop_status
 					booked_workshop_obj.save()
-
-					cmail = workshop_status.proposed_workshop_coordinator.email
-					cname = workshop_status.proposed_workshop_coordinator.username
-					cnum = workshop_status.proposed_workshop_coordinator.profile.phone_number
-					cinstitute = workshop_status.proposed_workshop_coordinator.profile.institute
+					ws = workshop_status
+					cmail = ws.proposed_workshop_coordinator.email
+					cname = ws.proposed_workshop_coordinator.profile.user.get_full_name()
+					cnum = ws.proposed_workshop_coordinator.profile.phone_number
+					cinstitute = ws.proposed_workshop_coordinator.profile.institute
 					inum = request.user.profile.phone_number
-					wtitle = workshop_status.proposed_workshop_title.workshoptype_name
+					wtitle = ws.proposed_workshop_title.workshoptype_name
 
 					#For Instructor
 					send_email(request, call_on='Booking Confirmed', 
@@ -570,12 +572,12 @@ def my_workshops(request):
 										)
 					workshop_status.status = client_data[-1]
 					workshop_status.save()
-
-					wtitle = workshop_status.requested_workshop_title.workshoptype_name
-					cmail = workshop_status.requested_workshop_coordinator.email
-					cname = workshop_status.requested_workshop_coordinator.username
-					cnum = workshop_status.requested_workshop_coordinator.profile.phone_number
-					cinstitute = workshop_status.requested_workshop_coordinator.profile.institute
+					ws = workshop_status
+					wtitle = ws.requested_workshop_title.workshoptype_name
+					cmail = ws.requested_workshop_coordinator.email
+					cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
+					cnum = ws.requested_workshop_coordinator.profile.phone_number
+					cinstitute = ws.requested_workshop_coordinator.profile.institute
 
 					#For Instructor
 					send_email(request, call_on='Booking Request Rejected', 
@@ -674,13 +676,16 @@ def propose_workshop(request):
 					form_data = form.save(commit=False)
 					form_data.proposed_workshop_coordinator = user
 					#Avoiding Duplicate workshop entries for same date and workshop_title
-					if ProposeWorkshopDate.objects.filter(proposed_workshop_date=form_data.proposed_workshop_date,
+					if ProposeWorkshopDate.objects.filter(
+						proposed_workshop_date=form_data.proposed_workshop_date,
 						proposed_workshop_title=form_data.proposed_workshop_title,
-						proposed_workshop_coordinator=form_data.proposed_workshop_coordinator).exists():
+						proposed_workshop_coordinator=form_data.proposed_workshop_coordinator
+						).exists():
 						return redirect('/my_workshops/')
 					else:
 						form_data.proposed_workshop_coordinator.save()
 						form_data.save()
+
 						return redirect('/my_workshops/')
 			else:
 				form = ProposeWorkshopDateForm()
@@ -872,3 +877,15 @@ def testimonials(request):
 		messages = paginator.page(paginator.num_pages)
 	return render(request, 'workshop_app/testimonals.html', {"messages":messages})
 
+@login_required
+def scheduled_workshops(request):
+	user = request.user
+	if is_instructor(user) and is_email_checked(user):
+		accepted_workshops = ProposeWorkshopDate.objects.all().order_by('-id')[:15]
+		return render(request, 'workshop_app/scheduled_workshops.html',
+					{
+					"accepted_workshops": accepted_workshops,
+					"scheduled_workshops": settings.SCHEDULED_WORKSHOPS
+					})
+	else:
+		redirect('/book/')
