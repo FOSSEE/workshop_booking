@@ -15,6 +15,7 @@
 		<ul class="nav navbar-nav">
 		{% if request.user.profile.position == 'instructor'%}
 		  <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
+		  <li><a href="{{ URL_ROOT }}/scheduled_workshops/">Scheduled Workshops</a></li>
 		{% else %}
 		  <li><a href="{{ URL_ROOT }}/book/">Book</a></li>
 		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
