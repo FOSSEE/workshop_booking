@@ -242,12 +242,12 @@ def send_email(	request, call_on,
 	elif call_on == "Booking Request Rejected":
 		if user_position == "instructor":
 			message = dedent("""\
-					Coordinator name:{0}
+					Coordinator name: {0}
 					Coordinator email: {1}
-					Contact number:{2}
-					Institute:{3}
-					Workshop date:{4}
-					Workshop title:{4}
+					Contact number: {2}
+					Institute: {3}
+					Workshop date: {4}
+					Workshop title: {5}
 
 					You have rejected this booking.  The coordinator has
 					been notified.""".format(user_name, other_email,
@@ -303,3 +303,26 @@ def send_email(	request, call_on,
 				format(workshop_date), message=message,
 				other_email=request.user.email
 				)
+
+	elif call_on == 'Proposed Workshop':
+		if user_position == "instructor":
+			message = dedent("""\
+					A coordinator has proposed a workshop below are the
+					details:
+
+					Coordinator name: {0}
+					Coordinator email: {1}
+					Contact number: {2}
+					Institute: {3}
+					Workshop date: {4}
+					Workshop title: {5}
+
+					Please Accept only if you are willing to take the workshop.
+					{6}/my_workshops/ """
+					.format(user_name, request.user.email,
+					phone_number, institute,
+					workshop_date, workshop_title,
+					PRODUCTION_URL))
+			send_mail("Proposed Workshop on {0}".
+					format(workshop_date), message, SENDER_EMAIL,
+					[other_email], fail_silently=False)

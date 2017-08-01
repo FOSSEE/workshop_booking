@@ -685,7 +685,17 @@ def propose_workshop(request):
 					else:
 						form_data.proposed_workshop_coordinator.save()
 						form_data.save()
-
+						instructors = Profile.objects.filter(position='instructor')
+						for i in instructors:
+							send_email(request, call_on='Proposed Workshop',
+									user_position='instructor',
+									workshop_date=str(form_data.proposed_workshop_date),
+									workshop_title=form_data.proposed_workshop_title,
+									user_name=str(user.get_full_name()),
+									other_email=i.user.email,
+									phone_number=user.profile.phone_number,
+									institute=user.profile.institute
+									)
 						return redirect('/my_workshops/')
 			else:
 				form = ProposeWorkshopDateForm()
@@ -881,7 +891,10 @@ def testimonials(request):
 def scheduled_workshops(request):
 	user = request.user
 	if is_instructor(user) and is_email_checked(user):
-		accepted_workshops = ProposeWorkshopDate.objects.all().order_by('-id')[:15]
+		try:
+			accepted_workshops = ProposeWorkshopDate.objects.all().order_by('-id')[:15]
+		except:
+			accepted_workshops = None
 		return render(request, 'workshop_app/scheduled_workshops.html',
 					{
 					"accepted_workshops": accepted_workshops,
