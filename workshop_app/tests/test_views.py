@@ -91,6 +91,21 @@ class TestProfile(TestCase):
 		self.assertEqual(response.status_code, 200)
 		# self.assertTemplateUsed(response, 'workshop_app/profile_updated.html')
 
+	def test_register_page(self):
+		self.client.get('/register/')
+		self.register_response = self.client.post('/register/',
+			data={
+			'username':'testuser',
+			'email':'test@user.com',
+			'password':'ABCD@123*',
+			'confirm password':'ABCD@123*',
+			'first name':'testor',
+			'last name':'user',
+			'phone number': 1234567890,
+			'institute':'IIT',
+			'department':(2)})
+
+		self.assertEqual(self.register_response.status_code,200)
 
 class TestWorkshopCreation(TestCase):
 	def setUp(self):
@@ -183,7 +198,8 @@ class TestWorkshopCreation(TestCase):
 				'proposed_workshop_date': '2017-06-06'
 			})
 		self.proposed_workshop = ProposeWorkshopDate.objects.get(proposed_workshop_date='2017-06-06')
-		self.assertEqual(str(self.proposed_workshop.proposed_workshop_title),'ISCP 1days, 8hours a day')
+		self.assertEqual(str(self.proposed_workshop.proposed_workshop_title),
+						'ISCP 1days, 8hours a day')
 		self.client.logout()
 
 
@@ -244,3 +260,13 @@ class TestWorkshopDashboard(TestCase):
 						)
 	
 	
+class TestStaticPages(TestCase):
+
+	def test_testimonials(self): self.client.get('/testimonials/')
+	def test_register(self): self.client.get('/register/')
+	def test_faq(self): self.client.get('/faq/')
+	def test_how_to_participate(self): self.client.get('/how_to_participate/')
+	def test_benefits(self): self.client.get('/benefits/')
+	def test_fileview(self): self.client.get('/file_view/')
+	def test_view_workshoptype_details(self):
+		self.client.get('/view_workshoptype_details/')

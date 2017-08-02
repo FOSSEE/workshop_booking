@@ -1,7 +1,8 @@
 from django.test import TestCase
 from workshop_app.models import (
-                     Profile, User, Workshop, WorkshopType,
-                     RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
+                    Profile, User, Workshop, WorkshopType,
+                    RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,
+                    Testimonial
                     )
 from datetime import datetime
 
@@ -187,3 +188,24 @@ class BookedWorkshopModelTest(TestCase):
 		self.assertEqual(self.bwr.booked_workshop_requested.requested_workshop_title.workshoptype_name,
 						'ISCP' )
 
+class TestimonialModelTest(TestCase):
+	'''
+	This class tests the Testimonial Model
+	'''
+
+	def setUp(self):
+		self.testimonial_one = Testimonial.objects.create(
+						name='ABC XYZ',
+						institute='VIDYA GHAR',
+						department='CS',
+						message='Lorem ipsum dolor sit amet, consectetur \
+				tempor incididunt ut labore et dolore magna aliqua\
+				quis nostrud exercitation ullamco laboris nisi ut \
+				consequat. Duis aute irure dolor in reprehenderit in voluptat\
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint \
+				proident, sunt in culpa qui officia deserunt mollit anim'
+				)
+
+	def test_testimonialsmodel(self):
+		self.assertEqual(self.testimonial_one.name, 'ABC XYZ')
+		self.assertEqual(self.testimonial_one.department, 'CS')
