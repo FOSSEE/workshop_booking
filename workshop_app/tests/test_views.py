@@ -261,7 +261,7 @@ class TestWorkshopDashboard(TestCase):
 	
 	
 class TestStaticPages(TestCase):
-	
+
 	def test_testimonials(self): self.client.get('/testimonials/')
 	def test_register(self): self.client.get('/register/')
 	def test_faq(self): self.client.get('/faq/')

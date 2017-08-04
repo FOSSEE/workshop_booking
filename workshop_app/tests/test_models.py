@@ -205,15 +205,14 @@ class TestimonialModelTest(TestCase):
 				cillum dolore eu fugiat nulla pariatur. Excepteur sint \
 				proident, sunt in culpa qui officia deserunt mollit anim'
 				)
-
+		
 	def test_testimonials_model(self):
 		self.assertEqual(self.testimonial_one.name, 'ABC XYZ')
 		self.assertEqual(self.testimonial_one.department, 'CS')
 		self.assertEqual(self.testimonial_one.institute, 'VIDYA GHAR')
-		self.assertEqual(self.testimonial_one.message, message='Lorem ipsum dolor sit amet, consectetur \
+		self.assertEqual(self.testimonial_one.message, 'Lorem ipsum dolor sit amet, consectetur \
 				tempor incididunt ut labore et dolore magna aliqua\
 				quis nostrud exercitation ullamco laboris nisi ut \
 				consequat. Duis aute irure dolor in reprehenderit in voluptat\
 				cillum dolore eu fugiat nulla pariatur. Excepteur sint \
 				proident, sunt in culpa qui officia deserunt mollit anim')
-
