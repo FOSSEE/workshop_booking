@@ -262,11 +262,30 @@ class TestWorkshopDashboard(TestCase):
 	
 class TestStaticPages(TestCase):
 
-	def test_testimonials(self): self.client.get('/testimonials/')
-	def test_register(self): self.client.get('/register/')
-	def test_faq(self): self.client.get('/faq/')
-	def test_how_to_participate(self): self.client.get('/how_to_participate/')
-	def test_benefits(self): self.client.get('/benefits/')
-	def test_fileview(self): self.client.get('/file_view/')
+	def test_testimonials(self):
+		response = self.client.get('/testimonials/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_register(self):
+		response = self.client.get('/register/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_faq(self): 
+		response = self.client.get('/faq/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_how_to_participate(self):
+		response = self.client.get('/how_to_participate/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_benefits(self): 
+		response = self.client.get('/benefits/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_fileview(self): 
+		response = self.client.get('/file_view/flowchart')
+		self.assertEqual(response.status_code, 200)
+
 	def test_view_workshoptype_details(self):
-		self.client.get('/view_workshoptype_details/')
+		response = self.client.get('/view_workshoptype_details/')
+		self.assertEqual(response.status_code, 200)
