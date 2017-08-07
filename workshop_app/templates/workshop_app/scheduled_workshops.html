@@ -31,6 +31,7 @@
 			<thead>
 				<tr>
 					<th>Coordinator Name</th>
+					<th>Institute Name</th>
 					<th>Instructor Name</th>
 					<th>Workshop Name</th>
 					<th>Workshop Date</th>
@@ -41,10 +42,10 @@
 				{% if workshop.status == 'ACCEPTED' %}
 						<tbody>
 							<tr>
-								
-								<td>{{ workshop.proposed_workshop_coordinator }}</td>
-								<td>{{ workshop.proposed_workshop_instructor }}</td>
-								<td>{{ workshop.proposed_workshop_title }}</td>
+								<td>{{ workshop.proposed_workshop_coordinator.get_full_name | capfirst }}</td>
+								<td>{{ workshop.proposed_workshop_coordinator.profile.institute | capfirst }}</td>
+								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.proposed_workshop_title.workshoptype_name }}</td>
 								<td>{{ workshop.proposed_workshop_date | date}}</td>
 							</tr>
 						</tbody>
@@ -57,7 +58,7 @@
 			</div>
 	{% endif %}
 	</div>
-	}
+	
 
 
 {% endblock %}

@@ -514,7 +514,6 @@ def my_workshops(request):
 					return HttpResponse("Workshop Deleted")
 				
 				elif client_data[-1] == 'APPROVED':
-					print(client_data)
 					workshop_date = datetime.strptime(
 										client_data[1], "%Y-%m-%d"
 										)
@@ -890,9 +889,17 @@ def testimonials(request):
 @login_required
 def scheduled_workshops(request):
 	user = request.user
+	today = datetime.now()
+	upto = datetime.now() + dt.timedelta(days=15)
 	if is_instructor(user) and is_email_checked(user):
 		try:
-			accepted_workshops = ProposeWorkshopDate.objects.all().order_by('-id')[:15]
+			accepted_workshops = ProposeWorkshopDate.objects.filter(
+								proposed_workshop_date__range=(today, upto)
+								)
+			accepted_workshops = (sorted(accepted_workshops,
+								key=lambda x: datetime.strftime(
+								x.proposed_workshop_date, '%d-%m-%Y'
+								)))
 		except:
 			accepted_workshops = None
 		return render(request, 'workshop_app/scheduled_workshops.html',
