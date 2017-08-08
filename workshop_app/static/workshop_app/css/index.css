@@ -78,6 +78,40 @@ label {
   color: #6D5847;
 }
 
+/* Style all font awesome icons */
+.fa {
+    padding: 6px;
+    font-size: 30px;
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* Add a hover effect if you want */
+.fa:hover {
+    opacity: 0.7;
+}
+
+/* Facebook */
+.fa-facebook {
+    background: #3B5998;
+    color: white;
+}
+/* Google */
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+/* Youtube */
+.fa-youtube {
+  background: #bb0000;
+  color: white;
+}
+
+#social a{
+    color: white;
+}
+
 /* Footer */
 .footer {
   position: relative;
