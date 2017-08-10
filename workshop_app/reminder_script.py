@@ -27,7 +27,7 @@ from datetime import datetime, date
 
 
 def send_email():
-	tomorrow = date.today() + dt.timedelta(days=5)
+	tomorrow = date.today() + dt.timedelta(days=2)
 	upcoming_requested_workshops = RequestedWorkshop.objects.filter(
 						requested_workshop_date=tomorrow, 
 						status='ACCEPTED'
@@ -38,7 +38,6 @@ def send_email():
 						status='ACCEPTED'
 						)
 	for w in upcoming_proposed_workshops:
-		sleep(1)
 		message = dedent("""\
 				Dear {0}, 
 
@@ -61,7 +60,6 @@ def send_email():
 			)
 
 	for w in upcoming_requested_workshops:
-		sleep(1)
 		message = dedent("""\
 				Dear {0}, 
 
