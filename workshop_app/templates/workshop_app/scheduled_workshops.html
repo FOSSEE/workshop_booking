@@ -25,7 +25,7 @@
 
 	<div class="container">
 	{% if scheduled_workshops %}
-	<h3>This Table Shows Scheduled Workshops Proposed By Coordinators</h3>
+	<h3>This Table Shows Scheduled Workshops which were Proposed By Coordinators</h3>
 	<br>
 		<table class="table table-hover">
 			<thead>
@@ -38,7 +38,7 @@
 				</tr>
 			</thead>
 			{% csrf_token %}
-			{% for workshop in accepted_workshops %}
+			{% for workshop in proposed_workshops %}
 				{% if workshop.status == 'ACCEPTED' %}
 						<tbody>
 							<tr>
@@ -52,13 +52,38 @@
 				{% endif %}
 			{% endfor %}
 		</table>
+	<h3>This Table Shows Scheduled  Workshops based on Instructors Approval </h3>
+	<br>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Coordinator Name</th>
+					<th>Institute Name</th>
+					<th>Instructor Name</th>
+					<th>Workshop Name</th>
+					<th>Workshop Date</th>
+				</tr>
+			</thead>
+			{% csrf_token %}
+			{% for workshop in requested_workshops %}
+				{% if workshop.status == 'ACCEPTED' %}
+						<tbody>
+							<tr>
+								<td>{{ workshop.requested_workshop_coordinator.get_full_name | capfirst }}</td>
+								<td>{{ workshop.requested_workshop_coordinator.profile.institute | capfirst }}</td>
+								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.requested_workshop_title.workshoptype_name }}</td>
+								<td>{{ workshop.requested_workshop_date | date}}</td>
+							</tr>
+						</tbody>
+				{% endif %}
+			{% endfor %}
+		</table>
+
 	{% else %}
 		<div class="jumbotron">
 				<h2>Permission to View Scheduled Workshops is set to False</h2>
 			</div>
 	{% endif %}
 	</div>
-	
-
-
 {% endblock %}
