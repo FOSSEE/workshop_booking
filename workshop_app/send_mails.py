@@ -272,7 +272,8 @@ def send_email(	request, call_on,
 					We regret to inform you that your workshop booking
 					has been rejected due to unavailability of the
 					instructor. You may try booking other available 
-					slots {2}/book/ """
+					slots {2}/book/ or you can also Propose a workshop
+					based on your available date."""
 					.format(workshop_date, workshop_title, PRODUCTION_URL))
 
 			try:

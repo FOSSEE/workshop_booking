@@ -893,18 +893,32 @@ def scheduled_workshops(request):
 	upto = datetime.now() + dt.timedelta(days=15)
 	if is_instructor(user) and is_email_checked(user):
 		try:
-			accepted_workshops = ProposeWorkshopDate.objects.filter(
-								proposed_workshop_date__range=(today, upto)
+			#Fetches Accepted workshops which were proposed by Coordinators
+			proposed_workshops = ProposeWorkshopDate.objects.filter(
+								proposed_workshop_date__range=(today, upto),
+								status='ACCEPTED'
 								)
-			accepted_workshops = (sorted(accepted_workshops,
+			proposed_workshops = (sorted(proposed_workshops,
 								key=lambda x: datetime.strftime(
 								x.proposed_workshop_date, '%d-%m-%Y'
 								)))
+			#Fetches Accepted workshops which were Accepted by Instructors based on their Availability
+			requested_workshops = RequestedWorkshop.objects.filter(
+								requested_workshop_date__range=(today, upto),
+								status='ACCEPTED'
+								)
+			requested_workshops = (sorted(requested_workshops,
+								key=lambda x: datetime.strftime(
+								x.request_workshop_date, '%d-%m-%Y'
+								)))
+			
 		except:
-			accepted_workshops = None
+			proposed_workshops = None
+			requested_workshops = None
 		return render(request, 'workshop_app/scheduled_workshops.html',
 					{
-					"accepted_workshops": accepted_workshops,
+					"proposed_workshops": proposed_workshops,
+					"requested_workshops": requested_workshops,
 					"scheduled_workshops": settings.SCHEDULED_WORKSHOPS
 					})
 	else:
