@@ -105,7 +105,7 @@ def send_email(	request, call_on,
 		try:
 			send_mail(
 				"Coordinator Registration at FOSSEE, IIT Bombay", message, SENDER_EMAIL, 
-				[request.user.email], fail_silently=False
+				[request.user.email], fail_silently=True
 				)
 
 		except Exception:
@@ -137,7 +137,7 @@ def send_email(	request, call_on,
 				send_mail(
 			 		"New FOSSEE Workshop booking on {0}".format(workshop_date),
 			 		message, SENDER_EMAIL, [other_email], 
-			 		fail_silently=False
+			 		fail_silently=True
 			 		)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -168,7 +168,7 @@ def send_email(	request, call_on,
 				send_mail(
 					"Pending Request for New FOSSEE Workshop booking on {0}"
 					.format(workshop_date), message, SENDER_EMAIL, 
-					[request.user.email], fail_silently=False
+					[request.user.email], fail_silently=True
 					)
 			except Exception:
 				send_smtp_email(request=request, 
@@ -257,7 +257,7 @@ def send_email(	request, call_on,
 			try:
 				send_mail("FOSSEE Workshop booking rejected for {0}"
 					.format(workshop_date), message, SENDER_EMAIL, 
-					[request.user.email], fail_silently=False)
+					[request.user.email], fail_silently=True)
 			except Exception:
 				send_smtp_email(request=request, 
 					subject="FOSSEE Workshop booking rejected for {0}".
@@ -279,7 +279,7 @@ def send_email(	request, call_on,
 			try:
 				send_mail("FOSSEE Workshop booking rejected for {0}".
 					format(workshop_date), message, SENDER_EMAIL, 
-					[other_email], fail_silently=False)
+					[other_email], fail_silently=True)
 			except Exception:
 				send_smtp_email(request=request, 
 					subject="FOSSEE Workshop booking rejected for {0}".
@@ -297,7 +297,7 @@ def send_email(	request, call_on,
 		try:
 			send_mail("FOSSEE workshop deleted for {0}".format(workshop_date),
 				message, SENDER_EMAIL, [request.user.email], 
-				fail_silently=False)
+				fail_silently=True)
 		except Exception:
 			send_smtp_email(request=request, 
 				subject="FOSSEE Workshop deleted for {0}".

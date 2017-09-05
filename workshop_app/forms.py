@@ -37,6 +37,28 @@ department_choices = (
     ("others", "Others"),
     )
 
+title = (
+    ("Professor", "Prof."),
+    ("Doctor", "Dr."),
+    ("Shriman", "Shri"),
+    ("Shrimati", "Smt"),
+    ("Kumari", "Ku"),
+    ("Mr", "Mr."),
+    ("Mrs", "Mrs."),
+    ("Miss", "Ms."),
+    ("other", "Other"),
+    )
+
+source = (
+    ("FOSSEE Email", "FOSSEE Email"),
+    ("FOSSEE website", "FOSSEE website"),
+    ("Google", "Google"),
+    ("Social Media", "Social Media"),
+    ("From other College", "From other College"),
+    ("Others", "Others"),
+    )
+
+
 class UserRegistrationForm(forms.Form):
     """A Class to create new form for User's Registration.
     It has the various fields and functions required to register
@@ -49,6 +71,8 @@ class UserRegistrationForm(forms.Form):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput())
     confirm_password = forms.CharField\
                        (max_length=32, widget=forms.PasswordInput())
+
+    title = forms.ChoiceField(choices=title)
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
     phone_number = forms.RegexField(regex=r'^.{10}$', 
@@ -59,7 +83,8 @@ class UserRegistrationForm(forms.Form):
                 help_text='Please write full name of your Institute/Organization')
     department = forms.ChoiceField(help_text='Department you work/study',
                  choices=department_choices)
-
+    location = forms.CharField(max_length=255, help_text="Place/City")
+    source = forms.ChoiceField(choices=source)
 
     def clean_username(self):
         u_name = self.cleaned_data["username"]
@@ -110,6 +135,9 @@ class UserRegistrationForm(forms.Form):
         new_profile.department = cleaned_data["department"]
         #new_profile.position = cleaned_data["position"]
         new_profile.phone_number = cleaned_data["phone_number"]
+        new_profile.location = cleaned_data["location"]
+        new_profile.title = cleaned_data["title"]
+        new_profile.source = cleaned_data["source"]
         new_profile.activation_key = generate_activation_key(new_user.username)
         new_profile.key_expiry_time = timezone.now() + \
                                     timezone.timedelta(days=1)
