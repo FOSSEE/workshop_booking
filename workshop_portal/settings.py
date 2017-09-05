@@ -159,7 +159,7 @@ PRODUCTION_URL = 'your_production_url'
 
 ADMIN_EMAIL = 'your admin email'
 
-SCHEDULED_WORKSHOPS = False #Set True or False to view/hide
+SHOW_WORKSHOP_STATS = 1 #Set True or False to view/hide
 
 LOGIN_REDIRECT_URL = '/profile'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

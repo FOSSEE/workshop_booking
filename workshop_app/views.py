@@ -1,15 +1,16 @@
 from .forms import (
-					UserRegistrationForm, UserLoginForm, 
-					ProfileForm, CreateWorkshop,
-					ProposeWorkshopDateForm
-					)
+			UserRegistrationForm, UserLoginForm, 
+			ProfileForm, CreateWorkshop,
+			ProposeWorkshopDateForm
+			)
 from .models import (
-					Profile, User,
-					has_profile, Workshop, 
-					WorkshopType, RequestedWorkshop,
-					BookedWorkshop, ProposeWorkshopDate,
-					Testimonial
-					)
+			Profile, User,
+			has_profile, Workshop, 
+			WorkshopType, RequestedWorkshop,
+			BookedWorkshop, ProposeWorkshopDate,
+			Testimonial
+			)
+from django.template.loader import get_template
 from django.template import RequestContext
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
@@ -27,7 +28,10 @@ from textwrap import dedent
 from django.conf import settings
 from os import listdir, path, sep
 from zipfile import ZipFile
+from django.db.models import Count
+from django.contrib import messages
 import datetime as dt
+import csv
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -192,13 +196,13 @@ def book(request):
 				
 				for d in range(len(dates)):
 					workshop_occurence = [
-										dates[d].strftime("%d-%m-%Y"),
-										workshops.workshop_instructor,
-				 						workshops.workshop_title,
-				 						workshops.workshop_instructor_id,
-				 						workshops.workshop_title_id,
-				 						workshops.workshop_title.workshoptype_description
-					 					]
+								dates[d].strftime("%d-%m-%Y"),
+								workshops.workshop_instructor,
+				 				workshops.workshop_title,
+				 				workshops.workshop_instructor_id,
+				 				workshops.workshop_title_id,
+				 				workshops.workshop_title.workshoptype_description
+					 			]
 					
 					workshop_occurence_list.append(workshop_occurence)
 					del workshop_occurence
@@ -225,8 +229,8 @@ def book(request):
 
 			#Objects of RequestedWorkshop for that particular coordinator
 			rW_obj = RequestedWorkshop.objects.filter(
-									requested_workshop_coordinator=request.user
-									)
+							requested_workshop_coordinator=request.user
+							)
 			for r in rW_obj:
 				x = r.requested_workshop_date.strftime("%d-%m-%Y")
 				for a in workshop_occurence_list:
@@ -272,32 +276,32 @@ def book_workshop(request):
 			queue = RequestedWorkshop.objects.filter(
 				requested_workshop_instructor=client_data[1],
 				requested_workshop_date=datetime.strptime(
-											client_data[0][2:], "%d-%m-%Y"
-											),
+								client_data[0][2:], "%d-%m-%Y"
+								),
 				requested_workshop_title=client_data[-2]
 				).count() + 1
 
 			return HttpResponse(str(queue))
 
 		workshops_list = Workshop.objects.filter(
-										workshop_instructor=client_data[1],
-										workshop_title_id=client_data[2]
-										)
+							workshop_instructor=client_data[1],
+							workshop_title_id=client_data[2]
+							)
 		today = datetime.now() + dt.timedelta(days=3)
 		upto = datetime.now() + dt.timedelta(weeks=52)
 		for workshop in workshops_list:
 			workshop_recurrence_list =  workshop.recurrences.between(
-										today,
-										upto,
-										inc=True
-										)
+								today,
+								upto,
+								inc=True
+								)
 
 			rW_obj = RequestedWorkshop()
 			if	RequestedWorkshop.objects.filter(
 					requested_workshop_instructor=workshop.workshop_instructor,
 					requested_workshop_date=datetime.strptime(
-											client_data[0][2:], "%d-%m-%Y",
-											),
+								client_data[0][2:], "%d-%m-%Y",
+								),
 					requested_workshop_coordinator=request.user,
 					requested_workshop_title=client_data[-1]
 					).count() > 0:
@@ -312,8 +316,8 @@ def book_workshop(request):
 						rW_obj.requested_workshop_instructor = workshop.workshop_instructor
 						rW_obj.requested_workshop_coordinator = request.user
 						rW_obj.requested_workshop_date = datetime.strptime(
-													   workshop_date,"%d-%m-%Y"
-														)
+											workshop_date,"%d-%m-%Y"
+											)
 						rW_obj.requested_workshop_title = workshop.workshop_title
 						rW_obj.save()
 
@@ -361,8 +365,8 @@ def manage(request):
 			try:
 				#Can Handle Multiple Workshops
 				workshop_details = Workshop.objects.filter(
-													workshop_instructor=user.id
-													)
+									workshop_instructor=user.id
+									)
 
 				workshop_occurence_list = []
 				today = datetime.now() + dt.timedelta(days=3)
@@ -866,10 +870,11 @@ def file_view(request, workshop_title):
 		zipfile_name.seek(0)
 		response = HttpResponse(content_type='application/zip')
 		response['Content-Disposition'] = 'attachment; filename={0}.zip'.format(
-			filename.workshoptype_name.replace(" ", "_")
-	        )
+								filename.workshoptype_name.replace(" ", "_")
+	        					)
 		response.write(zipfile_name.read())
 		return response
+
 
 def testimonials(request):
 	testimonials = Testimonial.objects.all().order_by('-id')
@@ -884,42 +889,163 @@ def testimonials(request):
 	except EmptyPage:
 		#If page is out of range(e.g 999999), deliver last page.
 		messages = paginator.page(paginator.num_pages)
-	return render(request, 'workshop_app/testimonals.html', {"messages":messages})
+	return render(request, 'workshop_app/testimonals.html', 
+					{"messages":messages})
+
+
+def check_workshop_type(x):
+	try:
+		y = datetime.strftime(x.proposed_workshop_date, '%d-%m-%Y')
+	except:
+		y = datetime.strftime(x.requested_workshop_date, '%d-%m-%Y')
+	return y
+
 
 @login_required
-def scheduled_workshops(request):
+def workshop_stats(request):
 	user = request.user
 	today = datetime.now()
-	upto = datetime.now() + dt.timedelta(days=15)
+	upto = today + dt.timedelta(days=15)
+	
+	#For Monthly Chart 
+	workshop_count = [0] * 12
+	for x in range(12):
+		workshop_count[x-1] +=RequestedWorkshop.objects.filter(
+							requested_workshop_date__year=str(today.year),
+							requested_workshop_date__month=str(x)).count()
+		workshop_count[x-1] +=ProposeWorkshopDate.objects.filter(
+							proposed_workshop_date__year=str(today.year),
+							proposed_workshop_date__month=str(x)).count()
+
+	if request.method == 'POST':
+		try:
+			from_dates = request.POST.get('from')
+			to_dates = request.POST.get('to')
+
+			#Fetches Accepted workshops which were proposed by Coordinators
+			proposed_workshops = ProposeWorkshopDate.objects.filter(
+					proposed_workshop_date__range=(from_dates, to_dates),
+					status='ACCEPTED'
+					)
+
+	   		# Fetches Accepted workshops which were Accepted by
+	   		# Instructors based on their Availability
+			requested_workshops = RequestedWorkshop.objects.filter(
+		 			requested_workshop_date__range=(from_dates, to_dates),
+					status='ACCEPTED'
+					)
+
+			upcoming_workshops = []
+		
+			for workshop in proposed_workshops:
+				upcoming_workshops.append(workshop)
+
+			for workshop in requested_workshops:
+				upcoming_workshops.append(workshop)
+
+			upcoming_workshops = sorted(upcoming_workshops,
+						key=lambda x: check_workshop_type(x))
+
+			download = request.POST.get('Download')
+			if download:
+				response = HttpResponse(content_type='text/csv')
+
+				response['Content-Disposition'] = 'attachment;\
+								filename="records_from_{0}_to_{1}.csv"'.format(
+								from_dates,to_dates
+								)
+
+				writer = csv.writer(response)
+				header = [
+		            'coordinator name',
+		            'instructor name',
+		            'workshop',
+		            'date',
+		            'status',
+		            'institute name'
+						]
+
+				writer.writerow(header)
+
+				for workshop in upcoming_workshops:
+					try:
+						row = [
+							workshop.proposed_workshop_coordinator,
+							workshop.proposed_workshop_instructor,
+							workshop.proposed_workshop_title,
+							workshop.proposed_workshop_date,
+							workshop.status,
+							workshop.proposed_workshop_coordinator.profile.institute
+							]
+
+					except:
+						row = [
+				            workshop.requested_workshop_coordinator,
+				            workshop.requested_workshop_instructor,
+				            workshop.requested_workshop_title,
+				            workshop.requested_workshop_date,
+				            workshop.status,
+					   		workshop.requested_workshop_coordinator.profile.institute
+							]
+
+					writer.writerow(row)
+				return response
+			else:
+				return render(request, 'workshop_app/workshop_stats.html',
+						{
+						"upcoming_workshops": upcoming_workshops,
+						"show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
+						"workshop_count": workshop_count
+						})
+		except:
+			messages.info(request, 'Please enter Valid Dates')
+			
 	if is_instructor(user) and is_email_checked(user):
 		try:
 			#Fetches Accepted workshops which were proposed by Coordinators
 			proposed_workshops = ProposeWorkshopDate.objects.filter(
 								proposed_workshop_date__range=(today, upto),
 								status='ACCEPTED'
-								)
-			proposed_workshops = (sorted(proposed_workshops,
-								key=lambda x: datetime.strftime(
-								x.proposed_workshop_date, '%d-%m-%Y'
-								)))
-			#Fetches Accepted workshops which were Accepted by Instructors based on their Availability
+								) 
+	
+			#Fetches Accepted workshops which were Accepted by
+			# Instructors based on their Availability
 			requested_workshops = RequestedWorkshop.objects.filter(
 								requested_workshop_date__range=(today, upto),
 								status='ACCEPTED'
 								)
-			requested_workshops = (sorted(requested_workshops,
-								key=lambda x: datetime.strftime(
-								x.request_workshop_date, '%d-%m-%Y'
-								)))
+
+			upcoming_workshops = []
+			for workshop in proposed_workshops:
+				upcoming_workshops.append(workshop)
 			
+			for workshop in requested_workshops:
+				upcoming_workshops.append(workshop)
+			
+			upcoming_workshops = sorted(upcoming_workshops,
+						key=lambda x: check_workshop_type(x))
+
 		except:
-			proposed_workshops = None
-			requested_workshops = None
-		return render(request, 'workshop_app/scheduled_workshops.html',
+			upcoming_workshops = None
+
+		paginator = Paginator(upcoming_workshops, 12) 
+
+		page = request.GET.get('page')
+		try:
+			upcoming_workshops = paginator.page(page)
+		except PageNotAnInteger:
+			#If page is not an integer, deliver first page.
+			upcoming_workshops = paginator.page(1)
+		except EmptyPage:
+			#If page is out of range(e.g 999999), deliver last page.
+			upcoming_workshops = paginator.page(paginator.num_pages)
+
+
+		return render(request, 'workshop_app/workshop_stats.html',
 					{
-					"proposed_workshops": proposed_workshops,
-					"requested_workshops": requested_workshops,
-					"scheduled_workshops": settings.SCHEDULED_WORKSHOPS
+					"upcoming_workshops": upcoming_workshops,
+					"show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
+					"workshop_count": workshop_count
 					})
 	else:
-		redirect('/book/')
+		redirect('/manage/')

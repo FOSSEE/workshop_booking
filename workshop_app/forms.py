@@ -190,7 +190,6 @@ class ProposeWorkshopDateForm(forms.ModelForm):
         self.fields['proposed_workshop_title'].label = "Workshop :"
         self.fields['proposed_workshop_date'].label = "Workshop Date :"
         
-
     class Meta:
         model = ProposeWorkshopDate
         exclude = ['status', 'proposed_workshop_instructor', 
@@ -199,4 +198,3 @@ class ProposeWorkshopDateForm(forms.ModelForm):
             'proposed_workshop_date': forms.DateInput(attrs={
                 'class':'datepicker'}),
         }
-

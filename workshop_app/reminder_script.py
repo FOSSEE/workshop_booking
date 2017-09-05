@@ -25,16 +25,15 @@ from workshop_portal.settings import (
 from workshop_app.models import *
 from datetime import datetime, date
 
-
 def send_email():
-	tomorrow = date.today() + dt.timedelta(days=2)
+	upcoming = date.today() + dt.timedelta(days=2)
 	upcoming_requested_workshops = RequestedWorkshop.objects.filter(
-						requested_workshop_date=tomorrow, 
+						requested_workshop_date=upcoming, 
 						status='ACCEPTED'
 						)
 
 	upcoming_proposed_workshops = ProposeWorkshopDate.objects.filter(
-						proposed_workshop_date=tomorrow, 
+						proposed_workshop_date=upcoming, 
 						status='ACCEPTED'
 						)
 	for w in upcoming_proposed_workshops:
@@ -80,6 +79,5 @@ def send_email():
 			.format(w.requested_workshop_date),message, SENDER_EMAIL,
 			[w.requested_workshop_instructor.email], fail_silently=False
 			)
-
 
 send_email()
