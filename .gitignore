@@ -32,3 +32,10 @@ migrations/
 #MAC OS specific
 .DS_Store
 
+#Pycharm
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/workshop_portal.iml
+.idea/workspace.xml
+.idea/vcs.xml

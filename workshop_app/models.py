@@ -24,6 +24,27 @@ department_choices = (
     ("others", "Others"),
     )
 
+title = (
+    ("Professor", "Prof."),
+    ("Doctor", "Dr."),
+    ("Shriman", "Shri"),
+    ("Shrimati", "Smt"),
+    ("Kumari", "Ku"),
+    ("Mr", "Mr."),
+    ("Mrs", "Mrs."),
+    ("Miss", "Ms."),
+    ("other", "Other"),
+    )
+
+source = (
+    ("FOSSEE Email", "FOSSEE Email"),
+    ("FOSSEE website", "FOSSEE website"),
+    ("Google", "Google"),
+    ("Social Media", "Social Media"),
+    ("From other College", "From other College"),
+    ("Others", "Others"),
+    )
+
 
 def has_profile(user):
     """ check if user has profile """
@@ -36,6 +57,7 @@ class Profile(models.Model):
     """Profile for users(instructors and coordinators)"""
 
     user = models.OneToOneField(User)
+    title = models.CharField(max_length=32,blank=True, choices=title)
     institute = models.CharField(max_length=150)
     department = models.CharField(max_length=150, choices=department_choices)
     phone_number = models.CharField(
@@ -52,6 +74,8 @@ class Profile(models.Model):
                     help_text='Select Coordinator if you want to organise a workshop\
                             in your college/school. <br> Select Instructor if you want to conduct\
                             a workshop.')
+    source = models.CharField(max_length=255, blank=True,choices=source)
+    location = models.CharField(max_length=255,blank=True, help_text="Place/City")
     is_email_verified = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     key_expiry_time = models.DateTimeField(blank=True, null=True)

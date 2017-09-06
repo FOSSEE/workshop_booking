@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from workshop_app.forms import CreateWorkshop
+from django.conf import settings
 
 class TestProfile(TestCase):
 	def setUp(self):
@@ -289,3 +290,54 @@ class TestStaticPages(TestCase):
 	def test_view_workshoptype_details(self):
 		response = self.client.get('/view_workshoptype_details/')
 		self.assertEqual(response.status_code, 200)
+
+
+class TestWorkshopStats(TestCase):
+	def setUp(self):
+		'''
+		test user as instructor
+		'''
+		self.superuser = User.objects.create_superuser(
+			username='admin',
+			password='pass@123',
+			email='test.user@gmail.com')
+
+		self.mod_group = Group.objects.create(name='instructor')
+
+		self.user_one = User.objects.create(
+			username='test_user1',
+			email='test.user@gmail.com')
+
+		self.user_one.set_password('pass@123')
+		self.user_one.save()
+
+		self.user_one_profile = Profile.objects.create(
+			user=self.user_one,
+			department='cs',
+			institute='IIT',
+			position='instructor',
+			phone_number='1122993388',
+			is_email_verified=1
+			)
+
+		#Add user_one in instructor group and give required permissions
+		self.mod_group.user_set.add(self.user_one)
+		self.permission = (Permission.objects.all())
+		self.user_one.user_permissions.add(self.permission[44])
+		self.user_one.user_permissions.add(self.permission[43])
+		self.user_one.user_permissions.add(self.permission[42])
+
+	def test_workshop_stats(self):
+		settings.SHOW_WORKSHOP_STATS = True
+		self.client.login(username=self.user_one, password='pass@123')
+		response = self.client.post('/workshop_stats/',
+				{
+					'from': '2017-01-01',
+					'to': '2017-12-31',
+					'Download': 'download'
+				}
+			)
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.get('Content-Disposition'),'attachment;\
+								filename="records_from_2017-01-01_to_2017-12-31.csv"')
+
