@@ -71,7 +71,6 @@ class UserRegistrationForm(forms.Form):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput())
     confirm_password = forms.CharField\
                        (max_length=32, widget=forms.PasswordInput())
-
     title = forms.ChoiceField(choices=title)
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
@@ -224,5 +223,5 @@ class ProposeWorkshopDateForm(forms.ModelForm):
                     'proposed_workshop_coordinator']
         widgets = {
             'proposed_workshop_date': forms.DateInput(attrs={
-                'class':'datepicker'}),
-        }
+                'class':'datepicker'})
+            }

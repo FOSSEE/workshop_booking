@@ -28,7 +28,6 @@ from textwrap import dedent
 from django.conf import settings
 from os import listdir, path, sep
 from zipfile import ZipFile
-from django.db.models import Count
 from django.contrib import messages
 import datetime as dt
 import csv
@@ -910,12 +909,39 @@ def workshop_stats(request):
 	#For Monthly Chart 
 	workshop_count = [0] * 12
 	for x in range(12):
-		workshop_count[x-1] +=RequestedWorkshop.objects.filter(
+		workshop_count[x] +=RequestedWorkshop.objects.filter(
 							requested_workshop_date__year=str(today.year),
-							requested_workshop_date__month=str(x)).count()
-		workshop_count[x-1] +=ProposeWorkshopDate.objects.filter(
+							requested_workshop_date__month=str(x+1),
+							status='ACCEPTED').count()
+		workshop_count[x] +=ProposeWorkshopDate.objects.filter(
 							proposed_workshop_date__year=str(today.year),
-							proposed_workshop_date__month=str(x)).count()
+							proposed_workshop_date__month=str(x+1),
+							status='ACCEPTED').count()
+
+	#Count Total Number of workshops for each type
+	workshop_titles = WorkshopType.objects.all()
+	workshoptype_dict = {}
+	for title in workshop_titles:
+		workshoptype_dict[title]=0
+
+	for title in workshoptype_dict.keys():
+		workshoptype_dict[title] += RequestedWorkshop.objects.filter(
+								requested_workshop_title=title,
+								status='ACCEPTED').count()
+		workshoptype_dict[title] += ProposeWorkshopDate.objects.filter(
+								proposed_workshop_title=title,
+								status='ACCEPTED').count()
+	#For Pie Chart
+	workshoptype_num = []
+	workshoptype_title = []
+	for title in workshoptype_dict.keys():
+		workshoptype_title.append(str(title))
+
+	for count in workshoptype_dict.values():
+		workshoptype_num.append(count)
+
+	workshoptype_count = [workshoptype_title, workshoptype_num]
+	del workshoptype_title, workshoptype_num
 
 	if request.method == 'POST':
 		try:
@@ -995,7 +1021,9 @@ def workshop_stats(request):
 						{
 						"upcoming_workshops": upcoming_workshops,
 						"show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
-						"workshop_count": workshop_count
+						"workshop_count": workshop_count,
+						"workshoptype_count": workshoptype_count,
+
 						})
 		except:
 			messages.info(request, 'Please enter Valid Dates')
@@ -1045,7 +1073,8 @@ def workshop_stats(request):
 					{
 					"upcoming_workshops": upcoming_workshops,
 					"show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
-					"workshop_count": workshop_count
+					"workshop_count": workshop_count,
+					"workshoptype_count": workshoptype_count,
 					})
 	else:
 		redirect('/manage/')

@@ -85,7 +85,7 @@ class Profile(models.Model):
                                             self.user.id,
                                             self.user.first_name, 
                                             self.user.last_name, 
-                                            self.user.email,
+                                            self.user.email
                                             ) 
 
 
