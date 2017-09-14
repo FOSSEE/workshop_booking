@@ -23,16 +23,21 @@
 {% block extra %}
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+ 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
   	<!-- For Charts -->
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>                                                              
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
+	<!-- For Google GeoChart India Map -->
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
 <script>
-	var dateToday = new Date();
+    var dateToday = new Date();
     var upto = new Date();
 
     dateToday.setDate(dateToday.getDate() - 1);
@@ -82,8 +87,21 @@
 {% block content %}
 
 <div class="container">
+  <div class="row">
+		<div class="col-md-6" align="left" >
+			  <fieldset data-mini="true">
+			    <label for="radio-1">Monthly Count </label>
+			    <input type="radio" name="radio-1" id="radio-1" value="NWPM">
+			    <label for="radio-2">Overall Count</label>
+			    <input type="radio" name="radio-1" id="radio-2" value="OWC">
+			    <label for="radio-3">India Map</label>
+			    <input type="radio" name="radio-1" id="radio-3" value="MOIN">
+			  </fieldset>
+		</div>
+	
+
 	{% if show_workshop_stats %}
-	<div align="right">
+	<div  align="right" class="col-md-6">
 		<form method="POST" >
 			{% csrf_token %}
 			<div class="form-group">
@@ -91,8 +109,8 @@
 				<input type="text" id="from" name="from">
 				<label for="to">to</label>
 				<input type="text" id="to" name="to">
-				<button class="btn btn-warning" type="submit" name="Download" value="Download">Download</button>
-				<button class="btn btn-info" type="submit" name="View" value="View">View</button>
+				<button class="btn btn-warning btn-sm" type="submit" name="Download" value="Download">Download</button>
+				<button class="btn btn-info btn-sm" type="submit" name="View" value="View">View</button>
 			</div>
 	    </form>
 
@@ -125,23 +143,23 @@
 				{% if workshop.proposed_workshop_date %}
 						<tbody>
 							<tr>
-								<td>{{ workshop.proposed_workshop_coordinator.get_full_name | capfirst }}</td>
-								<td>{{ workshop.proposed_workshop_coordinator.profile.institute | capfirst }}</td>
-								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
-								<td>{{ workshop.proposed_workshop_title.workshoptype_name }}</td>
-								<td>{{ workshop.proposed_workshop_date | date}}</td>
-								<td>Coordinator</td>
+							<td>{{ workshop.proposed_workshop_coordinator.get_full_name | capfirst }}</td>
+							<td>{{ workshop.proposed_workshop_coordinator.profile.institute | capfirst }}</td>
+							<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
+							<td>{{ workshop.proposed_workshop_title.workshoptype_name }}</td>
+							<td>{{ workshop.proposed_workshop_date | date}}</td>
+							<td>Coordinator</td>
 							</tr>
 						</tbody>
 				{% else %}
 						<tbody>
 							<tr>
-								<td>{{ workshop.requested_workshop_coordinator.get_full_name | capfirst }}</td>
-								<td>{{ workshop.requested_workshop_coordinator.profile.institute | capfirst }}</td>
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
-								<td>{{ workshop.requested_workshop_title.workshoptype_name }}</td>
-								<td>{{ workshop.requested_workshop_date | date}}</td>
-								<td>Instructor</td>
+							<td>{{ workshop.requested_workshop_coordinator.get_full_name | capfirst }}</td>
+							<td>{{ workshop.requested_workshop_coordinator.profile.institute | capfirst }}</td>
+							<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+							<td>{{ workshop.requested_workshop_title.workshoptype_name }}</td>
+							<td>{{ workshop.requested_workshop_date | date}}</td>
+							<td>Instructor</td>
 							</tr>
 						</tbody>
 				{% endif %}
@@ -156,7 +174,7 @@
 			  	<li class="page-item">
 			      {% if upcoming_workshops.has_previous %}
 					<a class="page-link" tabindex="-1" 
-							href="?page={{ upcoming_workshops.previous_page_number }}">Previous</a>
+						href="?page={{ upcoming_workshops.previous_page_number }}">Previous</a>
 				  {% endif %}
 			    </li>
 			    <li class="page-item">
@@ -176,38 +194,48 @@
 	</div>
 	{% else %}
 		<div class="jumbotron">
-				<h2>Permission to View Upcoming Workshops is set to false, please set it to true in settings.py</h2>
+			<h2>Permission to View Upcoming Workshops is set to false, please set it to true in settings.py</h2>
 		</div>
 	{% endif %}
-</div>
+	</div>
 
-<br>
+
 <div class="row">
 	<br>
 	<div class="col-md-12 ">
 		<br>
-		<div class="widget" style="padding-left: 22px;">
-			  <fieldset>
-			    <label for="radio-1">Number of Workshops per Month</label>
-			    <input type="radio" name="radio-1" id="radio-1" value="NWPM">
-			    <label for="radio-2">Overall Workshop Count</label>
-			    <input type="radio" name="radio-1" id="radio-2" value="OWC">
-			  </fieldset>
-		</div>
-		<canvas id="myChartPie" width="90px" height="12px"></canvas>
-
-			<script>
+		<canvas id="myChartPie" ></canvas>
+		<script>
 			$( function() {
 			    $( "fieldset" ).controlgroup();
 			  });
 
 			var ctx1 = document.getElementById("myChartPie").getContext('2d');
 			var myChart;
+
 			$('input[type=radio]').change(function() {
+
 			        if (this.value == 'NWPM') {//Number of Workshops per month
-			        if(myChart){
+			            if(myChart){
 			        	myChart.destroy();
-			        }
+			            }
+
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#myChartPie" ).dialog({
+					resizable: false,
+					draggable: true,
+			                title: 'Bar Chart',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+			               
+			        document.getElementById("visualization").style.visibility='hidden';
 					myChart = new Chart(ctx1, {
 					    type: 'bar',
 					    data: {
@@ -262,7 +290,24 @@
 			        if(myChart){
 			        	myChart.destroy();
 			        }
-					myChart = new Chart(ctx1, {
+
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#myChartPie" ).dialog({
+					resizable: false,
+					draggable: true,
+			        title: 'Pie Chart',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+	
+				document.getElementById("visualization").style.visibility='hidden';
+				myChart = new Chart(ctx1, {
 				    type: 'pie',
 				    data: {
 				    	labels : {{ workshoptype_count.0 | safe}},
@@ -282,9 +327,68 @@
 				 		}
 					});
 			     }
-			    });
-			</script>	
+
+				else if (this.value == 'MOIN') {
+			            if(myChart){
+			        		myChart.destroy();
+			            }
+
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#visualization" ).dialog({
+					resizable: false,
+					draggable: true,
+			        title: 'Map of India',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+	
+					document.getElementById("visualization").style.visibility='visible';
+			        function drawVisualization() {
+					    var data = google.visualization.arrayToDataTable(
+						{{ india_map | safe }}
+						);
+
+					var opts = {
+					    region: 'IN',
+					    domain: 'IN',
+					    displayMode: 'regions',
+					    resolution: 'provinces',
+					    colorAxis: {colors: ['orange']},
+					    legend: {position: 'top'},
+					   	};
+
+					var geochart = new google.visualization.GeoChart(
+					document.getElementById('visualization'));
+							geochart.draw(data, opts);
+					    };	
+					if(google) {
+					    google.load('visualization', '1.0', {
+						packages: ['geochart'],
+			            callback: function() {
+					    // do stuff, if you wan't - it doesn't matter, because the page isn't blank!
+							drawVisualization();
+							}
+			            })
+				        }	
+				}
+			});
+		</script>	
+		<style>
+		    #visualization path {
+		    stroke-width:1; /* control the countries borders width */
+		    stroke:#6699cc; /* choose a color for the border */
+		    }
+		</style>
+		<div id="visualization" style="width: 400px; height: 300px; display: block; margin: 0 auto;" ></div>
+
 	</div>
+</div>
 </div>
 <br>
 {% endblock %}

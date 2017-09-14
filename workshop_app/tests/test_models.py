@@ -25,11 +25,13 @@ def setUpModule():
 				email='test.user@gmail.com', password='pass@123')
 
 	instructor_profile = Profile.objects.create(user=testUser2, position='instructor',
-			department='cs', institute='ace', phone_number='1122334456',
+			department='computer engineering', institute='ace', phone_number='1122334456', 
+			title='Doctor', source='Google', location='powai', state='IN-MH',
 			is_email_verified=1)
 
 	coordinator_profile = Profile.objects.create(user=demoUser2, position='coordinator',
-			department='IT', institute='iit', phone_number='1122334456',
+			department='IT', institute='iit', phone_number='1122334456',location='powai',
+			title='Doctor', source='Google', state='IN-MH',
 			is_email_verified=1)
 
 	workshoptype1 = WorkshopType.objects.create(workshoptype_name='ISCP',
@@ -73,19 +75,25 @@ class ProfileModelTest(TestCase):
 		self.testuser1 = User.objects.get(username='testuser1')
 		self.demouser1 = User.objects.get(username='demouser1')
 		
-		self.instructor_profile1 = Profile.objects.create(user=self.testuser1, position='instructor',
-			department='cs', institute='ace', phone_number='1123323344558899192',
-			is_email_verified=1)
+		self.instructor_profile1 = Profile.objects.create(user=self.testuser1, 
+								position='instructor', department='computer engineering', 
+								institute='ace', phone_number='1123323344',
+								title='Doctor', source='Google', location='powai', state='IN-MH',
+								is_email_verified=1)
 
 		self.coordinator_profile1 = Profile.objects.create(user=self.demouser1, position='coordinator',
-			department='IT', institute='iit', phone_number='112233',
-			is_email_verified=1)
+								department='IT', institute='iit', phone_number='1122334455',
+								title='Doctor', source='Google', location='powai', state='IN-MH',
+								is_email_verified=1)
 
 	def test_profile_model(self):
 		self.assertEqual(self.demouser1.email,'test.user@gmail.com')
 		self.assertEqual(self.testuser1.email,'test.user@gmail.com')
 		self.assertEqual(self.instructor_profile1.position,'instructor')
 		self.assertEqual(self.coordinator_profile1.position,'coordinator')
+		self.assertEqual(self.coordinator_profile1.location,'powai')
+		self.assertEqual(self.instructor_profile1.location,'powai')
+		self.assertEqual(self.coordinator_profile1.source,'Google')
 
 
 class WorkshopTypeModelTest(TestCase):
@@ -197,7 +205,7 @@ class TestimonialModelTest(TestCase):
 		self.testimonial_one = Testimonial.objects.create(
 						name='ABC XYZ',
 						institute='VIDYA GHAR',
-						department='CS',
+						department='computer engineering',
 						message='Lorem ipsum dolor sit amet, consectetur \
 				tempor incididunt ut labore et dolore magna aliqua\
 				quis nostrud exercitation ullamco laboris nisi ut \
@@ -208,7 +216,7 @@ class TestimonialModelTest(TestCase):
 		
 	def test_testimonials_model(self):
 		self.assertEqual(self.testimonial_one.name, 'ABC XYZ')
-		self.assertEqual(self.testimonial_one.department, 'CS')
+		self.assertEqual(self.testimonial_one.department, 'computer engineering')
 		self.assertEqual(self.testimonial_one.institute, 'VIDYA GHAR')
 		self.assertEqual(self.testimonial_one.message, 'Lorem ipsum dolor sit amet, consectetur \
 				tempor incididunt ut labore et dolore magna aliqua\
