@@ -32,8 +32,12 @@ class TestProfile(TestCase):
 			user=self.user2,
 			department='Computer Engineering',
 			institute='ace',
+			title='Doctor',
 			position='instructor',
 			phone_number='1122993388',
+			location='mumbai',
+			source='Google',
+			state='IN-MH',
 			is_email_verified=1
 			)
 
@@ -104,6 +108,8 @@ class TestProfile(TestCase):
 			'last name':'user',
 			'phone number': 1234567890,
 			'institute':'IIT',
+			'location':'mumbai',
+			'state': (2),
 			'department':(2)})
 
 		self.assertEqual(self.register_response.status_code,200)
@@ -129,10 +135,14 @@ class TestWorkshopCreation(TestCase):
 
 		self.user_one_profile = Profile.objects.create(
 			user=self.user_one,
-			department='cs',
+			department='computer engineering',
+			title='Doctor',
 			institute='IIT',
 			position='instructor',
+			source='Google',
 			phone_number='1122993388',
+			location='mumbai',
+			state='IN-MH',
 			is_email_verified=1
 			)
 
@@ -152,9 +162,13 @@ class TestWorkshopCreation(TestCase):
 
 		self.user_two_profile = Profile.objects.create(
 			user=self.user_two,
-			department='cs',
+			department='computer engineering',
 			institute='ace',
 			position='coordinator',
+			title='Mr',
+			source='Google',
+			location='mumbai',
+			state='IN-MH',
 			phone_number='1122993388',
 			is_email_verified=1
 			)
@@ -180,8 +194,8 @@ class TestWorkshopCreation(TestCase):
 		self.client.login(username=self.user_one, password='pass@123')
 		self.client.post('/create_workshop/',
 			{
-				'workshop_title' : (2),
-				'recurrences' : 'RRULE:FREQ=WEEKLY;UNTIL=20170624T183000Z;BYDAY=WE;'
+				'workshop_title' : self.workshoptype.id,
+				'recurrences' : 'RRULE:FREQ=WEEKLY;UNTIL=20170924T183000Z;BYDAY=WE;'
 			})
 		self.workshop = Workshop.objects.get(workshop_instructor=self.user_one)
 		self.assertEqual(str(self.workshop.workshop_title), 'ISCP 1days, 8hours a day')
@@ -195,7 +209,7 @@ class TestWorkshopCreation(TestCase):
 				'condition_one': 1,
 				'condition_two': 1,
 				'condition_three': 1,
-				'proposed_workshop_title': (2),
+				'proposed_workshop_title': self.workshoptype.id,
 				'proposed_workshop_date': '2017-06-06'
 			})
 		self.proposed_workshop = ProposeWorkshopDate.objects.get(proposed_workshop_date='2017-06-06')
@@ -226,6 +240,10 @@ class TestWorkshopDashboard(TestCase):
 			institute='IIT',
 			position='instructor',
 			phone_number='1122993388',
+			source='Google',
+			location='mumbai',
+			state='IN-MH',
+			title='Mr',
 			is_email_verified=1
 			)
 
@@ -339,5 +357,4 @@ class TestWorkshopStats(TestCase):
 			)
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response.get('Content-Disposition'),'attachment;\
-								filename="records_from_2017-01-01_to_2017-12-31.csv"')
-
+                                filename="records_from_2017-01-01_to_2017-12-31.csv"')

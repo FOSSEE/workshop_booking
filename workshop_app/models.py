@@ -45,6 +45,44 @@ source = (
     ("Others", "Others"),
     )
 
+states = (
+    ("IN-AP",	"Andhra Pradesh"),	
+    ("IN-AR",	"Arunachal Pradesh"),	
+    ("IN-AS",	"Assam"),	
+    ("IN-BR",	"Bihar"),	
+    ("IN-CT",	"Chhattisgarh"),	
+    ("IN-GA",	"Goa"),	
+    ("IN-GJ",	"Gujarat"),	
+    ("IN-HR",	"Haryana"),	
+    ("IN-HP",	"Himachal Pradesh"),	
+    ("IN-JK",	"Jammu and Kashmir"),	
+    ("IN-JH",	"Jharkhand"),	
+    ("IN-KA",	"Karnataka"),	
+    ("IN-KL",	"Kerala"),	
+    ("IN-MP",	"Madhya Pradesh"),	
+    ("IN-MH",	"Maharashtra"),	
+    ("IN-MN",	"Manipur"),	
+    ("IN-ML",	"Meghalaya"),	
+    ("IN-MZ",	"Mizoram"),	
+    ("IN-NL",	"Nagaland"),	
+    ("IN-OR",	"Odisha"),	
+    ("IN-PB",	"Punjab"),	
+    ("IN-RJ",	"Rajasthan"),	
+    ("IN-SK",	"Sikkim"),	
+    ("IN-TN",	"Tamil Nadu"),	
+    ("IN-TG",	"Telangana"),	
+    ("IN-TR",	"Tripura"),
+    ("IN-UT",	"Uttarakhand"),	
+    ("IN-UP",	"Uttar Pradesh"),	
+    ("IN-WB",	"West Bengal"),
+    ("IN-AN",	"Andaman and Nicobar Islands"),	
+    ("IN-CH",	"Chandigarh"),	
+    ("IN-DN",	"Dadra and Nagar Haveli"),	
+    ("IN-DD",	"Daman and Diu"),	
+    ("IN-DL",	"Delhi"),	
+    ("IN-LD",	"Lakshadweep"),	
+    ("IN-PY",	"Puducherry")	
+    )
 
 def has_profile(user):
     """ check if user has profile """
@@ -70,12 +108,13 @@ class Profile(models.Model):
                             )]
                 ,null=False)
     position = models.CharField(max_length=32, choices=position_choices,
-                    default='coordinator',
-                    help_text='Select Coordinator if you want to organise a workshop\
-                            in your college/school. <br> Select Instructor if you want to conduct\
-                            a workshop.')
+                  default='coordinator',
+                  help_text='Select Coordinator if you want to organise a workshop\
+                 in your college/school. <br> Select Instructor if you want to conduct\
+                 a workshop.')
     source = models.CharField(max_length=255, blank=True,choices=source)
     location = models.CharField(max_length=255,blank=True, help_text="Place/City")
+    state = models.CharField(max_length=255, choices=states, default="IN-MH")
     is_email_verified = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     key_expiry_time = models.DateTimeField(blank=True, null=True)

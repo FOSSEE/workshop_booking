@@ -39,3 +39,6 @@ migrations/
 .idea/workshop_portal.iml
 .idea/workspace.xml
 .idea/vcs.xml
+
+#Emacs
+\#*#
