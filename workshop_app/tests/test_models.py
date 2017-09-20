@@ -26,12 +26,12 @@ def setUpModule():
 
 	instructor_profile = Profile.objects.create(user=testUser2, position='instructor',
 			department='computer engineering', institute='ace', phone_number='1122334456', 
-			title='Doctor', source='Google', location='powai', state='IN-MH',
+			title='Doctor', how_did_you_hear_about_us='Google', location='powai', state='IN-MH',
 			is_email_verified=1)
 
 	coordinator_profile = Profile.objects.create(user=demoUser2, position='coordinator',
 			department='IT', institute='iit', phone_number='1122334456',location='powai',
-			title='Doctor', source='Google', state='IN-MH',
+			title='Doctor', how_did_you_hear_about_us='Google', state='IN-MH',
 			is_email_verified=1)
 
 	workshoptype1 = WorkshopType.objects.create(workshoptype_name='ISCP',
@@ -78,12 +78,12 @@ class ProfileModelTest(TestCase):
 		self.instructor_profile1 = Profile.objects.create(user=self.testuser1, 
 								position='instructor', department='computer engineering', 
 								institute='ace', phone_number='1123323344',
-								title='Doctor', source='Google', location='powai', state='IN-MH',
+								title='Doctor', how_did_you_hear_about_us='Google', location='powai', state='IN-MH',
 								is_email_verified=1)
 
 		self.coordinator_profile1 = Profile.objects.create(user=self.demouser1, position='coordinator',
 								department='IT', institute='iit', phone_number='1122334455',
-								title='Doctor', source='Google', location='powai', state='IN-MH',
+								title='Doctor', how_did_you_hear_about_us='Google', location='powai', state='IN-MH',
 								is_email_verified=1)
 
 	def test_profile_model(self):
@@ -93,7 +93,7 @@ class ProfileModelTest(TestCase):
 		self.assertEqual(self.coordinator_profile1.position,'coordinator')
 		self.assertEqual(self.coordinator_profile1.location,'powai')
 		self.assertEqual(self.instructor_profile1.location,'powai')
-		self.assertEqual(self.coordinator_profile1.source,'Google')
+		self.assertEqual(self.coordinator_profile1.how_did_you_hear_about_us,'Google')
 
 
 class WorkshopTypeModelTest(TestCase):
