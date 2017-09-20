@@ -123,7 +123,7 @@ class UserRegistrationForm(forms.Form):
                  choices=department_choices)
     location = forms.CharField(max_length=255, help_text="Place/City")
     state = forms.ChoiceField(choices=states)
-    source = forms.ChoiceField(choices=source)
+    how_did_you_hear_about_us = forms.ChoiceField(choices=source)
 
     def clean_username(self):
         u_name = self.cleaned_data["username"]
@@ -176,7 +176,8 @@ class UserRegistrationForm(forms.Form):
         new_profile.phone_number = cleaned_data["phone_number"]
         new_profile.location = cleaned_data["location"]
         new_profile.title = cleaned_data["title"]
-        new_profile.source = cleaned_data["source"]
+        new_profile.state = cleaned_data["state"]
+        new_profile.how_did_you_hear_about_us = cleaned_data["how_did_you_hear_about_us" ]
         new_profile.activation_key = generate_activation_key(new_user.username)
         new_profile.key_expiry_time = timezone.now() + \
                                     timezone.timedelta(days=1)

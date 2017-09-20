@@ -81,7 +81,11 @@
 	
 	<!-- Pending View -->
 	<div class="container">
-	<h3 align="center"><strong><u>My Requests</u></strong></h3>
+	{% if request.user.profile.position == 'instructor' %}
+	 <h3 align="center"><strong><u>Requests for Me</u></strong></h3>
+	{% else %}
+	 <h3 align="center"><strong><u>My Requests</u></strong></h3>
+	{% endif %}
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -171,7 +175,11 @@
 
 <!-- Proposed View -->
 <div class="container">
-	<h3 align="center"><strong><u>Proposed Workshops</u></strong></h3>
+      {% if request.user.profile.position == 'instructor' %}
+	<h3 align="center"><strong><u>Workshops Proposed By Coordinators</u></strong></h3>
+      {% else %}
+	<h3 align="center"><strong><u>Workshops Proposed By Me</u></strong></h3>
+      {% endif %}
 		<table class="table table-striped">
 			<thead>
 				<tr>

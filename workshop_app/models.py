@@ -112,7 +112,7 @@ class Profile(models.Model):
                   help_text='Select Coordinator if you want to organise a workshop\
                  in your college/school. <br> Select Instructor if you want to conduct\
                  a workshop.')
-    source = models.CharField(max_length=255, blank=True,choices=source)
+    how_did_you_hear_about_us = models.CharField(max_length=255, blank=True,choices=source)
     location = models.CharField(max_length=255,blank=True, help_text="Place/City")
     state = models.CharField(max_length=255, choices=states, default="IN-MH")
     is_email_verified = models.BooleanField(default=False)
