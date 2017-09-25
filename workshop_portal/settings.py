@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'workshop_app',
     'recurrence',
+    'statistics_app',
     
 ]
 

@@ -4,17 +4,11 @@
    <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT }}/manage/">Home</a>
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/">Home</a>
 		</div>
-		<ul class="nav navbar-nav">
-		  <li ><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-		   <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-		   <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-		   <li class="active"><a href="{{ URL_ROOT }}/workshop_stats/" >Workshop Stats</a></li>
-		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span>Register</a></li>
+		  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
 		</ul>
 		</div>
   </nav>
@@ -22,12 +16,12 @@
 
 {% block extra %}
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
  
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
- 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
   	<!-- For Charts -->
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>                                                              
@@ -88,10 +82,8 @@
 
 <div class="container">
   <div class="row">
-		<div class="col-md-6" align="left" >
+		<div class="col-md-4" align="left" >
 			  <fieldset data-mini="true">
-			    <label for="radio-1">Monthly Count </label>
-			    <input type="radio" name="radio-1" id="radio-1" value="NWPM">
 			    <label for="radio-2">Overall Count</label>
 			    <input type="radio" name="radio-1" id="radio-2" value="OWC">
 			    <label for="radio-3">India Map</label>
@@ -99,17 +91,62 @@
 			  </fieldset>
 		</div>
 	
-
-	{% if show_workshop_stats %}
-	<div  align="right" class="col-md-6">
+	<div class="col-md-8">
 		<form method="POST" >
 			{% csrf_token %}
 			<div class="form-group">
+			 <label>state: </label>
+			  <select name="states">
+			    <option value="all">ALL</option>
+			    <option value="IN-AP">Andhra Pradesh</option>	
+			    <option value="IN-AR">Arunachal Pradesh</option>	
+			    <option value="IN-AS">Assam</option>	
+			    <option value="IN-BR">Bihar</option>	
+			    <option value="IN-CT">Chhattisgarh</option>	
+			    <option value="IN-GA">Goa</option>	
+			    <option value="IN-GJ">Gujarat</option>	
+			    <option value="IN-HR">Haryana</option>	
+			    <option value="IN-HP">Himachal Pradesh</option>	
+			    <option value="IN-JK">Jammu and Kashmir</option>	
+			    <option value="IN-JH">Jharkhand</option>	
+			    <option value="IN-KA">Karnataka</option>	
+			    <option value="IN-KL">Kerala</option>	
+			    <option value="IN-MP">Madhya Pradesh</option>	
+			    <option value="IN-MH">Maharashtra</option>	
+			    <option value="IN-MN">Manipur</option>	
+			    <option value="IN-ML">Meghalaya</option>	
+			    <option value="IN-MZ">Mizoram</option>	
+			    <option value="IN-NL">Nagaland</option>	
+			    <option value="IN-OR">Odisha</option>	
+			    <option value="IN-PB">Punjab</option>	
+			    <option value="IN-RJ">Rajasthan</option>	
+			    <option value="IN-SK">Sikkim</option>	
+			    <option value="IN-TN">Tamil Nadu</option>	
+			    <option value="IN-TG">Telangana</option>	
+			    <option value="IN-TR">Tripura</option>
+			    <option value="IN-UT">Uttarakhand</option>	
+			    <option value="IN-UP">Uttar Pradesh</option>	
+			    <option value="IN-WB">West Bengal</option>
+			    <option value="IN-AN">Andaman and Nicobar Islands</option>	
+			    <option value="IN-CH">Chandigarh</option>	
+			    <option value="IN-DN">Dadra and Nagar Haveli</option>	
+			    <option value="IN-DD">Daman and Diu</option>	
+			    <option value="IN-DL">Delhi</option>	
+			    <option value="IN-LD">Lakshadweep</option>	
+			    <option value="IN-PY">Puducherry</option>	
+	                  </select>
+			  <label>WorkshopType:  </label>
+			  <select name="workshoptype_name">
+			  {% for workshop in workshoptype_list %}
+			   <option value={{ workshop.id }}> {{ workshop }} </option>
+			  {% endfor %}
+			  </select>
+			  &nbsp;
+			  <br>
 				<label for="from">From</label>
 				<input type="text" id="from" name="from">
 				<label for="to">to</label>
 				<input type="text" id="to" name="to">
-				<button class="btn btn-warning btn-sm" type="submit" name="Download" value="Download">Download</button>
 				<button class="btn btn-info btn-sm" type="submit" name="View" value="View">View</button>
 			</div>
 	    </form>
@@ -135,11 +172,11 @@
 					<th>Instructor Name</th>
 					<th>Workshop Name</th>
 					<th>Workshop Date</th>
-					<th>Requested/Proposed By</th>
+					<th>Initiated By</th>
 				</tr>
 			</thead>
 			{% csrf_token %}
-			{% for workshop in upcoming_workshops %}
+			{% for workshop in workshop_list %}
 				{% if workshop.proposed_workshop_date %}
 						<tbody>
 							<tr>
@@ -172,19 +209,19 @@
 		<nav aria-label="Page navigation">
 		 	<ul class="pagination pagination-sm">
 			  	<li class="page-item">
-			      {% if upcoming_workshops.has_previous %}
+			      {% if workshop_list.has_previous %}
 					<a class="page-link" tabindex="-1" 
-						href="?page={{ upcoming_workshops.previous_page_number }}">Previous</a>
+						href="?page={{ workshop_list.previous_page_number }}">Previous</a>
 				  {% endif %}
 			    </li>
 			    <li class="page-item">
 			    <span class="current">
-				Page {{ upcoming_workshops.number }} of {{ upcoming_workshops.paginator.num_pages }}
+				Page {{ workshop_list.number }} of {{ workshop_list.paginator.num_pages }}
 					</span>
 				</li>
 			    <li class="page-item">
-			    {% if upcoming_workshops.has_next %}
-					<a class="page-link" href="?page={{ upcoming_workshops.next_page_number }}">Next
+			    {% if workshop_list.has_next %}
+					<a class="page-link" href="?page={{ workshop_list.next_page_number }}">Next
 					</a>	
 				{% endif %}
 			    </li>
@@ -192,19 +229,13 @@
 		</nav>
 		</div>
 	</div>
-	{% else %}
-		<div class="jumbotron">
-			<h2>Permission to View Upcoming Workshops is set to false, please set it to true in settings.py</h2>
-		</div>
-	{% endif %}
 	</div>
-
 
 <div class="row">
 	<br>
 	<div class="col-md-12 ">
 		<br>
-		<canvas id="myChartPie"  width="60px" height="21px"></canvas>
+		<canvas id="myChartPie" ></canvas>
 		<script>
 			$( function() {
 			    $( "fieldset" ).controlgroup();
@@ -214,68 +245,26 @@
 			var myChart;
 
 			$('input[type=radio]').change(function() {
-
-			        if (this.value == 'NWPM') {//Number of Workshops per month
-			            if(myChart){
-			        	myChart.destroy();
-			            }
-		               
-			        document.getElementById("visualization").style.visibility='hidden';
-					myChart = new Chart(ctx1, {
-					    type: 'bar',
-					    data: {
-					        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-							datasets: [{
-							label: 'Number of workshops per Month for '+ dateToday.getFullYear(),
-					            data: {{ workshop_count }},
-					            backgroundColor: [
-					                'rgba(255, 99, 132, 0.2)',
-					                'rgba(54, 162, 235, 0.2)',
-					                'rgba(255, 206, 86, 0.2)',
-					                'rgba(75, 192, 192, 0.2)',
-					                'rgba(153, 102, 255, 0.2)',
-					                'rgba(242, 38, 19, 0.2)',
-					                'rgba(25, 91, 13, 0.2)',
-					                'rgba(54, 12, 235, 0.2)',
-					                'rgba(150, 40, 27, 0.2)',
-					                'rgba(66, 114, 155, 0.2)',
-					                'rgba(219, 10, 91, 0.2)',
-					                'rgba(191, 191, 191, 0.2)'
-					            ],
-				            borderColor: [
-							'rgba(255, 99, 132, 1)',
-					                'rgba(54, 162, 235, 1)',
-					                'rgba(255, 206, 86, 1)',
-					                'rgba(75, 192, 192, 1)',
-					                'rgba(153, 102, 255, 1)',
-					                'rgba(242, 38, 19, 1)',
-					                'rgba(25, 91, 13, 1)',
-					                'rgba(54, 12, 235, 1)',
-					                'rgba(150, 40, 27 ,1)',
-					                'rgba(66, 114, 155, 1)',
-					                'rgba(219, 10, 91, 1)',
-					                'rgba(191, 191, 191, 1)'
-					            ],
-					            borderWidth: 1
-					        }]
-					    },
-					    options: {
-					    	responsive: true,
-					    	scales: {
-					            yAxes: [{
-					                ticks: {
-					                    beginAtZero:true
-					                }
-					            }]
-					        }
-					    }
-					});
-				}
-			   else if (this.value == 'OWC') { //Overall Workshop Count
+		   if (this.value == 'OWC') { //Overall Workshop Count
 			        if(myChart){
 			        	myChart.destroy();
 			        }
 
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#myChartPie" ).dialog({
+					resizable: false,
+					draggable: true,
+			        title: 'Pie Chart',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+	
 				document.getElementById("visualization").style.visibility='hidden';
 				myChart = new Chart(ctx1, {
 				    type: 'pie',
@@ -288,7 +277,7 @@
 				                'rgba(153, 102, 255, 1)',
 				                'rgba(191, 191, 1, 1)',
 				                'rgba(75, 192, 192, 1)',
-				                'rgba(153, 102, 255, 1)'
+					            'rgba(153, 102, 255, 1)'
 				           ] 
 				        }]
 				    },
@@ -300,16 +289,16 @@
 
 				else if (this.value == 'MOIN') {
 			            if(myChart){
-		        		myChart.destroy();
+			        		myChart.destroy();
 			            }
 
-			        var dWidth = $(window).width() * 0.9;
+				    var dWidth = $(window).width() * 0.9;
 			        var dHeight = $(window).height() * 0.9;
                 
 			        $( "#visualization" ).dialog({
 					resizable: false,
 					draggable: true,
-			                title: 'Map of India',
+			        title: 'Map of India',
 					closeOnEscape: true,
 					stack: true,
 					zIndex: 10000,
@@ -318,13 +307,13 @@
 					modal: true
 					});
 	
-			document.getElementById("visualization").style.visibility='visible';
+					document.getElementById("visualization").style.visibility='visible';
 			        function drawVisualization() {
 					    var data = google.visualization.arrayToDataTable(
 						{{ india_map | safe }}
 						);
 
-			                    var opts = {
+					var opts = {
 					    region: 'IN',
 					    domain: 'IN',
 					    displayMode: 'regions',

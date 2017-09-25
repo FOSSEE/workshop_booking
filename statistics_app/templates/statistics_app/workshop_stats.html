@@ -204,7 +204,7 @@
 	<br>
 	<div class="col-md-12 ">
 		<br>
-		<canvas id="myChartPie"  width="60px" height="21px"></canvas>
+		<canvas id="myChartPie" ></canvas>
 		<script>
 			$( function() {
 			    $( "fieldset" ).controlgroup();
@@ -219,12 +219,27 @@
 			            if(myChart){
 			        	myChart.destroy();
 			            }
-		               
+
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#myChartPie" ).dialog({
+					resizable: false,
+					draggable: true,
+			                title: 'Bar Chart',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+			               
 			        document.getElementById("visualization").style.visibility='hidden';
 					myChart = new Chart(ctx1, {
 					    type: 'bar',
 					    data: {
-					        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+					        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', '	December'],
 							datasets: [{
 							label: 'Number of workshops per Month for '+ dateToday.getFullYear(),
 					            data: {{ workshop_count }},
@@ -242,8 +257,8 @@
 					                'rgba(219, 10, 91, 0.2)',
 					                'rgba(191, 191, 191, 0.2)'
 					            ],
-				            borderColor: [
-							'rgba(255, 99, 132, 1)',
+					            borderColor: [
+									'rgba(255, 99, 132, 1)',
 					                'rgba(54, 162, 235, 1)',
 					                'rgba(255, 206, 86, 1)',
 					                'rgba(75, 192, 192, 1)',
@@ -276,6 +291,21 @@
 			        	myChart.destroy();
 			        }
 
+				    var dWidth = $(window).width() * 0.9;
+			        var dHeight = $(window).height() * 0.9;
+                
+			        $( "#myChartPie" ).dialog({
+					resizable: false,
+					draggable: true,
+			        title: 'Pie Chart',
+					closeOnEscape: true,
+					stack: true,
+					zIndex: 10000,
+					width: dWidth,
+					height: dHeight,    
+					modal: true
+					});
+	
 				document.getElementById("visualization").style.visibility='hidden';
 				myChart = new Chart(ctx1, {
 				    type: 'pie',
@@ -288,7 +318,7 @@
 				                'rgba(153, 102, 255, 1)',
 				                'rgba(191, 191, 1, 1)',
 				                'rgba(75, 192, 192, 1)',
-				                'rgba(153, 102, 255, 1)'
+					            'rgba(153, 102, 255, 1)'
 				           ] 
 				        }]
 				    },
@@ -300,16 +330,16 @@
 
 				else if (this.value == 'MOIN') {
 			            if(myChart){
-		        		myChart.destroy();
+			        		myChart.destroy();
 			            }
 
-			        var dWidth = $(window).width() * 0.9;
+				    var dWidth = $(window).width() * 0.9;
 			        var dHeight = $(window).height() * 0.9;
                 
 			        $( "#visualization" ).dialog({
 					resizable: false,
 					draggable: true,
-			                title: 'Map of India',
+			        title: 'Map of India',
 					closeOnEscape: true,
 					stack: true,
 					zIndex: 10000,
@@ -318,13 +348,13 @@
 					modal: true
 					});
 	
-			document.getElementById("visualization").style.visibility='visible';
+					document.getElementById("visualization").style.visibility='visible';
 			        function drawVisualization() {
 					    var data = google.visualization.arrayToDataTable(
 						{{ india_map | safe }}
 						);
 
-			                    var opts = {
+					var opts = {
 					    region: 'IN',
 					    domain: 'IN',
 					    displayMode: 'regions',
