@@ -114,9 +114,9 @@ class UserRegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
     phone_number = forms.RegexField(regex=r'^.{10}$', 
-                                error_message=("Phone number must be entered \
+                                error_messages={'invalid':"Phone number must be entered \
                                                   in the format: '9999999999'.\
-                                                 Up to 10 digits allowed."))
+                                                 Up to 10 digits allowed."})
     institute = forms.CharField(max_length=128, 
                 help_text='Please write full name of your Institute/Organization')
     department = forms.ChoiceField(help_text='Department you work/study',
