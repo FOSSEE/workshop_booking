@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse
 from workshop_app.forms import CreateWorkshop
 from django.conf import settings
 
+
 class TestProfile(TestCase):
 	def setUp(self):
 		self.client = Client()
@@ -113,6 +114,7 @@ class TestProfile(TestCase):
 			'department':(2)})
 
 		self.assertEqual(self.register_response.status_code,200)
+
 
 class TestWorkshopCreation(TestCase):
 	def setUp(self):
