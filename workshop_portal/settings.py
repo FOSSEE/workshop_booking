@@ -142,6 +142,7 @@ MEDIA_URL = '/data/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "workshop_app", "data")
 
+LOG_FOLDER = os.path.join(BASE_DIR, "workshop_app", "logs")
 
 #Email Connection Settings
 EMAIL_HOST = EMAIL_HOST
@@ -160,7 +161,7 @@ PRODUCTION_URL = 'your_production_url'
 
 ADMIN_EMAIL = 'your admin email'
 
-SHOW_WORKSHOP_STATS = 1 #Set True or False to view/hide
+SHOW_WORKSHOP_STATS = False #Set True or False to view/hide
 
 LOGIN_REDIRECT_URL = '/profile'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
