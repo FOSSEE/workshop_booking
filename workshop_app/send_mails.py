@@ -101,12 +101,12 @@ def send_email(	request, call_on,
 	Email sending function while registration and
 	booking confirmation.
 	'''
-
-	with open(path.join(settings.LOG_FOLDER, 'emailconfig.yaml'), 'r') as configfile:
-		config_dict = yaml.load(configfile)
-
-	logging.config.dictConfig(config_dict)
-
+	try:
+		with open(path.join(settings.LOG_FOLDER, 'emailconfig.yaml'), 'r') as configfile:
+			config_dict = yaml.load(configfile)
+		logging.config.dictConfig(config_dict)
+	except:
+		print('File Not Found and Configuration Error')
 
 	if call_on == "Registration":
 		message = dedent("""\
