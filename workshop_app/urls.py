@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^workshop_stats/$', views.workshop_stats),
     url(r'^testimonials/$', views.testimonials),
+    url(r'^share_details/$', views.share_details),
     url(r'^file_view/(?P<workshop_title>[\w|\W]+)$', views.file_view),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
 

@@ -31,6 +31,7 @@ from zipfile import ZipFile
 from django.contrib import messages
 import datetime as dt
 import csv
+import logging
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -1133,4 +1134,17 @@ def workshop_stats(request):
                     "india_map": states
                     })
     else:
-        redirect('/manage/')
+        return redirect('/manage/')
+
+        
+@login_required
+def share_details(request):
+    user = request.user
+    if is_instructor(user):
+        return redirect('/manage/')
+    else:
+        if request.method == 'POST':
+            email_list = (request.POST.get('email').split(','))
+            send_email(request, call_on='ShareMail', other_email=email_list)
+        return redirect('/view_workshoptype_details/')
+    
