@@ -58,6 +58,24 @@ def send_email():
 			[w.proposed_workshop_instructor.email], fail_silently=False
 			)
 
+		message = dedent("""\
+				Dear {0},
+
+				This is to remind you that
+				you have a workshop on {1},
+				for {2}.
+
+				You will receive course instructions from our Instructor shortly.
+
+				Thank You.
+				""".format(w.proposed_workshop_coordinator.get_full_name(),
+					w.proposed_workshop_date, w.proposed_workshop_title))
+		send_mail(
+			"Gentle Reminder about workshop on {0}"
+			.format(w.proposed_workshop_date),message, SENDER_EMAIL,
+			[w.proposed_workshop_coordinator.email], fail_silently=False
+			)
+
 	for w in upcoming_requested_workshops:
 		message = dedent("""\
 				Dear {0}, 
@@ -78,6 +96,24 @@ def send_email():
 			"Gentle Reminder about workshop on {0}"
 			.format(w.requested_workshop_date),message, SENDER_EMAIL,
 			[w.requested_workshop_instructor.email], fail_silently=False
+			)
+
+		message = dedent("""\
+				Dear {0},
+
+				This is to remind you that
+				you have a workshop on {1},
+				for {2}.
+
+				You will receive course instructions from our Instructor shortly.
+
+				Thank You.
+				""".format(w.requested_workshop_coordinator.get_full_name(),
+					w.requested_workshop_date, w.requested_workshop_title))
+		send_mail(
+			"Gentle Reminder about workshop on {0}"
+			.format(w.requested_workshop_date),message, SENDER_EMAIL,
+			[w.requested_workshop_coordinator.email], fail_silently=False
 			)
 
 send_email()
