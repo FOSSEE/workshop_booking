@@ -28,6 +28,7 @@ from textwrap import dedent
 from django.conf import settings
 from os import listdir, path, sep
 from zipfile import ZipFile
+from django.views.generic.base import TemplateView
 from django.contrib import messages
 import datetime as dt
 import csv
@@ -1147,4 +1148,4 @@ def share_details(request):
             email_list = (request.POST.get('email').split(','))
             send_email(request, call_on='ShareMail', other_email=email_list)
         return redirect('/view_workshoptype_details/')
-    
+
