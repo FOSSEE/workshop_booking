@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 import sys
 from local_settings import (
-                    EMAIL_HOST, 
-                    EMAIL_PORT, 
-                    EMAIL_HOST_USER, 
+                    EMAIL_HOST,
+                    EMAIL_PORT,
+                    EMAIL_HOST_USER,
                     EMAIL_HOST_PASSWORD,
                     EMAIL_USE_TLS,
                     SENDER_EMAIL
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'workshop_app',
     'recurrence',
     'statistics_app',
-    
+   #'chatterbot.ext.django_chatterbot'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -82,6 +82,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'workshop_portal.wsgi.application'
 
+# ChatterBot settings
+CHATTERBOT = {
+    'name': 'Django ChatterBot FOSSEE Python ',
+    'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
+    'training_data': [
+        'chatterbot.corpus.english',
+        'chatterbot.corpus.custom.workshop_info',
+        'chatterbot.corpus.custom.fossee_info'
+
+    ],
+    'django_app_name': 'django_chatterbot'
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -157,7 +169,7 @@ SENDER_EMAIL = SENDER_EMAIL
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #Change this to the production url
-PRODUCTION_URL = 'your_production_url' 
+PRODUCTION_URL = 'your_production_url'
 
 ADMIN_EMAIL = 'your admin email'
 

@@ -782,7 +782,7 @@ recurrence.widget.RuleForm.prototype = {
             'span', {'class': 'recurrence-label'},
             recurrence.display.labels.every);
         var interval_label2 = recurrence.widget.e(
-            'span', {'class': 'label'},
+            'span', {'class': 'laebl'},
             recurrence.display.timeintervals_plural[this.rule.freq]);
         var interval_container = recurrence.widget.e(
             'div', {'class': 'interval'},
@@ -1788,7 +1788,7 @@ recurrence.display.labels = {
     'repeat_until': gettext('Repeat until'),
     'exclude_occurrences': gettext('Exclude these occurences'),
     'exclude_date': gettext('Exclude this date'),
-    'add_rule': gettext('Add recurrence'),
+    'add_rule': gettext('Add rule'),
     'add_date': gettext('Add date'),
     'remove': gettext('Remove'),
     'calendar': gettext('Calendar')

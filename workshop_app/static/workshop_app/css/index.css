@@ -1,3 +1,59 @@
+/* ChatBox */
+
+#chat
+ {
+ position:absolute;
+ width:150px;
+ height:auto;
+ padding:10px;
+ background:#088A68;
+ color:#EDEDED;
+ text-align:center;
+ font-family:Cambria;
+ font-size:15px;
+ bottom:0px;
+ right:10px;
+ cursor:pointer;
+ }
+ #chatBox
+ {
+ display:none;
+ position:absolute;
+ width:300px;
+ height:400px;
+ padding:5px;
+ background:#EEEEEE;
+ box-shadow:0 0 0.1em #000;
+ font-family:Garamond;
+ font-size:12px;
+ bottom:0px;
+ right:15px;
+ cursor:pointer;
+ }
+ #close
+ {
+ position:absolute;
+ width:21px;
+ height:21px;
+ /*padding:9px 7px 12px 7px;*/
+ text-align:center;
+ background:rgba(0,0,0,0.8);
+ color:#FF7700;
+ font-family:Cambria;
+ right:0px;top:0px;
+ }
+
+ /* Alternate the background color of the output rows */
+.list-group-item:nth-child(even) {
+    background-color: #bdf1ac;
+}
+
+.chat-log {
+    max-height:300px;
+    overflow-y:scroll;
+}
+
+ 
 
 body {
   background-color: grey;
@@ -123,3 +179,5 @@ label {
   text-align: center;
   color:white;
 }
+
+

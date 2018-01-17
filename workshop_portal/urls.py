@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from workshop_app import views
-import django 
+#from chatterbot.ext.django_chatterbot import urls as chatterbot_urls
+import django
 
 js_info_dict = {
     'packages': ('recurrence', ),
@@ -28,4 +29,5 @@ urlpatterns = [
     url(r'^', include('workshop_app.urls')),
     url(r'^', include('workshop_app.urls_password_reset')),
     url(r'^', include('statistics_app.urls')),
+
 ]

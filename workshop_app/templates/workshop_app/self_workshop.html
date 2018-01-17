@@ -1,0 +1,102 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+	Python Online Courses
+{% endblock %}
+
+{% block extra %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono|Josefin+Sans">
+{% endblock %}
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<ul class ="list-unstyled">
+		<li><h3 style="font-family: 'Josefin Sans', sans-serif;">About this Online Courses</h3></li>
+		<ul>
+			<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;
+					">The <a target="_blank" href="https://fossee.in">FOSSEE</a> team at IIT Bombay offers free online courses in Python designed and curated by <a target="_blank" href="https://www.aero.iitb.ac.in/~prabhu/index.html">Prof.Prabhu Ramachandran(Dept. of Aerospace Engineering,IIT Bombay).</a> These are interactive courses, Participants will gain hands-on experience in Python through a series of practice sessions and quizzes.
+					</h4></li>
+
+			<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;
+					">The course is spread on the span of 3 weeks, anyone interested to learn Python can take up the course irrespective of background(student/working professional).</h4></li>
+
+			<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;
+					">While taking the course if you have any queries, you can post that on our <a target="_blank" href="https://forums.fossee.in"> FORUMS(Python section)</a> which will be answered by FOSSEE's Python team.</h4></li>
+
+			<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;
+					">Participants who meet the <a target="_blank" href="https://python.fossee.in/python-workshops">criteria</a> mentioned will receive e-certificates within 15 working days from the day of course completion. Certificates will be issued on registered email address.</h4></li>
+		</ul>
+
+		<li><h3 style="font-family: 'Josefin Sans', sans-serif;">Instructions</h3></li>
+		<ul>
+			<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;">
+							Go to <a target="_blank" href="https://yaksh.fossee.in">Yaksh</a>, register and enroll for <i><u>Basic Programming using Python</u></i>
+							by searching for the course	using code: <font size=5% color=#A9723E>BPPY</font>
+					</h4>
+			</li>
+		<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;">
+							After your enrollment is accepted, access "Enrolled Courses" tab you will be taken to the modules page, follow along the content sequentially.
+					</h4>
+			</li>
+		<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;">
+							You have to complete all the lessons, exercises and quizzes in a module to move to the next module.
+					</h4>
+			</li>
+
+		<li>
+					<h4 style="font-family: 'Roboto Mono', monospace;">
+					You can revisit lessons for better understanding but quizzes can be attempted only once.	
+					</h4>
+			</li>
+		</ul>
+		
+		<li><h3 style="font-family: 'Josefin Sans', sans-serif;">Duration</h3></li>
+		<ul>
+			<li>
+				<h4 style="font-family: 'Roboto Mono', monospace;">
+					3 weeks is the course window, you can devote 4 hours a day on weekend or 1 hour each day or as per your availability.
+				</h4>
+			</li>
+		</ul>
+
+		<li><h3 style="font-family: 'Josefin Sans', sans-serif;">Benefits</h3></li>
+				<ul>
+					<li>
+						<h4 style="font-family: 'Roboto Mono', monospace;">
+								The Course is absolutely free and a  
+								Certificate will be awarded on successful completion
+
+						</h4>
+					</li>
+					<li>
+								<h4 style="font-family: 'Roboto Mono', monospace;">
+										Flexible Timings
+								</h4>
+							</li>
+						</ul>
+
+
+</ul>
+</div>
+{% endblock %}
