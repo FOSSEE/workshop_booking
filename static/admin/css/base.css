@@ -272,10 +272,6 @@ tfoot td {
     border-top: 1px solid #eee;
 }
 
-thead th.required {
-    color: #000;
-}
-
 tr.alt {
     background: #f6f6f6;
 }

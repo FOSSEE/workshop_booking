@@ -10,19 +10,6 @@
     <meta name="Akshen Doke" content="">
 
     <title>Welcome</title>
-    <!-- ChatBox  -->
-    <script type="text/javascript">
-     function open_chatbox()
-     {
-     $('#chat').fadeOut(500);
-     $('#chatBox').fadeIn(1000);
-     }
-     function closeChat()
-     {
-     $('#chatBox').fadeOut(500);
-     $('#chat').fadeIn(1000);
-     }
-     </script>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -44,25 +31,22 @@
 
   <!-- ChatBot Post -->
     <script src="{{ URL_ROOT }}/static/workshop_app/js/jquery.js"></script>
-    <script src="{{ URL_ROOT }}/static/workshop_app/js/js.cookie.js"></script>
    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-   
-
 </head>
-
-
 <body>
-
     <!-- Navigation -->
       
         <div class="container">
-	  <!--
-	  <div class="row" style="align-items: center;">
-            <img class="img-responsive center-block" src=" {{ URL_ROOT }}/static/workshop_app/img/Scipy17top_bnr.png"> <br>
-	  </div>
-	  -->
+				<div class="row">
+						<div class="col-12">
+				<center>
+							<a href="{{URL_ROOT}}/self_workshop" ><img style="width:100%;max-width:900px;max-height:150px" src="{{URL_ROOT}}/static/workshop_app/img/PWB_3.png" /></a>
+				</center>
+						</div>
+			</div>
+
         <!-- Heading Row -->
         <div class="row">
             <div class="col-md-5 fossee-label">
@@ -128,19 +112,6 @@
             <!-- /.col-lg-12 -->
           </div>
 
-              <!--ChatBox  -->
-               <div id="chat" onClick="open_chatbox();"> Talk to ChatBot</div>
-               <div id="chatBox"><div onclick="closeChat()" id="close">X</div><br><br>
-                 <ul class="list-group chat-log js-chat-log">
-                 </ul>
-                  <div class="input-group input-group-md mt-1">
-                    <input type="text" class="form-control js-text" placeholder="Type here"/>
-                    <span class="input-group-btn">
-                      <button class="btn btn-primary js-say">Submit</button>
-                    </span>
-                  </div>
-               </div>
-
         </div>
         <!-- /.row -->
 
@@ -192,80 +163,6 @@
     </div>
     <!-- /.container -->
     <!--  -->
-
-     <script>
-      var chatterbotUrl = '{% url "chatterbot:chatterbot" %}';
-      var csrftoken = Cookies.get('csrftoken');
-
-      function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-      }
-
-      $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          }
-        }
-      });
-
-      var $chatlog = $('.js-chat-log');
-      var $input = $('.js-text');
-      var $sayButton = $('.js-say');
-
-      function createRow(text) {
-        var $row = $('<li class="list-group-item"></li>');
-
-        $row.text(text);
-        $chatlog.append($row);
-        // Clear the input field
-        $input.val('');
-        $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
-      }
-
-      function submitInput() {
-        var inputData = {
-          'text': $input.val()
-          
-        }
-        // Display the user's input on the web page
-        createRow(inputData.text);
-
-        var $submit = $.ajax({
-          type: 'POST',
-          url: chatterbotUrl,
-          data: JSON.stringify(inputData),
-          contentType: 'application/json'
-        });
-
-        $submit.done(function(statement) {
-            createRow(statement.text);
-
-            // Clear the input field
-            $input.val('');
-
-            // Scroll to the bottom of the chat interface
-            $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
-        });
-
-        $submit.fail(function() {
-          // TODO: Handle errors
-          console.log('here')
-        });
-      }
-
-      $sayButton.click(function() {
-        submitInput();
-      });
-
-      $input.keydown(function(event) {
-        // Submit the input when the enter button is pressed
-        if (event.keyCode == 13) {
-          submitInput();
-        }
-      });
-    </script>
 
 </body>
 

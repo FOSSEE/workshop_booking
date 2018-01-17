@@ -48,7 +48,8 @@ urlpatterns = [
     url(r'^share_details/$', views.share_details),
     url(r'^file_view/(?P<workshop_title>[\w|\W]+)$', views.file_view),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
-    url(r'^api/chatterbot/', include(chatterbot_urls, namespace='chatterbot')),
+    #url(r'^api/chatterbot/', include(chatterbot_urls, namespace='chatterbot')),
+    url(r'^self_workshop', views.self_workshop),
 
 ]
 

@@ -10,7 +10,7 @@
  color:#EDEDED;
  text-align:center;
  font-family:Cambria;
- font-size:20px;
+ font-size:15px;
  bottom:0px;
  right:10px;
  cursor:pointer;
@@ -21,13 +21,11 @@
  position:absolute;
  width:300px;
  height:400px;
- padding:10px;
+ padding:5px;
  background:#EEEEEE;
- color:#FF7700;
  box-shadow:0 0 0.1em #000;
- text-align:center;
- font-family:Cambria;
- font-size:20px;
+ font-family:Garamond;
+ font-size:12px;
  bottom:0px;
  right:15px;
  cursor:pointer;
@@ -44,7 +42,19 @@
  font-family:Cambria;
  right:0px;top:0px;
  }
+
+ /* Alternate the background color of the output rows */
+.list-group-item:nth-child(even) {
+    background-color: #bdf1ac;
+}
+
+.chat-log {
+    max-height:300px;
+    overflow-y:scroll;
+}
+
  
+
 body {
   background-color: grey;
 }

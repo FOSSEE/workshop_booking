@@ -1,11 +1,11 @@
 from .forms import (
-            UserRegistrationForm, UserLoginForm, 
+            UserRegistrationForm, UserLoginForm,
             ProfileForm, CreateWorkshop,
             ProposeWorkshopDateForm
             )
 from .models import (
             Profile, User,
-            has_profile, Workshop, 
+            has_profile, Workshop,
             WorkshopType, RequestedWorkshop,
             BookedWorkshop, ProposeWorkshopDate,
             Testimonial
@@ -69,14 +69,14 @@ def index(request):
             if user.groups.filter(name='instructor').count() > 0:
                 return redirect('/manage/')
             return redirect('/book/')
-        
+
     return render(request, "workshop_app/index.html", {"form": form})
 
 
 def is_instructor(user):
     '''Check if the user is having instructor rights'''
     return True if user.groups.filter(name='instructor').count() > 0 else False
-        
+
 
 def user_login(request):
     '''User Login'''
@@ -115,22 +115,22 @@ def activate_user(request, key=None):
             status = "1"
             Profile.objects.get(user_id=user.profile.user_id).delete()
             User.objects.get(id=user.profile.user_id).delete()
-            return render(request, 'workshop_app/activation.html', 
+            return render(request, 'workshop_app/activation.html',
                         {'status':status})
         elif user.is_authenticated() and user.profile.is_email_verified==0:
             return render(request, 'workshop_app/activation.html')
         elif user.is_authenticated() and user.profile.is_email_verified:
             status = "2"
-            return render(request, 'workshop_app/activation.html', 
+            return render(request, 'workshop_app/activation.html',
                         {'status':status})
         else:
             return redirect('/register/')
 
     try:
-        user = Profile.objects.get(activation_key=key)  
+        user = Profile.objects.get(activation_key=key)
     except:
         return redirect('/register/')
-        
+
     if key == user.activation_key:
         user.is_email_verified = True
         user.save()
@@ -153,24 +153,24 @@ def user_register(request):
             login(request, new_user)
             user_position = request.user.profile.position
             send_email(
-                       request, call_on='Registration', 
+                       request, call_on='Registration',
                        user_position=user_position,
                        key=key
                       )
-            
+
             return render(request, 'workshop_app/activation.html')
         else:
             if request.user.is_authenticated():
                 return redirect('/view_profile/')
             return render(
-                request, "workshop_app/registration/register.html", 
+                request, "workshop_app/registration/register.html",
                 {"form": form}
                 )
     else:
         if request.user.is_authenticated() and is_email_checked(request.user):
             return redirect('/my_workshops/')
         elif request.user.is_authenticated():
-            return render(request, 'workshop_app/activation.html') 
+            return render(request, 'workshop_app/activation.html')
         form = UserRegistrationForm()
     return render(request, "workshop_app/registration/register.html", {"form": form})
 
@@ -184,7 +184,7 @@ def book(request):
                 return redirect('/manage/')
 
             workshop_details = Workshop.objects.all()
-            
+
             workshop_occurence_list = []
             today = datetime.now() + dt.timedelta(days=3)
             upto = datetime.now() + dt.timedelta(weeks=52)
@@ -194,7 +194,7 @@ def book(request):
                     upto,
                     inc=True
                     )
-                
+
                 for d in range(len(dates)):
                     workshop_occurence = [
                                 dates[d].strftime("%d-%m-%Y"),
@@ -204,16 +204,16 @@ def book(request):
                                 workshops.workshop_title_id,
                                 workshops.workshop_title.workshoptype_description
                                 ]
-                    
+
                     workshop_occurence_list.append(workshop_occurence)
                     del workshop_occurence
-            
+
             #Gives you the objects of BookedWorkshop
             bookedworkshop = BookedWorkshop.objects.all()
             if len(bookedworkshop) != 0:
                 for b in bookedworkshop:
                     '''
-                    handles objects from bookedworkshop 
+                    handles objects from bookedworkshop
                         -requested
                         -proposed
                     '''
@@ -238,10 +238,10 @@ def book(request):
                     if a[0] == x:
                         workshop_occurence_list.remove(a)
                 del x
-     
+
 
             #Show upto 12 Workshops per page
-            paginator = Paginator(workshop_occurence_list, 12) 
+            paginator = Paginator(workshop_occurence_list, 12)
             page = request.GET.get('page')
             try:
                 workshop_occurences  = paginator.page(page)
@@ -307,8 +307,8 @@ def book_workshop(request):
                     requested_workshop_title=client_data[-1]
                     ).count() > 0:
 
-                    return HttpResponse(dedent("""You already have a booking 
-                                for this workshop please check the 
+                    return HttpResponse(dedent("""You already have a booking
+                                for this workshop please check the
                                 instructors response in My Workshops tab and
                                 also check your email."""))
             else:
@@ -331,8 +331,8 @@ def book_workshop(request):
                                 ).count()
 
                         # Mail to instructor
-                        send_email(request, call_on='Booking', 
-                                       user_position='instructor', 
+                        send_email(request, call_on='Booking',
+                                       user_position='instructor',
                                        workshop_date=workshop_date,
                                        workshop_title=workshop.workshop_title.workshoptype_name,
                                        user_name=str(request.user.get_full_name()),
@@ -346,9 +346,9 @@ def book_workshop(request):
                             user_name=workshop.workshop_instructor.profile.user.get_full_name(),
                             other_email=workshop.workshop_instructor.email,
                             phone_number=phone_number)
-                                
+ 
                         return HttpResponse(dedent("""\
-                        Your request has been successful, Please check 
+                        Your request has been successful, Please check
                         your email for further information. Your request is number
                         {0} in the queue.""".format(str(queue))))
     else:
@@ -376,21 +376,21 @@ def manage(request):
                     workshop_occurence = workshop.recurrences.between(
                                                 today,
                                                 upto,
-                                                inc=True                                                    
+                                                inc=True
                                                 )
                     for i in range(len(workshop_occurence)):
 
-                        workshop_occurence_list.append({ 
-                                        "user": str(user), 
-                                        "workshop": workshop.workshop_title, 
+                        workshop_occurence_list.append({
+                                        "user": str(user),
+                                        "workshop": workshop.workshop_title,
                                         "date": workshop_occurence[i].date()
                                         })
-                    
+
                 requested_workshop = RequestedWorkshop.objects.filter(
                                             requested_workshop_instructor=user.id
                                             )
-                
-                
+
+
                 #Need to recheck logic
                 for j in range(len(requested_workshop)):
                     for i in workshop_occurence_list:
@@ -400,7 +400,7 @@ def manage(request):
                             workshop_occurence_list.remove(i)
                         del a, b
 
-                
+
                 #Show upto 12 Workshops per page
                 paginator = Paginator(workshop_occurence_list, 12)
                 page = request.GET.get('page')
@@ -414,9 +414,9 @@ def manage(request):
                     workshops  = paginator.page(paginator.num_pages)
             except:
                 workshops = None
-            
+
             return render(
-                        request, "workshop_app/manage.html", 
+                        request, "workshop_app/manage.html",
                         {"workshop_occurence_list": workshops}
                         )
 
@@ -464,8 +464,8 @@ def my_workshops(request):
                     wtitle = ws.requested_workshop_title.workshoptype_name
 
                     #For Instructor
-                    send_email(request, call_on='Booking Confirmed', 
-                        user_position='instructor', 
+                    send_email(request, call_on='Booking Confirmed',
+                        user_position='instructor',
                         workshop_date=str(client_data[1]),
                         workshop_title=wtitle,
                         user_name=str(cname),
@@ -475,7 +475,7 @@ def my_workshops(request):
                         )
 
                     #For Coordinator
-                    send_email(request, call_on='Booking Confirmed',  
+                    send_email(request, call_on='Booking Confirmed',
                         workshop_date=str(client_data[1]),
                         workshop_title=wtitle,
                         other_email=cmail,
@@ -487,7 +487,7 @@ def my_workshops(request):
                     workshops_list = Workshop.objects.filter(workshop_instructor=request.user.id,
                                             workshop_title_id=client_data[2]
                                             )
-                    
+
                     today = datetime.now() + dt.timedelta(days=3)
                     upto = datetime.now() + dt.timedelta(weeks=52)
                     for workshop in workshops_list:
@@ -517,7 +517,7 @@ def my_workshops(request):
                         )
 
                     return HttpResponse("Workshop Deleted")
-                
+
                 elif client_data[-1] == 'APPROVED':
                     workshop_date = datetime.strptime(
                                         client_data[1], "%Y-%m-%d"
@@ -545,8 +545,8 @@ def my_workshops(request):
                     wtitle = ws.proposed_workshop_title.workshoptype_name
 
                     #For Instructor
-                    send_email(request, call_on='Booking Confirmed', 
-                        user_position='instructor', 
+                    send_email(request, call_on='Booking Confirmed',
+                        user_position='instructor',
                         workshop_date=str(client_data[1]),
                         workshop_title=wtitle,
                         user_name=str(cname),
@@ -646,7 +646,7 @@ def my_workshops(request):
                 proposed_workshop_coordinator=user.id
                 )
             for p in proposed_workshop:
-                workshops.append(p)         
+                workshops.append(p)
 
             #Show upto 12 Workshops per page
             paginator = Paginator(workshops[::-1], 12)
@@ -843,7 +843,7 @@ def view_workshoptype_details(request):
             request, 'workshop_app/view_workshoptype_details.html', \
                 {'workshoptype': workshoptype}
                 )
-    
+
 
 def benefits(request):
     return render(request, 'workshop_app/view_benefits.html')
@@ -907,7 +907,7 @@ def workshop_stats(request):
     user = request.user
     today = datetime.now()
     upto = today + dt.timedelta(days=15)
-    
+
     #For Monthly Chart 
     workshop_count = [0] * 12
     for x in range(12):
@@ -1019,7 +1019,7 @@ def workshop_stats(request):
                     )
 
             upcoming_workshops = []
-        
+
             for workshop in proposed_workshops:
                 upcoming_workshops.append(workshop)
 
@@ -1084,7 +1084,7 @@ def workshop_stats(request):
                         })
         except:
             messages.info(request, 'Please enter Valid Dates')
-            
+
     if is_instructor(user) and is_email_checked(user):
         try:
             #Fetches Accepted workshops which were proposed by Coordinators
@@ -1092,7 +1092,7 @@ def workshop_stats(request):
                                 proposed_workshop_date__range=(today, upto),
                                 status='ACCEPTED'
                                 ) 
-    
+
             #Fetches Accepted workshops which were Accepted by
             # Instructors based on their Availability
             requested_workshops = RequestedWorkshop.objects.filter(
@@ -1103,10 +1103,10 @@ def workshop_stats(request):
             upcoming_workshops = []
             for workshop in proposed_workshops:
                 upcoming_workshops.append(workshop)
-            
+
             for workshop in requested_workshops:
                 upcoming_workshops.append(workshop)
-            
+
             upcoming_workshops = sorted(upcoming_workshops,
                         key=lambda x: check_workshop_type(x))
 
@@ -1137,7 +1137,7 @@ def workshop_stats(request):
     else:
         return redirect('/manage/')
 
-        
+
 @login_required
 def share_details(request):
     user = request.user
@@ -1149,3 +1149,6 @@ def share_details(request):
             send_email(request, call_on='ShareMail', other_email=email_list)
         return redirect('/view_workshoptype_details/')
 
+
+def self_workshop(request):
+    return render(request, 'workshop_app/self_workshop.html')
