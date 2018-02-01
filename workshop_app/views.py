@@ -1151,4 +1151,5 @@ def share_details(request):
 
 
 def self_workshop(request):
-    return render(request, 'workshop_app/self_workshop.html')
+    pdf_file = open(path.join(settings.MEDIA_ROOT,'self_learning.pdf'), 'rb')
+    return HttpResponse(pdf_file, content_type="application/pdf")
