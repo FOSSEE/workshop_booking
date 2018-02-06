@@ -435,7 +435,6 @@ def my_workshops(request):
                 user_position = request.user.profile.position
                 client_data = request.body.decode("utf-8").split("&")
                 client_data = client_data[0].split("%2C")
-
                 if client_data[-1] == 'ACCEPTED':
                     workshop_date = datetime.strptime(
                                         client_data[1], "%Y-%m-%d"
@@ -563,6 +562,33 @@ def my_workshops(request):
                         phone_number=inum
                         )
 
+                elif client_data[-1] == 'CHANGE_DATE':
+                    temp, iid = client_data[0].split("=")
+                    temp, new_workshop_date = client_data[-2].split("%3D")
+                    cid, workshop_title_id = client_data[1], client_data[2]
+                    workshop_date = client_data[3]
+                    if workshop_date > new_workshop_date:
+                        return HttpResponse("Please Give proper Date!")
+                    else:
+                        result = RequestedWorkshop.objects.filter(
+                            requested_workshop_instructor=user.id,
+                            requested_workshop_coordinator=cid,
+                            requested_workshop_title_id=workshop_title_id,
+                            requested_workshop_date=workshop_date).update(
+                            requested_workshop_date=new_workshop_date)
+
+                        if result:
+                            del temp
+                        else:
+                            ProposeWorkshopDate.objects.filter(
+                            proposed_workshop_instructor=user.id,
+                            proposed_workshop_coordinator=cid,
+                            proposed_workshop_title_id=workshop_title_id,
+                            proposed_workshop_date=workshop_date).update(
+                            proposed_workshop_date=new_workshop_date)
+
+                    return HttpResponse("Date Changed")
+
                 else:
                     workshop_date = datetime.strptime(
                                         client_data[1], "%Y-%m-%d"
@@ -604,24 +630,26 @@ def my_workshops(request):
             workshops = []
             workshop_occurence_list = RequestedWorkshop.objects.filter(
                                     requested_workshop_instructor=user.id
-                                    )
+                                    ).order_by('-requested_workshop_date')
             for w in workshop_occurence_list:
                 workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
                             proposed_workshop_instructor=user.id
-                            )
+                            ).order_by('-proposed_workshop_date')
             for p in proposed_workshop:
                 workshops.append(p)
 
             proposed_workshop_pending  = ProposeWorkshopDate.objects.filter(
                                     status='Pending'
-                                    )
+                                    ).order_by('-proposed_workshop_date')
             for p in proposed_workshop_pending:
                 workshops.append(p)
 
+            today = datetime.today().date()
+           
             #Show upto 12 Workshops per page
-            paginator = Paginator(workshops[::-1], 12)
+            paginator = Paginator(workshops, 12)
             page = request.GET.get('page')
             try:
                 workshop_occurences = paginator.page(page)
@@ -632,24 +660,25 @@ def my_workshops(request):
                 #If page is out of range(e.g 999999), deliver last page.
                 workshop_occurences = paginator.page(paginator.num_pages)
             return render(request, 'workshop_app/my_workshops.html',
-                { "workshop_occurences" :workshop_occurences})
+                { "workshop_occurences" :workshop_occurences,
+                  "today": today})
 
         else:
             workshops = []
             workshop_occurence_list = RequestedWorkshop.objects.filter(
                         requested_workshop_coordinator=user.id
-                        )
+                        ).order_by('-requested_workshop_date')
             for w in workshop_occurence_list:
                 workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
                 proposed_workshop_coordinator=user.id
-                )
+                ).order_by('-proposed_workshop_date')
             for p in proposed_workshop:
                 workshops.append(p)
 
             #Show upto 12 Workshops per page
-            paginator = Paginator(workshops[::-1], 12)
+            paginator = Paginator(workshops, 12)
             page = request.GET.get('page')
             try:
                 workshop_occurences = paginator.page(page)
