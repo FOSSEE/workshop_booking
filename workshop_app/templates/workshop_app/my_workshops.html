@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block extra %}
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="{{URL_ROOT}}/static/workshop_app/js/jquery-1.12.1-ui.min.js"></script>
+
 	<script>
 		//ToolTip popup function onhover
 		$(document).ready(function(){
@@ -21,7 +22,6 @@
 
 		function sendData(d){
 			var URL = "{{ URL_ROOT }}/my_workshops/"
-			console.log(d);
 			$.ajax({
 				url: URL,
 				type: "POST",
@@ -36,6 +36,82 @@
 			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
 		}
 	</script>
+
+	<!-- Change Workshop Date -->
+	<script type="text/javascript">
+		//ToolTip popup function onhover
+		$(document).ready(function(){
+	    $('[data-toggle="popinfo"]').popover({
+	        placement : 'top',
+	        trigger : 'hover'
+	    	});
+		});
+
+			function changeDate(date){ 
+				var previous_date = new Date(date);
+				var dateToday = new Date();
+    			var upto = new Date();
+
+    			previous_date.setDate(previous_date.getDate() + 1);
+    			upto.setFullYear(dateToday.getFullYear() + 1);
+
+    			if(date[0]=='P'){
+			        $('.pDate').datepicker({
+			        	changeMonth: true,
+	         			changeYear: true,
+	          			minDate: previous_date,
+	          			maxDate: upto,
+	          			dateFormat:"yy-mm-dd",
+			        });
+		       	 $('.myDialogP').dialog();	
+		       	 $('.myDialogR').dialog("close");	
+
+			    } else {
+
+					 $('.rDate').datepicker({
+			        	changeMonth: true,
+	         			changeYear: true,
+	          			minDate: previous_date,
+	          			maxDate: upto,
+	          			dateFormat:"yy-mm-dd",
+			        });
+			       	 $('.myDialogR').dialog();	
+			       	 $('.myDialogP').dialog("close");	
+			       	}
+				};
+
+			function submitNewDate(info){
+				if(info[0] == 'R'){
+					var date = document.getElementsByClassName('rDate');
+					info = info.slice(1);
+				}
+				else{
+					var date = document.getElementsByClassName('pDate');
+					info = info.slice(1);
+				}
+				var data_c = info.slice(1) + ',new_date=' + date[0].value +',CHANGE_DATE';
+				var URL = "{{ URL_ROOT }}/my_workshops/";
+				$.ajax({
+					url: URL,
+					async: false,
+					type: "POST",
+					data: {
+						data_c, 
+						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+					},
+					success:function(response){
+						window.location.reload();
+						alert(response);
+					}
+				});
+
+			};
+
+    </script>
+    <style type="text/css">
+    	.myDialogR { display: none; }
+    	.myDialogP { display: none; }
+    </style>
 {% endblock %}
 
 {% block header %}
@@ -151,7 +227,20 @@
 								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
 							{% endif %}
 								<td>{{ workshop.requested_workshop_title |capfirst }}</td>
-								<td>{{ workshop.requested_workshop_date | date }}</td>
+								{% if workshop.requested_workshop_date > today %}
+									<td>{{ workshop.requested_workshop_date | date }}
+										<span class="glyphicon glyphicon-calendar" data-toggle="popinfo" title="Note" data-content="Click here to change date"
+										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}')">
+										</span>
+										<div class="myDialogR" title="Select New Date">
+											
+											<input type="text" class="rDate" /><br>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
+										</div>
+            						</td>
+								{% else %}
+									<td>{{ workshop.requested_workshop_date | date }}</td>
+								{% endif %}
 								<td><span class = "label label-success">{{ workshop.status }}</span></td>
 						{% endif %}
 						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
@@ -161,7 +250,21 @@
 								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
 							{% endif %}
 								<td>{{ workshop.proposed_workshop_title  }}</td>
-								<td>{{ workshop.proposed_workshop_date | date }}</td>
+								{% if workshop.proposed_workshop_date > today %}
+								<td>{{ workshop.proposed_workshop_date | date }}
+									<span class="glyphicon glyphicon-calendar" 
+										class="datepicker" data-toggle="popinfo" title="Note" data-content="Click here to change date"
+										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}')">
+										</span>
+										<div class="myDialogP" title="Select New Date">
+											
+											<input type="text" class="pDate" /><br>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
+										</div>
+								</td>
+								{% else %}
+									<td>{{ workshop.proposed_workshop_date | date }}</td>
+								{% endif %}
 								<td><span class = "label label-success">{{ workshop.status }}</span></td>
 						{% endif %}
 						</tr>
