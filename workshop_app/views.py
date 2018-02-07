@@ -567,7 +567,9 @@ def my_workshops(request):
                     temp, new_workshop_date = client_data[-2].split("%3D")
                     cid, workshop_title_id = client_data[1], client_data[2]
                     workshop_date = client_data[3]
-                    if workshop_date > new_workshop_date:
+                    today = datetime.today().date()
+
+                    if str(today) > new_workshop_date:
                         return HttpResponse("Please Give proper Date!")
                     else:
                         result = RequestedWorkshop.objects.filter(
