@@ -8,7 +8,7 @@
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
- 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 	<script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
 	<script src="{{URL_ROOT}}/static/workshop_app/js/jquery-1.12.1-ui.min.js"></script>
 
 	<script>
@@ -56,40 +56,47 @@
     			upto.setFullYear(dateToday.getFullYear() + 1);
 
     			if(date[0]=='P'){
-			        $('.pDate').datepicker({
+    				var counter = date.split(" ");
+    				var id = counter.slice(-1).pop();
+    				counter = '.pDate'+id
+			        $(counter).datepicker({
 			        	changeMonth: true,
 	         			changeYear: true,
 	          			minDate: dateToday,
 	          			maxDate: upto,
 	          			dateFormat:"yy-mm-dd",
 			        });
-		       	 $('.myDialogP').dialog();	
-		       	 $('.myDialogR').dialog("close");	
-
+			        $(".ui-dialog-content").dialog("close");
+			        $('.myDialogP'+id).dialog();	
+		       	
 			    } else {
-
-					 $('.rDate').datepicker({
+			    	var counter = date.split(" ");
+			    	var id = counter.slice(-1).pop();
+    				counter = '.rDate'+id;
+					 $(counter).datepicker({
 			        	changeMonth: true,
 	         			changeYear: true,
 	          			minDate: dateToday,
 	          			maxDate: upto,
 	          			dateFormat:"yy-mm-dd",
 			        });
-			       	 $('.myDialogR').dialog();	
-			       	 $('.myDialogP').dialog("close");	
+			       	 $(".ui-dialog-content").dialog("close");	
+			       	 $('.myDialogR'+id).dialog();
+
 			       	}
 				};
 
 			function submitNewDate(info){
-				if(info[0] == 'R'){
-					var date = document.getElementsByClassName('rDate');
-					info = info.slice(1);
+				var data = info.split(",");
+				if(data[1] == 'R'){
+					var date = document.getElementsByClassName('rDate'+data[0]);
+					info = data.slice(2);
 				}
 				else{
-					var date = document.getElementsByClassName('pDate');
-					info = info.slice(1);
+					var date = document.getElementsByClassName('pDate'+data[0]);
+					info = data.slice(2);
 				}
-				var data_c = info.slice(1) + ',new_date=' + date[0].value +',CHANGE_DATE';
+				var data_c = info + ',new_date=' + date[0].value +',CHANGE_DATE';
 				var URL = "{{ URL_ROOT }}/my_workshops/";
 				$.ajax({
 					url: URL,
@@ -108,10 +115,7 @@
 			};
 
     </script>
-    <style type="text/css">
-    	.myDialogR { display: none; }
-    	.myDialogP { display: none; }
-    </style>
+    
 {% endblock %}
 
 {% block header %}
@@ -230,12 +234,12 @@
 								{% if workshop.requested_workshop_date > today %}
 									<td>{{ workshop.requested_workshop_date | date }}
 										<span class="glyphicon glyphicon-calendar" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}')">
+										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
 										</span>
-										<div class="myDialogR" title="Select New Date">
+										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
 											
-											<input type="text" class="rDate" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
+											<input type="text" class="rDate{{forloop.counter}}" /><br>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
 										</div>
             						</td>
 								{% else %}
@@ -254,12 +258,12 @@
 								<td>{{ workshop.proposed_workshop_date | date }}
 									<span class="glyphicon glyphicon-calendar" 
 										class="datepicker" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}')">
+										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}, {{forloop.counter}}')">
 										</span>
-										<div class="myDialogP" title="Select New Date">
+										<div class="myDialogP{{forloop.counter}}" style="display: none;" title="Select New Date">
 											
-											<input type="text" class="pDate" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
+											<input type="text" class="pDate{{forloop.counter}}" /><br>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
 										</div>
 								</td>
 								{% else %}
