@@ -14,7 +14,8 @@ except ImportError:
 
 #Custom Classes 
 class ProfileAdmin(admin.ModelAdmin):
-	list_display = ['title','user', 'institute','location','department','phone_number','position']
+	list_display = ['title','user', 'institute','location','department',
+					'phone_number','position']
 	list_filter = ['position', 'department']
 	actions = ['download_csv']
 
@@ -25,11 +26,13 @@ class ProfileAdmin(admin.ModelAdmin):
 										filename=profile_data.csv'
 
 		writer = csv.writer(response)
-		writer.writerow(['title','user', 'institute', 'location','department','phone_number',
-						'position'])
+		writer.writerow(['title','username', 'first_name', 'last_name', 
+						'institute', 'location', 'department',
+						'phone_number', 'position'])
 		
 		for q in queryset:
-			writer.writerow([q.title, q.user, q.institute,
+			writer.writerow([q.title, q.user, q.user.first_name, 
+							q.user.last_name, q.institute,
 							q.location, q.department, q.phone_number,
 							q.position])
 
