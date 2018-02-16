@@ -940,7 +940,7 @@ def check_workshop_type(x):
 def workshop_stats(request):
     user = request.user
     today = datetime.now()
-    upto = today + dt.timedelta(days=15)
+    upto = today + dt.timedelta(days=30)
 
     #For Monthly Chart 
     workshop_count = [0] * 12
