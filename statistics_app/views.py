@@ -24,6 +24,7 @@ from django.conf import settings
 from os import listdir, path, sep
 from zipfile import ZipFile
 from django.contrib import messages
+from operator import itemgetter
 import datetime as dt
 import csv
 try:
@@ -499,6 +500,12 @@ def profile_stats(request):
                         proposed_workshop_coordinator_id=p['profile'].user.id,
                         status='ACCEPTED').count()
 
+        #Sorting
+        coordinator_profile = sorted(coordinator_profile, 
+                            key=lambda k:k['count'], reverse=True)
+        instructor_profile = sorted(instructor_profile, 
+                            key=lambda k:k['count'], reverse=True)
+
         return render(request, "statistics_app/profile_stats.html",
             {
                 "instructor_data": instructor_profile,
@@ -507,6 +514,34 @@ def profile_stats(request):
     else:
         logout(request)
         return render(request, "workshop_app/logout.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
