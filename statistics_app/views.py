@@ -453,3 +453,60 @@ def workshop_public_stats(request):
                       "workshoptype_list": workshoptype_list[::-1],
                       "workshoptype_count": workshoptype_count,
                       "india_map": states})
+
+
+@login_required
+def profile_stats(request):
+    user = request.user
+    if is_instructor(user) and is_email_checked(user):
+        profiles = Profile.objects.all()
+
+        rworkshops = RequestedWorkshop.objects.filter(status='ACCEPTED')
+        pworkshops = ProposeWorkshopDate.objects.filter(status='ACCEPTED')
+
+        iprofile = Profile.objects.filter(position='instructor')
+        cprofile = Profile.objects.filter(position='coordinator')
+
+        instructor_profile = []
+        coordinator_profile = []
+
+        for p in iprofile:
+            instructor_profile.append({"profile": p,
+                                        "count": 0
+                                        })
+            
+
+        for p in cprofile:
+            coordinator_profile.append({"profile": p,
+                                        "count": 0
+                                        })
+
+        for p in instructor_profile:
+            p['count'] += RequestedWorkshop.objects.filter(
+                        requested_workshop_instructor_id=p['profile'].user.id,
+                        status='ACCEPTED').count()
+
+            p['count'] += ProposeWorkshopDate.objects.filter(
+                        proposed_workshop_instructor_id=p['profile'].user.id,
+                        status='ACCEPTED').count()
+
+        for p in coordinator_profile:
+            p['count'] += RequestedWorkshop.objects.filter(
+                        requested_workshop_coordinator_id=p['profile'].user.id,
+                        status='ACCEPTED').count()
+
+            p['count'] += ProposeWorkshopDate.objects.filter(
+                        proposed_workshop_coordinator_id=p['profile'].user.id,
+                        status='ACCEPTED').count()
+
+        return render(request, "statistics_app/profile_stats.html",
+            {
+                "instructor_data": instructor_profile,
+                "coordinator_data": coordinator_profile,
+            })
+    else:
+        logout(request)
+        return render(request, "workshop_app/logout.html")
+
+
+
