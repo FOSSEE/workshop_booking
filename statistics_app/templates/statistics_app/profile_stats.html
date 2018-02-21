@@ -15,7 +15,7 @@
 		   <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
 		   <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
 		   <li><a href="{{ URL_ROOT }}/workshop_stats/" >Workshop Stats</a></li>
-		   <li class="active"><a href="{{ URL_ROOT }}/profile_stats/" >Profile Stats</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/statistics/profile_stats/" >Profile Stats</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
@@ -27,18 +27,14 @@
 
 {% block extra %}
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
- 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
- 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 	<script type="text/javascript">
-		$( function() {
+		$(function() {
 			    $( "fieldset" ).controlgroup();
-			  });
-
+		});
 
 		$(document).ready(function() {
 		$('input[type=radio]').change(function() {
@@ -53,7 +49,6 @@
 			        	var celem = document.getElementById('coordinator_data');
 			        	ielem.style.display = "table";
 			        	celem.style.display = "none";
-
 			        }
 		});
 	});
@@ -78,8 +73,11 @@
 				<table class="table" id="instructor_data" style="display: none">
 					<thead>
 						<tr>
-							<th>User</th>
+							<th></th>
+							<th>username</th>
+							<th>Full Name</th>
 							<th>Institute Name</th>
+							<th>Phone Number</th>
 							<th>Workshop Count</th>
 						</tr>
 					</thead>
@@ -87,8 +85,11 @@
 					{% for profile_data in instructor_data %}
 						<tbody>
 							<tr>
+								<td>{{ forloop.counter}}</td>
 								<td>{{ profile_data.profile.user}}</td>
+								<td>{{ profile_data.profile.user.first_name}} {{ profile_data.profile.user.last_name}}</td>
 								<td>{{ profile_data.profile.institute}}</td>
+								<td>{{ profile_data.profile.phone_number}}</td>
 								<td>{{ profile_data.count}}</td>
 							</tr>
 						</tbody>
@@ -99,8 +100,10 @@
 				<table class="table" id="coordinator_data" style="display: none">
 					<thead>
 						<tr>
-							<th>User</th>
+							<th></th>
+							<th>Name</th>
 							<th>Institute Name</th>
+							<th>Phone Number</th>
 							<th>Registration Date</th>
 							<th>Workshop Count</th>
 						</tr>
@@ -109,8 +112,10 @@
 					{% for profile_data in coordinator_data %}
 						<tbody>
 							<tr>
-								<td>{{ profile_data.profile.user}}</td>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ profile_data.profile.user.first_name}} {{ profile_data.profile.user.last_name}}</td>
 								<td>{{ profile_data.profile.institute}}</td>
+								<td>{{ profile_data.profile.phone_number}}</td>
 								<td>{{ profile_data.profile.user.date_joined | date}}</td>
 								<td>{{ profile_data.count}}</td>
 							</tr>
