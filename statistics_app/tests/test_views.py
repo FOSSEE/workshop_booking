@@ -151,6 +151,22 @@ class TestWorkshopStats(TestCase):
 		self.user_one.user_permissions.add(self.permission[43])
 		self.user_one.user_permissions.add(self.permission[42])
 
+		self.user_two = User.objects.create(
+			username='test_user2',
+			email='test.user2@gmail.com')
+
+		self.user_two.set_password('pass@123')
+		self.user_two.save()
+
+		self.user_two_profile = Profile.objects.create(
+			user=self.user_two,
+			department='cs',
+			institute='IIT',
+			position='coordinator',
+			phone_number='1122993388',
+			is_email_verified=1
+			)
+
 	def test_workshop_stats(self):
 		settings.SHOW_WORKSHOP_STATS = True
 		self.client.login(username=self.user_one, password='pass@123')
@@ -174,3 +190,12 @@ class TestWorkshopStats(TestCase):
 			)
 		self.assertEqual(response.status_code, 200)
 
+	def test_profile_stats(self):
+		#Coordinator
+		self.client.login(username=self.user_two, password='pass@123')
+		cresp = self.client.get('/statistics/profile_stats/')
+		self.assertEqual(cresp.templates[0].name, 'workshop_app/logout.html')
+		#Instructor
+		self.client.login(username=self.user_one, password='pass@123')
+		response = self.client.get('/statistics/profile_stats/')
+		self.assertEqual(response.status_code, 200)
