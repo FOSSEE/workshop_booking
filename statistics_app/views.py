@@ -72,13 +72,8 @@ def pie_chart():
             status='ACCEPTED').count()
 
     # For Pie Chart
-    workshoptype_num = []
-    workshoptype_title = []
-    for title in workshoptype_dict.keys():
-        workshoptype_title.append(str(title))
-
-    for count in workshoptype_dict.values():
-        workshoptype_num.append(count)
+    workshoptype_num = [count for count in workshoptype_dict.values()]
+    workshoptype_title = [str(title) for title in workshoptype_dict.keys()]
 
     workshoptype_count = [workshoptype_title, workshoptype_num]
     del workshoptype_title, workshoptype_num
@@ -514,34 +509,3 @@ def profile_stats(request):
     else:
         logout(request)
         return render(request, "workshop_app/logout.html")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
