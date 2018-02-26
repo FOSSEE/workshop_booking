@@ -45,11 +45,16 @@ __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                 "Arun KP"]
 
 
+
 def is_email_checked(user):
     if hasattr(user, 'profile'):
         return True if user.profile.is_email_verified else False
     else:
         return False
+
+
+def is_superuser(user):
+    return True if user.is_superuser else False
 
 
 def index(request):
@@ -66,6 +71,8 @@ def index(request):
         if form.is_valid():
             user = form.cleaned_data
             login(request, user)
+            if is_superuser(user):
+                return redirect("/admin")
             if user.groups.filter(name='instructor').count() > 0:
                 return redirect('/manage/')
             return redirect('/book/')
@@ -81,6 +88,8 @@ def is_instructor(user):
 def user_login(request):
     '''User Login'''
     user = request.user
+    if is_superuser(user):
+        return redirect('/admin')
     if user.is_authenticated():
         if user.groups.filter(name='instructor').count() > 0:
             return redirect('/manage/')
@@ -109,6 +118,8 @@ def user_logout(request):
 
 def activate_user(request, key=None):
     user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
     if key is None:
         if user.is_authenticated() and user.profile.is_email_verified==0 and \
         timezone.now() > user.profile.key_expiry_time:
@@ -704,6 +715,8 @@ def propose_workshop(request):
     '''Coordinator proposed a workshop and date'''
 
     user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
     if is_email_checked(user):
         if is_instructor(user):
             return redirect('/manage/')
@@ -748,6 +761,8 @@ def propose_workshop(request):
 def view_profile(request):
     """ view instructor and coordinator profile """
     user = request.user
+    if is_superuser(user):
+        return redirect('/admin')
     if is_email_checked(user) and user.is_authenticated():
         return render(request, "workshop_app/view_profile.html")
     else:
@@ -766,6 +781,8 @@ def edit_profile(request):
     """ edit profile details facility for instructor and coordinator """
 
     user = request.user
+    if is_superuser(user):
+        return redirect('/admin')
     if is_email_checked(user):
         if is_instructor(user):
             template = 'workshop_app/manage.html'
@@ -810,6 +827,8 @@ def create_workshop(request):
     '''Instructor creates workshops'''
 
     user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
     if is_instructor(user) and is_email_checked(user):
         if request.method == 'POST':
             form = CreateWorkshop(request.POST)
@@ -834,6 +853,8 @@ def create_workshop(request):
 def view_workshoptype_list(request):
     '''Gives the types of workshop details '''
     user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
     if is_email_checked(user):
         workshoptype_list = WorkshopType.objects.all()
 
@@ -859,6 +880,10 @@ def view_workshoptype_list(request):
 
 def view_workshoptype_details(request):
     '''Gives the details for types of workshops.'''
+    user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
+
     workshoptype_list = WorkshopType.objects.all()
 
     paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
@@ -1174,6 +1199,8 @@ def workshop_stats(request):
 @login_required
 def share_details(request):
     user = request.user
+    if is_superuser(user):
+        return redirect("/admin")
     if is_instructor(user):
         return redirect('/manage/')
     else:
