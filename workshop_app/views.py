@@ -890,8 +890,7 @@ def how_to_participate(request):
 
 def file_view(request, workshop_title):
     if workshop_title =='flowchart':
-        pdf_file = open(path.join(settings.MEDIA_ROOT,'flowchart.pdf'), 'rb')
-        return HttpResponse(pdf_file, content_type="application/pdf")
+        return render(request, 'workshop_app/how_to_participate.html')
     else:
         filename = WorkshopType.objects.get(id=workshop_title)
         attachment_path = path.dirname(filename.workshoptype_attachments.path)
