@@ -13,6 +13,21 @@
 
 {% endblock %}
 
+{% block header %}
+ <nav class="navbar navbar-default navbar-custom">
+  <div class="container-fluid">
+	<div class="navbar-header">
+	  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	</ul>
+  	</div>
+  </nav>
+  {% endblock %}
+
 {% block content %}
 
 <div class="container">
@@ -72,6 +87,23 @@
 
 			</ul>
 		</ul>
+
+		<ul class='num'>
+			<h2>Duration:</h2>
+			<ul>
+			<li class='ans'>
+				The course will be open for one month (Approximately the participant can devote an hour each day or 4 hours per day on weekends to complete the course)
+			</li>
+
+			<li class='ans'>
+				The course will start on the 1st day of every month and closes on the last day of the month.
+			</li>
+
+			
+
+			</ul>
+		</ul>
+
 	</div>
 <br>
 <br>
