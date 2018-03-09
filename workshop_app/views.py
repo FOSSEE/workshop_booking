@@ -583,6 +583,8 @@ def my_workshops(request):
                     workshop_date = datetime.strptime(
                                     client_data[3], "%Y-%m-%d"
                                     )
+
+                    cemail = User.objects.get(id=cid)
                     today = datetime.today()
                     if today > new_workshop_date:
                         return HttpResponse("Please Give proper Date!")
@@ -602,6 +604,20 @@ def my_workshops(request):
                             proposed_workshop_title_id=workshop_title_id,
                             proposed_workshop_date=workshop_date).update(
                             proposed_workshop_date=new_workshop_date)
+
+                    #For Instructor
+                    send_email(request, call_on='Change Date',
+                        user_position='instructor',
+                        workshop_date=workshop_date.date(),
+                        new_workshop_date=str(new_workshop_date.date())
+                        )
+
+                    #For Coordinator
+                    send_email(request, call_on='Change Date',  
+                        new_workshop_date=str(new_workshop_date.date()),
+                        workshop_date=str(workshop_date.date()),
+                        other_email=cemail.email
+                        )
 
                     return HttpResponse("Date Changed")
 
@@ -644,14 +660,17 @@ def my_workshops(request):
                         )
 
             workshops = []
+            today = datetime.today().date()
             workshop_occurence_list = RequestedWorkshop.objects.filter(
-                                    requested_workshop_instructor=user.id
+                                    requested_workshop_instructor=user.id,
+                                    requested_workshop_date__gt=today,
                                     ).order_by('-requested_workshop_date')
             for w in workshop_occurence_list:
                 workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
-                            proposed_workshop_instructor=user.id
+                            proposed_workshop_instructor=user.id,
+                            proposed_workshop_date__gt=today,
                             ).order_by('-proposed_workshop_date')
             for p in proposed_workshop:
                 workshops.append(p)
@@ -662,7 +681,6 @@ def my_workshops(request):
             for p in proposed_workshop_pending:
                 workshops.append(p)
 
-            today = datetime.today().date()
            
             #Show upto 12 Workshops per page
             paginator = Paginator(workshops, 12)

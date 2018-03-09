@@ -166,7 +166,7 @@ EMAIL_TIMEOUT = 300
 SENDER_EMAIL = SENDER_EMAIL
 
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #Change this to the production url
 PRODUCTION_URL = 'your_production_url'

@@ -50,6 +50,7 @@ title = (
     )
 
 source = (
+    ("FOSSEE fellowship", "FOSSEE fellowship"),
     ("FOSSEE Email", "FOSSEE Email"),
     ("FOSSEE website", "FOSSEE website"),
     ("Google", "Google"),

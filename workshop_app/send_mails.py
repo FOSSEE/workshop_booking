@@ -93,6 +93,7 @@ def send_smtp_email(request=None, subject=None, message=None,
 
 def send_email(	request, call_on,
 			user_position=None, workshop_date=None,
+			new_workshop_date=None,
 			workshop_title=None, user_name=None,
 			other_email=None, phone_number=None,
 			institute=None, key=None
@@ -385,3 +386,48 @@ def send_email(	request, call_on,
 										SENDER_EMAIL, [eid])
 				else:
 					logging.warning("Invalid EmailId: %s ", eid)
+
+	elif call_on == 'Change Date':
+		if user_position == "instructor":
+			message = dedent("""\
+					Dear Instructor,
+
+					Your workshop date has been changed from {0} to {1}."""
+					.format(
+					workshop_date, new_workshop_date))
+
+			logging.info("Workshop Date Changed Done by {0} from {1} to {2}"
+						.format(request.user.email, 
+						new_workshop_date, workshop_date))
+			try:
+				send_mail(
+					"FOSSEE Python Workshop Date Changed",
+					message, SENDER_EMAIL, [request.user.email],
+					fail_silently=True
+					)
+			except Exception:
+				send_smtp_email(request=request,
+					subject="FOSSEE Python Workshop Date Changed",
+					message=message, other_email=other_email,
+					)
+		else:
+			message = dedent("""\
+					Dear Coordinator,
+
+					Your workshop has been rescheduled from {0} to {1}."""
+					.format(
+					workshop_date, new_workshop_date
+					))
+
+			try:
+				send_mail(
+					"FOSSEE Python Workshop Date Changed", 
+					message, SENDER_EMAIL,
+					[other_email], fail_silently=True
+					)
+			except Exception:
+				send_smtp_email(request=request,
+					subject="FOSSEE Python Workshop Date Changed",
+					message=message, other_email=request.user.email,
+					)
+
