@@ -111,6 +111,7 @@
 					{% csrf_token %}
 					{% for profile_data in coordinator_data %}
 						<tbody>
+					{% if profile_data.count > 0 %}
 							<tr>
 								<td>{{ forloop.counter }}</td>
 								<td>{{ profile_data.profile.user.first_name}} {{ profile_data.profile.user.last_name}}</td>
@@ -119,6 +120,7 @@
 								<td>{{ profile_data.profile.user.date_joined | date}}</td>
 								<td>{{ profile_data.count}}</td>
 							</tr>
+					{% endif %}
 						</tbody>
 					{% endfor %}
 				</table>

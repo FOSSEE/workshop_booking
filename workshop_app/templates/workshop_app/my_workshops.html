@@ -213,6 +213,7 @@
 				<tr>
 				{% if request.user.profile.position == 'instructor' %}
 					<th>Coordinator Name</th>
+					<th>Coordinator Institute Name</th>
 				{% else %}
 					<th>Instructor Name</th>
 				{% endif %}
@@ -228,6 +229,7 @@
 						{% if workshop.status == 'ACCEPTED' and workshop.requested_workshop_title %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td>{{ workshop.requested_workshop_coordinator.get_full_name }}</td>
+								<td>{{ workshop.requested_workshop_coordinator.profile.institute }}</td>
 							{% else %}
 								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
 							{% endif %}
@@ -251,6 +253,7 @@
 						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td>{{ workshop.proposed_workshop_coordinator.get_full_name }}</td>
+								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
 							{% else %}
 								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
 							{% endif %}
