@@ -307,8 +307,8 @@ class TestStaticPages(TestCase):
 		response = self.client.get('/file_view/flowchart')
 		self.assertEqual(response.status_code, 200)
 
-	def test_view_workshoptype_details(self):
-		response = self.client.get('/view_workshoptype_details/')
+	def test_view_workshoptype_list(self):
+		response = self.client.get('/view_workshoptype_list/')
 		self.assertEqual(response.status_code, 200)
 
 

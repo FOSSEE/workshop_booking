@@ -62,6 +62,7 @@ def index(request):
 
     user = request.user
     form = UserLoginForm()
+    testimonials = Testimonial.objects.all()
     if user.is_authenticated() and is_email_checked(user):
         if user.groups.filter(name='instructor').count() > 0:
             return redirect('/manage/')
@@ -77,7 +78,8 @@ def index(request):
                 return redirect('/manage/')
             return redirect('/book/')
 
-    return render(request, "workshop_app/index.html", {"form": form})
+    return render(request, "workshop_app/index.html", {"form": form,
+        "testimonials": testimonials })
 
 
 def is_instructor(user):
@@ -867,36 +869,20 @@ def create_workshop(request):
         return redirect('/book/')
 
 
-@login_required
-def view_workshoptype_list(request):
+def view_workshoptype_details(request, workshoptype_id):
     '''Gives the types of workshop details '''
     user = request.user
     if is_superuser(user):
         return redirect("/admin")
-    if is_email_checked(user):
-        workshoptype_list = WorkshopType.objects.all()
 
-        paginator = Paginator(workshoptype_list, 12) #Show upto 12 workshops per page
+    view_workshoptype_details = WorkshopType.objects.get(id=workshoptype_id)
 
-        page = request.GET.get('page')
-        try:
-            workshoptype = paginator.page(page)
-        except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
-            workshoptype = paginator.page(1)
-        except EmptyPage:
-            #If page is out of range(e.g 999999), deliver last page.
-            workshoptype = paginator.page(paginator.num_pages)
+    return render(
+            request, 'workshop_app/view_workshoptype_details.html', \
+            {'workshoptype': view_workshoptype_details}
+            )
 
-        return render(
-                request, 'workshop_app/view_workshoptype_list.html', \
-                {'workshoptype': workshoptype}
-                )
-    else:
-        return redirect('/activate_user/')
-
-
-def view_workshoptype_details(request):
+def view_workshoptype_list(request):
     '''Gives the details for types of workshops.'''
     user = request.user
     if is_superuser(user):
@@ -917,7 +903,7 @@ def view_workshoptype_details(request):
         workshoptype = paginator.page(paginator.num_pages)
 
     return render(
-            request, 'workshop_app/view_workshoptype_details.html', \
+            request, 'workshop_app/view_workshoptype_list.html', \
                 {'workshoptype': workshoptype}
                 )
 
@@ -1225,7 +1211,7 @@ def share_details(request):
         if request.method == 'POST':
             email_list = (request.POST.get('email').split(','))
             send_email(request, call_on='ShareMail', other_email=email_list)
-        return redirect('/view_workshoptype_details/')
+        return redirect('/view_workshoptype_list/')
 
 
 def self_workshop(request):

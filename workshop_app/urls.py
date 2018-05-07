@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^faq/$', views.faq),
     url(r'^manage/$', views.manage),
     url(r'^view_workshoptype_list/$', views.view_workshoptype_list),
-    url(r'^view_workshoptype_details/$', views.view_workshoptype_details),
+    url(r'^view_workshoptype_details/([1-9][0-9]*)$', views.view_workshoptype_details),
     url(r'^create_workshop/$', views.create_workshop),
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^workshop_stats/$', views.workshop_stats),
