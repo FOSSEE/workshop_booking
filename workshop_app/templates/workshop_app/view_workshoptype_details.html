@@ -1,191 +1,39 @@
+
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	View Details About Workshops
+	View Workshops Type List
 {% endblock %}
 
-{% block extra %}
-
-	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-	    <style>
-	    /* The Modal (background) */
-	    .modal {
-		display: none; /* Hidden by default */
-		position: fixed; /* Stay in place */
-		z-index: 1; /* Sit on top */
-		padding-top: 100px; /* Location of the box */
-		left: 0;
-		top: 0;
-		width: 100%; /* Full width */
-		height: 100%; /* Full height */
-		overflow: auto; /* Enable scroll if needed */
-		background-color: rgb(0,0,0); /* Fallback color */
-		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-	    }
-
-	    /* Modal Content */
-	    .modal-content {
-		background-color: #fefefe;
-		margin: auto;
-		padding: 20px;
-		border: 1px solid #888;
-		width: 80%;
-	    }
-
-	    /* The Close Button */
-	    .close {
-		color: #aaaaaa;
-		float: right;
-		font-size: 28px;
-		font-weight: bold;
-	    }
-
-	    .close:hover,
-	    .close:focus {
-		color: #000;
-		text-decoration: none;
-		cursor: pointer;
-	    }
-	    </style>	
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
- <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
- {% endblock %}
 
 {% block header %}
- <nav class="navbar navbar-default navbar-custom">
- {% if request.user.profile.position == 'coordinator' %}
- 	<div class="container-fluid">
-  	<div class="navbar-header">
-		  <a class="navbar-brand"  href="{{ URL_ROOT}}/book/">Home</a>
-	</div>
-		<ul class="nav navbar-nav">
-		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
-		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-		  <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a>
-		  <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
-		  <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
-		  </li>
-		</ul>
-		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
-		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-		</ul>
-	</div>
- {% else %}
+	<nav class="navbar navbar-default navbar-custom">
   <div class="container-fluid">
 	<div class="navbar-header">
-	  <a class="navbar-brand" href="{{URL_ROOT}}/">FOSSEE Workshops</a>
+	  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
 	</div>
+
 	<ul class="nav navbar-nav navbar-right">
 	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 	</ul>
   	</div>
-  	{% endif %}
   </nav>
-  {% endblock %}
+{% endblock %}
+
+{% block extra %}
+
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
+{% endblock %}
 
 {% block content %}
-
 	<div class="container">
-		
-		<table class="table table-hover">
-		  <thead>
-		    <tr>
-		      <th>id</th>
-		      <th>Workshop Name</th>
-		      <th>Workshop Duration</th>
-		    </tr>
-		  </thead>
-
-		{% for w in workshoptype %}
-		  <tbody>
-		    <tr  >
-		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
-		      <td>{{ w.workshoptype_name }}</td>
-		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><a href="{{URL_ROOT}}/file_view/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
-		      
-		    </tr>
-		  </tbody>
-		 {% endfor %}
-		</table>
-		<a style="color: white;" href="{{ URL_ROOT }}/book/"><button class="btn btn-primary btn-lg" style="float: right;">Start Booking Now</button></a>
-<button id="mailBtn" class="btn btn-info btn-lg">Share Details</button>
+	{{ workshoptype.workshoptype_description | safe }}					
 	</div>
 
-	    <!-- The Modal -->
-	    <div id="mailModal" class="modal">
-
-	    <!-- Modal content -->
-	    <div class="modal-content">
-		<span class="close">&times;</span>
-		<p>Separate Multiple Email Id's using <strong> comma (,)</strong></p>
-		<form action="{{URL_ROOT}}/share_details/" method="POST">
-		  {% csrf_token %}
-		    <label > Email: </label>
-		    <input name="email" type='email' multiple>
-		    <input type='submit'>
-		</form>
-	    </div>
-	    </div>
-
-<!-- Page Navigation -->
-	<div class="container">
-		
-		<div class="Page-Nav" align="center">
-		<nav aria-label="Page navigation">
-		 	<ul class="pagination pagination-sm">
-			  	<li class="page-item">
-			      {% if workshoptype.has_previous %}
-					<a class="page-link" tabindex="-1" 
-							href="?page={{ workshoptype.previous_page_number }}">Previous</a>
-				{% endif %}
-			    </li>
-			    <li class="page-item">
-			    <span class="current">
-				Page {{ workshoptype.number }} of {{ workshoptype.paginator.num_pages }}
-					</span>
-				</li>
-			    <li class="page-item">
-			    {% if workshoptype.has_next %}
-					<a class="page-link" href="?page={{ workshoptype.next_page_number }}">Next
-					</a>	
-				{% endif %}
-			    </li>
-		  	</ul>
-		</nav>
-		</div>
-	</div> <script>
-	    // Get the modal
-	    var modal = document.getElementById("mailModal");
-
-	    // Get the button that opens the modal
-	    var btn = document.getElementById("mailBtn");
-
-	    // Get the <span> element that closes the modal
-	    var span = document.getElementsByClassName("close")[0];
-
-	    // When the user clicks the button, open the modal 
-	    btn.onclick = function() {
-		modal.style.display = "block";
-	    }
-
-	    // When the user clicks on <span> (x), close the modal
-	    span.onclick = function() {
-		modal.style.display = "none";
-	    }
-
-	    // When the user clicks anywhere outside of the modal, close it
-	    window.onclick = function(event) {
-		if (event.target == modal) {
-		    modal.style.display = "none";
-		}
-	    } 
-      
-    
-  </script>
-
 {% endblock %}
+
+

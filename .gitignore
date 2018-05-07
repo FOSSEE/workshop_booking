@@ -44,3 +44,7 @@ migrations/
 \#*#
 #Vim
 *.swp
+
+#images/gif
+*.png
+*.gif

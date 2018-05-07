@@ -3,6 +3,7 @@
 {% block title %}
   Statistics
 {% endblock %}
+
 {% block header %}
    <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
@@ -13,7 +14,7 @@
 		  <li ><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
 		   <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
 		   <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-		   <li class="active"><a href="{{ URL_ROOT }}/workshop_stats/" >Workshop Stats</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/statistics/" >Workshop Stats</a></li>
 		   <li><a href="{{ URL_ROOT }}/statistics/profile_stats/" >Profile Stats</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
@@ -224,20 +225,6 @@
 			        	myChart.destroy();
 			            }
 
-				    var dWidth = $(window).width() * 0.9;
-			        var dHeight = $(window).height() * 0.9;
-                
-			        $( "#myChartPie" ).dialog({
-					resizable: false,
-					draggable: true,
-			                title: 'Bar Chart',
-					closeOnEscape: true,
-					stack: true,
-					zIndex: 10000,
-					width: dWidth,
-					height: dHeight,    
-					modal: true
-					});
 			               
 			        document.getElementById("visualization").style.visibility='hidden';
 					myChart = new Chart(ctx1, {
@@ -294,22 +281,7 @@
 			        if(myChart){
 			        	myChart.destroy();
 			        }
-
-				    var dWidth = $(window).width() * 0.9;
-			        var dHeight = $(window).height() * 0.9;
-                
-			        $( "#myChartPie" ).dialog({
-					resizable: false,
-					draggable: true,
-			        title: 'Pie Chart',
-					closeOnEscape: true,
-					stack: true,
-					zIndex: 10000,
-					width: dWidth,
-					height: dHeight,    
-					modal: true
-					});
-	
+			        
 				document.getElementById("visualization").style.visibility='hidden';
 				myChart = new Chart(ctx1, {
 				    type: 'pie',

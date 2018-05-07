@@ -303,7 +303,7 @@
 			        $( "#visualization" ).dialog({
 					resizable: false,
 					draggable: true,
-			        title: 'State wise Completed Workshops(Map of India)',
+			        title: 'State wise(Map of India)',
 					closeOnEscape: true,
 					stack: true,
 					zIndex: 10000,
@@ -321,10 +321,11 @@
 					var opts = {
 					    region: 'IN',
 					    domain: 'IN',
-					    displayMode: 'regions',
+					    displayMode:  'regions',
 					    resolution: 'provinces',
-					    colorAxis: {colors: ['lightyellow', 'orange']},
-					    legend: {position: 'top'},
+					    colorAxis: {colors: ['lightyellow','orange']},
+					    
+
 					   	};
 
 					var geochart = new google.visualization.GeoChart(

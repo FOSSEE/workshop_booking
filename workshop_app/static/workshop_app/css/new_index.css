@@ -40,16 +40,16 @@ ul.topnav li.right {float: right;}
 
 /**/
 .container {
-  width: 100%;
+	width: 100%;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  align-content: center;
+	align-content: center;
 }
 
 .row {
-  width: 100%;
-  margin: auto;
-  align-content: center;
-  
+	width: 100%;
+	margin: auto;
+	align-content: center;
+	
 }
 
 @font-face {
@@ -61,13 +61,13 @@ ul.topnav li.right {float: right;}
 
 #r1_c1
 {
-  font-family:  "Bitstream Vera Sans", Helvetica;
-  font-size: 30px;
-  background-image: url("../img/hd_bg.png");
-  background-repeat: no-repeat;
+	font-family:  "Bitstream Vera Sans", Helvetica;
+	font-size: 30px;
+	background-image: url("../img/hd_bg.png");
+	background-repeat: no-repeat;
   background-position: bottom;
   padding-top: 15px;
-  padding-bottom: 15px;
+	padding-bottom: 15px;
   padding-left: 10%;
 }
 
@@ -108,53 +108,53 @@ ul.topnav li.right {float: right;}
 }
 
 #r2_c2 {
-  padding-top: 15px;
-  width: 100%;
+	padding-top: 15px;
+	width: 100%;
 }
 
 #r3 {
-  text-align: center;
-  color: white;
-  background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
-  padding-bottom: 25px;
+	text-align: center;
+	color: white;
+	background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
+	padding-bottom: 25px;
   margin-top: 15px; 
 }
 
 
 
 #r5 {
-  width: 100%;
+	width: 100%;
 }
 
 #r5_c1 {
-  text-align: center;
-  font-size: 2vw;
-  font-family: aaragh; 
+	text-align: center;
+	font-size: 2vw;
+	font-family: aaragh; 
   margin-top: 10px;
 
 }
 
 #r5_c2 {
-  font-family: aaragh; 
-  
+	font-family: aaragh; 
+	
 }
 
 #r5_c3 {
-  padding-top: 15px;
+	padding-top: 15px;
 }
 
 #r6 {
-  padding: 35px;
-  margin-top: 15px;
-  width: 100%;
-  background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
-  
+	padding: 35px;
+	margin-top: 15px;
+	width: 100%;
+	background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
+	
 }
 
 #r6_c2 {
-  text-align: center;
-  font-family: aaragh;  
-  color: white;
+	text-align: center;
+	font-family: aaragh;	
+	color: white;
 }
 
 .tslides {
@@ -207,35 +207,35 @@ ul.topnav li.right {float: right;}
 }
 
 #r8 {
-  background: #c8c5b6;
-  margin-top: 15px;
-  padding-right: 20px;
-  padding-left: 20px;
-  width: 100%;
+	background: #c8c5b6;
+	margin-top: 15px;
+	padding-right: 20px;
+	padding-left: 20px;
+	width: 100%;
 }
 
 
 
 #r8_c2 {
-  font-size: 16px;
-  
-  text-align: center;
-  
+	font-size: 16px;
+	
+	text-align: center;
+	
 }
 
 #social {
-  float: right;
+	float: right;
 
 }
 #r8_c4 {
-  text-align: center;
-  font-size: 12px;
-  
-  width: 100%;
+	text-align: center;
+	font-size: 12px;
+	
+	width: 100%;
 }
 
 hr {
-  background-color: black;
+	background-color: black;
 }
 
 /* Style all font awesome icons */
