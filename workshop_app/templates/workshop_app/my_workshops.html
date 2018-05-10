@@ -157,15 +157,15 @@
 
 {% block content %}
 {% if workshop_occurences %}
-	<h3 align="center">The status of your workshops </h3>
+	<h3 align="center" style="color:#2952a2;">The status of your workshops </h3>
 	<br>
 	
 	<!-- Pending View -->
 	<div class="container">
 	{% if request.user.profile.position == 'instructor' %}
-	 <h3 align="center"><strong><u>Requests for Me</u></strong></h3>
+	    <h3 align="center" style="color: #04a9cf;"><strong><u>Requests for Me</u></strong></h3>
 	{% else %}
-	 <h3 align="center"><strong><u>My Requests</u></strong></h3>
+	 <h3 align="center" style="color: #04a9cf;"><strong><u>My Requests</u></strong></h3>
 	{% endif %}
 		<table class="table table-striped">
 			<thead>
@@ -207,7 +207,7 @@
 
 	<!-- Accepted View -->
 	<div class="container">
-	<h3 align="center"><strong><u>Workshops Accepted</u></strong></h3>
+	    <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Accepted</u></strong></h3>
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -240,7 +240,7 @@
 										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
-											
+
 											<input type="text" class="rDate{{forloop.counter}}" /><br>
 											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
 										</div>
@@ -265,7 +265,7 @@
 										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogP{{forloop.counter}}" style="display: none;" title="Select New Date">
-											
+
 											<input type="text" class="pDate{{forloop.counter}}" /><br>
 											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
 										</div>
@@ -277,7 +277,7 @@
 						{% endif %}
 						</tr>
 					</tbody>
-				
+
 			{% endfor %}
 
 		</table>
@@ -287,9 +287,9 @@
 <!-- Proposed View -->
 <div class="container">
       {% if request.user.profile.position == 'instructor' %}
-	<h3 align="center"><strong><u>Workshops Proposed By Coordinators</u></strong></h3>
+	<h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Coordinators</u></strong></h3>
       {% else %}
-	<h3 align="center"><strong><u>Workshops Proposed By Me</u></strong></h3>
+	<h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Me</u></strong></h3>
       {% endif %}
 		<table class="table table-striped">
 			<thead>
@@ -297,7 +297,7 @@
 				{% if request.user.profile.position == 'instructor' %}
 					<th>Coordinator Name</th>
 				{% else %}
-					
+
 				{% endif %}
 					<th>Workshop Name</th>
 					<th>Workshop Day</th>
@@ -314,7 +314,7 @@
 							{% endif %}
 								<td>{{ workshop.proposed_workshop_title  }}</td>
 								<td>{{ workshop.proposed_workshop_date | date }}</td>
-							
+
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
 								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
@@ -322,7 +322,7 @@
 						{% endif %}
 						</tr>
 					</tbody>
-				
+
 			{% endfor %}
 		</table>
 	</div>
@@ -330,7 +330,7 @@
 
 <!-- Deleted/Rejected View -->
 <div class="container">
-	<h3 align="center"><strong><u>Workshops Deleted/Rejected</u></strong></h3>
+	  <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Deleted/Rejected</u></strong></h3>
 		<table class="table table-striped">
 			<thead>
 				<tr>

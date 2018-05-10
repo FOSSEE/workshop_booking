@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
@@ -37,7 +36,6 @@ title = (
     )
 
 source = (
-    ("FOSSEE fellowship", "FOSSEE fellowship"),
     ("FOSSEE Email", "FOSSEE Email"),
     ("FOSSEE website", "FOSSEE website"),
     ("Google", "Google"),
@@ -47,13 +45,13 @@ source = (
     )
 
 states = (
-    ("IN-AP",	"Andhra Pradesh"),	
-    ("IN-AR",	"Arunachal Pradesh"),	
-    ("IN-AS",	"Assam"),	
-    ("IN-BR",	"Bihar"),	
-    ("IN-CT",	"Chhattisgarh"),	
-    ("IN-GA",	"Goa"),	
-    ("IN-GJ",	"Gujarat"),	
+    ("IN-AP",	"Andhra Pradesh"),
+    ("IN-AR",	"Arunachal Pradesh"),
+    ("IN-AS",	"Assam"),
+    ("IN-BR",	"Bihar"),
+    ("IN-CT",	"Chhattisgarh"),
+    ("IN-GA",	"Goa"),
+    ("IN-GJ",	"Gujarat"),
     ("IN-HR",	"Haryana"),	
     ("IN-HP",	"Himachal Pradesh"),	
     ("IN-JK",	"Jammu and Kashmir"),	
@@ -69,28 +67,31 @@ states = (
     ("IN-OR",	"Odisha"),	
     ("IN-PB",	"Punjab"),	
     ("IN-RJ",	"Rajasthan"),	
-    ("IN-SK",	"Sikkim"),	
-    ("IN-TN",	"Tamil Nadu"),	
-    ("IN-TG",	"Telangana"),	
+    ("IN-SK",	"Sikkim"),
+    ("IN-TN",	"Tamil Nadu"),
+    ("IN-TG",	"Telangana"),
     ("IN-TR",	"Tripura"),
-    ("IN-UT",	"Uttarakhand"),	
-    ("IN-UP",	"Uttar Pradesh"),	
+    ("IN-UT",	"Uttarakhand"),
+    ("IN-UP",	"Uttar Pradesh"),
     ("IN-WB",	"West Bengal"),
     ("IN-AN",	"Andaman and Nicobar Islands"),	
-    ("IN-CH",	"Chandigarh"),	
-    ("IN-DN",	"Dadra and Nagar Haveli"),	
-    ("IN-DD",	"Daman and Diu"),	
-    ("IN-DL",	"Delhi"),	
-    ("IN-LD",	"Lakshadweep"),	
-    ("IN-PY",	"Puducherry")	
+    ("IN-CH",	"Chandigarh"),
+    ("IN-DN",	"Dadra and Nagar Haveli"),
+    ("IN-DD",	"Daman and Diu"),
+    ("IN-DL",	"Delhi"),
+    ("IN-LD",	"Lakshadweep"),
+    ("IN-PY",	"Puducherry")
     )
+
 
 def has_profile(user):
     """ check if user has profile """
     return True if hasattr(user, 'profile') else False
 
+
 def attachments(instance, filename):
     return os.sep.join((instance.workshoptype_name.replace(" ", '_'), filename))
+
 
 class Profile(models.Model):
     """Profile for users(instructors and coordinators)"""
@@ -111,7 +112,7 @@ class Profile(models.Model):
     position = models.CharField(max_length=32, choices=position_choices,
                   default='coordinator',
                   help_text='Select Coordinator if you want to organise a workshop\
-                 in your college/school. <br> Select Instructor if you want to conduct\
+         in your college/school. <br> Select Instructor if you want to conduct\
                  a workshop.')
     how_did_you_hear_about_us = models.CharField(max_length=255, blank=True,choices=source)
     location = models.CharField(max_length=255,blank=True, help_text="Place/City")
@@ -123,20 +124,20 @@ class Profile(models.Model):
     def __str__(self):
         return u"id: {0}| {1} {2} | {3} ".format(
                                             self.user.id,
-                                            self.user.first_name, 
-                                            self.user.last_name, 
+                                            self.user.first_name,
+                                            self.user.last_name,
                                             self.user.email
                                             ) 
 
 
 class WorkshopType(models.Model):
-    """"Admin creates types of workshops which can be used by the instructor 
+    """"Admin creates types of workshops which can be used by the instructor
         to create workshops.
     """
 
     workshoptype_name = models.CharField(max_length=120)
     workshoptype_description = models.TextField()
-    workshoptype_duration = models.CharField(max_length=32, 
+    workshoptype_duration = models.CharField(max_length=32,
                     help_text='Please write this in \
                     following format eg: 3days, 8hours a day')
     workshoptype_attachments = models.FileField(upload_to=attachments, blank=True,
@@ -146,7 +147,7 @@ class WorkshopType(models.Model):
                     WorkshopType Name')
 
     def __str__(self):
-        return u"{0} {1}".format(self.workshoptype_name, 
+        return u"{0} {1}".format(self.workshoptype_name,
                 self.workshoptype_duration
                 )
 
@@ -165,7 +166,7 @@ class Workshop(models.Model):
 
     def __str__(self):
         return u"{0} | {1} ".format(
-                    self.workshop_title, 
+                    self.workshop_title,
                     self.workshop_instructor
                     )
 
@@ -180,7 +181,7 @@ class RequestedWorkshop(models.Model):
                                             on_delete=models.CASCADE
                                             )
     requested_workshop_coordinator = models.ForeignKey(
-                                User, 
+                                User,
                                 related_name="%(app_label)s_%(class)s_related"
                                 )
     requested_workshop_date = models.DateField()
@@ -188,17 +189,18 @@ class RequestedWorkshop(models.Model):
                     max_length=32, default="Pending"
                     )
     requested_workshop_title = models.ForeignKey(
-                            WorkshopType, 
+                            WorkshopType,
                             on_delete=models.CASCADE
                             )
 
     def __str__(self):
         return u"{0} | {1} | {2}| {3}".format(
-                    self.requested_workshop_date, 
+                    self.requested_workshop_date,
                     self.requested_workshop_title,
                     self.requested_workshop_coordinator,
                     self.status
                     )
+
 
 class ProposeWorkshopDate(models.Model):
     """
@@ -206,15 +208,15 @@ class ProposeWorkshopDate(models.Model):
     """
 
     condition_one = models.BooleanField(default=False, help_text='We assure to\
-     give minimum 50 participants for the workshop.')
+     give minimum 30 participants for the workshop.')
     condition_two = models.BooleanField(default=False, help_text='We agree \
                                 that this booking won\'t be cancelled without \
-                                2days of prior notice to the instructor and fossee.')
+                         2days of prior notice to the instructor and fossee.')
     condition_three = models.BooleanField(default=False, help_text='This \
                     proposal is subject to FOSSEE and instructor approval.')
 
     proposed_workshop_coordinator = models.ForeignKey(
-                                        User, 
+                                        User,
                                         on_delete=models.CASCADE
                                         )
     proposed_workshop_instructor = models.ForeignKey(User, null=True,
@@ -233,7 +235,7 @@ class ProposeWorkshopDate(models.Model):
 
     def __str__(self):
         return u"{0} | {1} | {2}| {3}".format(
-                    self.proposed_workshop_date, 
+                    self.proposed_workshop_date,
                     self.proposed_workshop_title,
                     self.proposed_workshop_coordinator,
                     self.status
@@ -245,14 +247,15 @@ class BookedWorkshop(models.Model):
     Contains details about Confirmed Booked/Completed Workshops
     """
 
-    booked_workshop_requested = models.ForeignKey(RequestedWorkshop, null=True) 
-    booked_workshop_proposed = models.ForeignKey(ProposeWorkshopDate, null=True)
+    booked_workshop_requested = models.ForeignKey(RequestedWorkshop, null=True)
+    booked_workshop_proposed = models.ForeignKey(ProposeWorkshopDate,null=True)
 
     def __str__(self):
         return u"{0} | {1} |".format(
                     self.booked_workshop_requested, 
                     self.booked_workshop_proposed
                     )
+
 
 class Testimonial(models.Model):
     """
@@ -266,7 +269,7 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return u"{0} | {1} ".format(
-                    self.name, 
+                    self.name,
                     self.institute,
                     self.department
                     )

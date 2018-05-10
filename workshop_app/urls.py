@@ -13,10 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 from workshop_app import views
-#from chatterbot.ext.django_chatterbot import urls as chatterbot_urls
 import django
 
 js_info_dict = {
@@ -40,16 +38,14 @@ urlpatterns = [
     url(r'^faq/$', views.faq),
     url(r'^manage/$', views.manage),
     url(r'^view_workshoptype_list/$', views.view_workshoptype_list),
-    url(r'^view_workshoptype_details/([1-9][0-9]*)$', views.view_workshoptype_details),
+    url(r'^view_workshoptype_details/([1-9][0-9]*)$', \
+        views.view_workshoptype_details),
     url(r'^create_workshop/$', views.create_workshop),
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^workshop_stats/$', views.workshop_stats),
     url(r'^testimonials/$', views.testimonials),
-    url(r'^share_details/$', views.share_details),
     url(r'^file_view/(?P<workshop_title>[\w|\W]+)$', views.file_view),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
-    #url(r'^api/chatterbot/', include(chatterbot_urls, namespace='chatterbot')),
     url(r'^self_workshop', views.self_workshop),
-
-]
+ ]
 

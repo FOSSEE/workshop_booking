@@ -33,7 +33,7 @@
 		</ul>
   {% else %}
 	<div class="navbar-header">
-	  <a class="navbar-brand" href="{{URL_ROOT}}/">Home</a>
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">FOSSEE Workshops</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right">
 	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
@@ -47,7 +47,11 @@
 {% block content %}
 
 	<div class="container-fluid text-center" >
-		<img src="{{ URL_ROOT }}/static/workshop_app/img/structure.png">
+      <div class="row">
+          <div class="col-md-12">
+		          <img style="width:100%; height:auto;" src="{{ URL_ROOT }}/static/workshop_app/img/structure.png">
+          </div>
+      </div>
 		<br><br>
 	</div>
 

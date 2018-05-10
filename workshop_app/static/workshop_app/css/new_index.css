@@ -49,7 +49,7 @@ ul.topnav li.right {float: right;}
 	width: 100%;
 	margin: auto;
 	align-content: center;
-	
+
 }
 
 @font-face {
@@ -61,7 +61,7 @@ ul.topnav li.right {float: right;}
 
 #r1_c1
 {
-	font-family:  "Bitstream Vera Sans", Helvetica;
+	font-family: aaragh, Helvetica, Arial, sans-serif;
 	font-size: 30px;
 	background-image: url("../img/hd_bg.png");
 	background-repeat: no-repeat;
@@ -118,6 +118,7 @@ ul.topnav li.right {float: right;}
 	background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
 	padding-bottom: 25px;
   margin-top: 15px; 
+	font-family: aaragh,  Arial, sans-serif;
 }
 
 
@@ -129,14 +130,14 @@ ul.topnav li.right {float: right;}
 #r5_c1 {
 	text-align: center;
 	font-size: 2vw;
-	font-family: aaragh; 
+	font-family: aaragh,  Arial, sans-serif;
   margin-top: 10px;
 
 }
 
 #r5_c2 {
-	font-family: aaragh; 
-	
+	font-family: aaragh,  Arial, sans-serif;
+
 }
 
 #r5_c3 {
@@ -148,7 +149,7 @@ ul.topnav li.right {float: right;}
 	margin-top: 15px;
 	width: 100%;
 	background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
-	
+
 }
 
 #r6_c2 {
@@ -182,30 +183,6 @@ ul.topnav li.right {float: right;}
   }
 
 
-#email {
-    width: 40%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border-radius: 5px;
-}
-
-#name {
-    width: 40%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border-radius: 5px;
-}
-
-#msg {
-    width: 75%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border-radius: 5px;
-}
-
 #r8 {
 	background: #c8c5b6;
 	margin-top: 15px;
@@ -218,9 +195,8 @@ ul.topnav li.right {float: right;}
 
 #r8_c2 {
 	font-size: 16px;
-	
+	font-family: aaragh;
 	text-align: center;
-	
 }
 
 #social {
@@ -230,8 +206,8 @@ ul.topnav li.right {float: right;}
 #r8_c4 {
 	text-align: center;
 	font-size: 12px;
-	
 	width: 100%;
+  font-family: aaragh;
 }
 
 hr {
