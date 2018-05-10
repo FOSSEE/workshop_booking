@@ -364,29 +364,6 @@ def send_email(	request, call_on,
 					format(workshop_date), message, SENDER_EMAIL,
 					[other_email], fail_silently=False)
 
-	elif call_on == 'ShareMail':
-
-		for eid in other_email:
-				if validateEmail(eid):
-					message = dedent("""\
-									Hi {0},
-
-										I am Sharing with you FOSSEE's Python Workshop List
-										{1}/view_workshoptype_details
-										You can register {2}/register and start booking/proposing 
-										workshops for your school, college, university/company.
-
-									Regards,
-									{3}
-									""".format(eid, PRODUCTION_URL, PRODUCTION_URL, 
-														request.user.email)
-									)
-					logging.info("Sharing Email Send to: %s ", eid)
-					send_mail("Hey Checkout FOSSEE's Python Workshop List", message, 
-										SENDER_EMAIL, [eid])
-				else:
-					logging.warning("Invalid EmailId: %s ", eid)
-
 	elif call_on == 'Change Date':
 		if user_position == "instructor":
 			message = dedent("""\

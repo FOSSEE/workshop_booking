@@ -10,25 +10,19 @@ from .models import (
             BookedWorkshop, ProposeWorkshopDate,
             Testimonial
             )
-from django.template.loader import get_template
-from django.template import RequestContext
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
-from django.db import IntegrityError
 from django.utils import timezone
-from collections import OrderedDict
-from dateutil.parser import parse
 from .send_mails import send_email
 from django.http import HttpResponse, HttpResponseRedirect
 from textwrap import dedent
 from django.conf import settings
 from os import listdir, path, sep
 from zipfile import ZipFile
-from django.views.generic.base import TemplateView
 from django.contrib import messages
 import datetime as dt
 import csv
@@ -43,7 +37,6 @@ __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                 "Prathamesh Salunke", "Kiran Kishore",
                 "KhushalSingh Rajput", "Prabhu Ramachandran",
                 "Arun KP"]
-
 
 
 def is_email_checked(user):
@@ -188,7 +181,7 @@ def user_register(request):
     return render(request, "workshop_app/registration/register.html", {"form": form})
 
 
-#This is shown to coordinator for booking workshops
+# This is shown to coordinator for booking workshops
 def book(request):
     user = request.user
     if user.is_authenticated():
@@ -221,7 +214,7 @@ def book(request):
                     workshop_occurence_list.append(workshop_occurence)
                     del workshop_occurence
 
-            #Gives you the objects of BookedWorkshop
+            # Gives you the objects of BookedWorkshop
             bookedworkshop = BookedWorkshop.objects.all()
             if len(bookedworkshop) != 0:
                 for b in bookedworkshop:
@@ -241,7 +234,7 @@ def book(request):
                             workshop_occurence_list.remove(a)
                     del x, y
 
-            #Objects of RequestedWorkshop for that particular coordinator
+            # Objects of RequestedWorkshop for that particular coordinator
             rW_obj = RequestedWorkshop.objects.filter(
                             requested_workshop_coordinator=request.user
                             )
@@ -253,16 +246,16 @@ def book(request):
                 del x
 
 
-            #Show upto 12 Workshops per page
+            # Show upto 12 Workshops per page
             paginator = Paginator(workshop_occurence_list, 12)
             page = request.GET.get('page')
             try:
                 workshop_occurences  = paginator.page(page)
             except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
+            # If page is not an integer, deliver first page.
                 workshop_occurences  = paginator.page(1)
             except EmptyPage:
-                #If page is out of range(e.g 999999), deliver last page.
+                # If page is out of range(e.g 999999), deliver last page.
                 workshop_occurences  = paginator.page(paginator.num_pages)
 
             return render(
@@ -683,7 +676,7 @@ def my_workshops(request):
             for p in proposed_workshop_pending:
                 workshops.append(p)
 
-           
+
             #Show upto 12 Workshops per page
             paginator = Paginator(workshops, 12)
             page = request.GET.get('page')
@@ -777,6 +770,7 @@ def propose_workshop(request):
     else:
         return render(request, 'workshop_app/activation.html')
 
+
 @login_required
 def view_profile(request):
     """ view instructor and coordinator profile """
@@ -839,7 +833,7 @@ def edit_profile(request):
             return render(request, 'workshop_app/edit_profile.html', context)
     else:
         form = ProfileForm(user=user, instance=profile)
-        return render(request, 'workshop_app/edit_profile.html', {'form':form})
+        return render(request, 'workshop_app/edit_profile.html', {'form': form})
 
 
 @login_required
@@ -882,6 +876,7 @@ def view_workshoptype_details(request, workshoptype_id):
             {'workshoptype': view_workshoptype_details}
             )
 
+
 def view_workshoptype_list(request):
     '''Gives the details for types of workshops.'''
     user = request.user
@@ -911,11 +906,14 @@ def view_workshoptype_list(request):
 def benefits(request):
     return render(request, 'workshop_app/view_benefits.html')
 
+
 def faq(request):
     return render(request, 'workshop_app/view_faq.html')
 
+
 def how_to_participate(request):
     return render(request, 'workshop_app/how_to_participate.html')
+
 
 def file_view(request, workshop_title):
     if workshop_title =='flowchart':
@@ -982,7 +980,7 @@ def workshop_stats(request):
                     proposed_workshop_date__month=str(x+1),
                     status='ACCEPTED').count()
 
-    #Count Total Number of workshops for each type
+    # Count Total Number of workshops for each type
     workshop_titles = WorkshopType.objects.all()
     workshoptype_dict = {}
     for title in workshop_titles:
@@ -1007,7 +1005,7 @@ def workshop_stats(request):
     workshoptype_count = [workshoptype_title, workshoptype_num]
     del workshoptype_title, workshoptype_num
 
-    #For India Map
+    # For India Map
     states = [
 	['Code', 'State', 'Number'],
         ["IN-AP",   "Andhra Pradesh", 0],   
@@ -1198,20 +1196,6 @@ def workshop_stats(request):
                     })
     else:
         return redirect('/manage/')
-
-
-@login_required
-def share_details(request):
-    user = request.user
-    if is_superuser(user):
-        return redirect("/admin")
-    if is_instructor(user):
-        return redirect('/manage/')
-    else:
-        if request.method == 'POST':
-            email_list = (request.POST.get('email').split(','))
-            send_email(request, call_on='ShareMail', other_email=email_list)
-        return redirect('/view_workshoptype_list/')
 
 
 def self_workshop(request):
