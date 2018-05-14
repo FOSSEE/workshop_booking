@@ -1,18 +1,19 @@
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 800px) {
-    .leftcolumn, .rightcolumn {   
+    .leftcolumn, .rightcolumn { 
         width: 100%;
         padding: 0;
 
     },
-  
+ 
 }
 
 ul.topnav {
     list-style-type: none;
     margin: 10px;
     padding: 0;
-    overflow: hidden; 
+    overflow: hidden;
+
 }
 
 ul.topnav li {float: right;}
@@ -20,6 +21,7 @@ ul.topnav li {float: right;}
 ul.topnav li a {
     display: block;
     color: black;
+    font-family: "Helvatica", arial, sans-serif;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -49,7 +51,7 @@ ul.topnav li.right {float: right;}
   width: 100%;
   margin: auto;
   align-content: center;
-  
+
 }
 
 @font-face {
@@ -61,16 +63,14 @@ ul.topnav li.right {float: right;}
 
 #r1_c1
 {
-  font-family:  "Bitstream Vera Sans", Helvetica;
-  font-size: 30px;
+  font-size: 27px;
   background-image: url("../img/hd_bg.png");
   background-repeat: no-repeat;
   background-position: bottom;
   padding-top: 15px;
   padding-bottom: 15px;
-  padding-left: 10%;
+  padding-left: 7%;
 }
-
 
 .rslides {
   position: relative;

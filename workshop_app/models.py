@@ -20,7 +20,6 @@ department_choices = (
     ("biosciences and bioengineering", "Biosciences and  BioEngineering"),
     ("electronics", "Electronics"),
     ("energy science and engineering", "Energy Science and Engineering"),
-    ("others", "Others"),
     )
 
 title = (
@@ -32,16 +31,13 @@ title = (
     ("Mr", "Mr."),
     ("Mrs", "Mrs."),
     ("Miss", "Ms."),
-    ("other", "Other"),
     )
 
 source = (
-    ("FOSSEE Email", "FOSSEE Email"),
     ("FOSSEE website", "FOSSEE website"),
     ("Google", "Google"),
     ("Social Media", "Social Media"),
     ("From other College", "From other College"),
-    ("Others", "Others"),
     )
 
 states = (
@@ -52,21 +48,21 @@ states = (
     ("IN-CT",	"Chhattisgarh"),
     ("IN-GA",	"Goa"),
     ("IN-GJ",	"Gujarat"),
-    ("IN-HR",	"Haryana"),	
-    ("IN-HP",	"Himachal Pradesh"),	
-    ("IN-JK",	"Jammu and Kashmir"),	
-    ("IN-JH",	"Jharkhand"),	
-    ("IN-KA",	"Karnataka"),	
-    ("IN-KL",	"Kerala"),	
-    ("IN-MP",	"Madhya Pradesh"),	
-    ("IN-MH",	"Maharashtra"),	
-    ("IN-MN",	"Manipur"),	
-    ("IN-ML",	"Meghalaya"),	
-    ("IN-MZ",	"Mizoram"),	
-    ("IN-NL",	"Nagaland"),	
-    ("IN-OR",	"Odisha"),	
-    ("IN-PB",	"Punjab"),	
-    ("IN-RJ",	"Rajasthan"),	
+    ("IN-HR",	"Haryana"),
+    ("IN-HP",	"Himachal Pradesh"),
+    ("IN-JK",	"Jammu and Kashmir"),
+    ("IN-JH",	"Jharkhand"),
+    ("IN-KA",	"Karnataka"),
+    ("IN-KL",	"Kerala"),
+    ("IN-MP",	"Madhya Pradesh"),
+    ("IN-MH",	"Maharashtra"),
+    ("IN-MN",	"Manipur"),
+    ("IN-ML",	"Meghalaya"),
+    ("IN-MZ",	"Mizoram"),
+    ("IN-NL",	"Nagaland"),
+    ("IN-OR",	"Odisha"),
+    ("IN-PB",	"Punjab"),
+    ("IN-RJ",	"Rajasthan"),
     ("IN-SK",	"Sikkim"),
     ("IN-TN",	"Tamil Nadu"),
     ("IN-TG",	"Telangana"),
@@ -74,7 +70,7 @@ states = (
     ("IN-UT",	"Uttarakhand"),
     ("IN-UP",	"Uttar Pradesh"),
     ("IN-WB",	"West Bengal"),
-    ("IN-AN",	"Andaman and Nicobar Islands"),	
+    ("IN-AN",	"Andaman and Nicobar Islands"),
     ("IN-CH",	"Chandigarh"),
     ("IN-DN",	"Dadra and Nagar Haveli"),
     ("IN-DD",	"Daman and Diu"),
@@ -127,7 +123,7 @@ class Profile(models.Model):
                                             self.user.first_name,
                                             self.user.last_name,
                                             self.user.email
-                                            ) 
+                                            )
 
 
 class WorkshopType(models.Model):
@@ -252,7 +248,7 @@ class BookedWorkshop(models.Model):
 
     def __str__(self):
         return u"{0} | {1} |".format(
-                    self.booked_workshop_requested, 
+                    self.booked_workshop_requested,
                     self.booked_workshop_proposed
                     )
 

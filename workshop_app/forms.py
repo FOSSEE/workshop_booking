@@ -190,10 +190,10 @@ class UserLoginForm(forms.Form):
     """Creates a form which will allow the user to log into the system."""
 
     username = forms.CharField(max_length=32,
-            widget=forms.TextInput(attrs={'placeholder': 'your username'}))
+            widget=forms.TextInput())
 
     password = forms.CharField(max_length=32,
-            widget=forms.PasswordInput(attrs={'placeholder': 'your password'}))
+            widget=forms.PasswordInput())
 
     def clean(self):
         super(UserLoginForm, self).clean()
