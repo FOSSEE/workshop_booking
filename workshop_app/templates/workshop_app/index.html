@@ -7,19 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Akshen Doke" content="">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <script src="{{ URL_ROOT }}/static/workshop_app/css/bootstrap4.min.css"></script> -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/slick.css" type="text/css" />
+    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/slick-theme.css" type="text/css" />
 
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <!-- Custom JS -->
     <script src="{{ URL_ROOT }}/static/workshop_app/js/index.js"></script> 
+    <script src="{{ URL_ROOT }}/static/workshop_app/js/slick.js"></script> 
 
 
     <title>Welcome</title>
@@ -38,6 +45,17 @@
       });
     </script>
 
+<!-- Carousal(slick) -->
+<script>
+$(document).ready(function(){
+  $('.slick_carousal').slick({
+    infinite: true,
+    slidesToShow: 3,
+    
+    slidesToScroll: 1
+  });
+});
+</script>
 
 </head>
 <body class="container">
@@ -49,10 +67,10 @@
     <div class="col-md-6" >
         <ul class="topnav">
           <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
-          <li><a href="{{URL_ROOT}}/login">Login</a></li>
-          <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
-          <li><a href="{{URL_ROOT}}/register">Sign Up</a></li>
           <li ><a href="https://python.fossee.in/about">About Us</a></li>
+          <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+          <li><a href="{{URL_ROOT}}/login">Login</a></li>
+          <li><a href="{{URL_ROOT}}/register">Sign Up</a></li>
         </ul>
     </div>
 </div>
@@ -83,18 +101,23 @@
 </div>
 
 
-<div class="row" id="r4">
-    <div class="col-md-4">
+<div class="row slick_carousal" id="r4">
+    <div class="col-4">
         <br>
-        <a href="{{URL_ROOT}}/view_workshoptype_details/4"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_1.png" style="width: 100%;"></a>
+        <a href="{{URL_ROOT}}/view_workshoptype_details/4"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_1.png"></a>
     </div>
-    <div class="col-md-4">
+    <div class="col-4">
         <br>
-        <a href="{{URL_ROOT}}/view_workshoptype_details/5"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_2.png" style="width: 100%;"></a>
+        <a href="{{URL_ROOT}}/view_workshoptype_details/5"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_2.png"></a>
     </div>
+    <div class="col-4">
+        <br>
+        <a href="{{URL_ROOT}}/self_workshop"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_3.png"></a>
+    </div>
+
     <div class="col-md-4">
         <br>
-        <a href="{{URL_ROOT}}/self_workshop"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_3.png" style="width: 100%;"></a>
+        <a href="#"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_4.png"></a>
     </div>
 </div>
 

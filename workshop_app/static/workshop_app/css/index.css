@@ -64,12 +64,11 @@ ul.topnav li.right {float: right;}
 #r1_c1
 {
   font-size: 27px;
-  background-image: url("../img/hd_bg.png");
-  background-repeat: no-repeat;
-  background-position: bottom;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 7%;
+  background: url("../img/hd_bg.png") no-repeat left top;
+  padding-bottom: 35px;
+  text-align: middle;
+  padding-top: 25px;
+  font-family: aaragh;  
 }
 
 .rslides {
