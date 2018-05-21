@@ -1,6 +1,13 @@
 .num {
-	list-style-type: square;
-	font-family: 'Antic Slab';
-	font-size: 22px;
+  font-family: 'Antic Slab';
+	font-size: 17px;
 	border-bottom: 1.5px solid #BDBDBD;
+}
+
+.num > h2, h4 {
+    color: #04a9cf;
+}
+
+.ans {
+    color: grey;
 }

@@ -31,7 +31,7 @@
 					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
 				},
 			});
-			
+
 			window.location.reload();
 			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
 		}
@@ -68,7 +68,7 @@
 			        });
 			        $(".ui-dialog-content").dialog("close");
 			        $('.myDialogP'+id).dialog();	
-		       	
+
 			    } else {
 			    	var counter = date.split(" ");
 			    	var id = counter.slice(-1).pop();
@@ -145,7 +145,7 @@
 	    <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
           </ul>
         {% endif %}
-        
+
         <ul class="nav navbar-nav navbar-right">
           <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
           <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
