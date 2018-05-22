@@ -443,11 +443,31 @@ def workshop_public_stats(request):
         except BaseException:
             messages.info(request, 'Please enter Valid Dates')
 
+    else:
+        '''Default Data'''
+        workshop_list = []
+        
+        proposed_workshops = ProposeWorkshopDate.objects.filter(
+                        status='ACCEPTED')
+
+        # Fetches Accepted workshops which were Accepted by
+        # Instructors based on their Availability
+        requested_workshops = RequestedWorkshop.objects.filter(    
+                    status='ACCEPTED')
+
+        for workshop in proposed_workshops:
+            workshop_list.append(workshop)
+
+        for workshop in requested_workshops:
+            workshop_list.append(workshop)
+
+
     return render(request,
                   'statistics_app/workshop_public_stats.html',
                   {
                       "workshoptype_list": workshoptype_list[::-1],
                       "workshoptype_count": workshoptype_count,
+                      "workshop_list": workshop_list,
                       "india_map": states})
 
 

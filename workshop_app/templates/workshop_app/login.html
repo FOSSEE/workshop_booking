@@ -23,12 +23,13 @@
 	<div class="container" align="center">
 		<br>
 		<form method="post">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<br>
-			<br>
-				<button class="btn btn-default" type="submit">Login</button>
-			<br>
+			  {% csrf_token %}
+			  {{ form.as_p }}
+			  <br>
+			  <br>
+				<button class="btn btn-info btn-sm" type="submit">Login</button>
+        <a href="{{URL_ROOT}}/forgotpassword/" class="btn btn-default btn-sm" style="color:#3693C0;">Forgot Password</a>
+			  <br>
 		</form>
 		<br>
 	</div>
