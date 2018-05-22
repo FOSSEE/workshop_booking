@@ -323,7 +323,8 @@
 					    domain: 'IN',
 					    displayMode:  'regions',
 					    resolution: 'provinces',
-					    colorAxis: {colors: ['lightyellow','orange']},
+					    datalessRegionColor: 'transparent',
+					    colorAxis: {colors: ['#e6e6e6','#ff8b3e']},
 					    
 
 					   	};
@@ -347,7 +348,8 @@
 		<style>
 		    #visualization path {
 		    stroke-width:1; /* control the countries borders width */
-		    stroke:#6699cc; /* choose a color for the border */
+		    stroke:white;
+		     /* choose a color for the border */
 		    }
 		</style>
 		<div id="visualization" style="width: 400px; height: 300px; display: block; margin: 0 auto;" ></div>

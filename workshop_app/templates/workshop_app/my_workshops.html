@@ -129,7 +129,7 @@
             <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
             <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
             <li class="active"><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-            <li><a href="{{ URL_ROOT }}/workshop_stats/">Workshop Stats</a></li>
+            <li><a href="{{ URL_ROOT }}/statistics/">Workshop Stats</a></li>
             <li><a href="{{ URL_ROOT }}/statistics/profile_stats/" >Profile Stats</a></li>
           </ul>
         {% else %}
@@ -213,7 +213,7 @@
 				<tr>
 				{% if request.user.profile.position == 'instructor' %}
 					<th>Coordinator Name</th>
-					<th>Coordinator Institute Name</th>
+					<th>Institute</th>
 				{% else %}
 					<th>Instructor Name</th>
 				{% endif %}
@@ -296,6 +296,7 @@
 				<tr>
 				{% if request.user.profile.position == 'instructor' %}
 					<th>Coordinator Name</th>
+					<th>Institute</th>
 				{% else %}
 
 				{% endif %}
@@ -311,6 +312,7 @@
 						{% if workshop.status == 'Pending' and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td>{{ workshop.proposed_workshop_coordinator.get_full_name }}</td>
+								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
 							{% endif %}
 								<td>{{ workshop.proposed_workshop_title  }}</td>
 								<td>{{ workshop.proposed_workshop_date | date }}</td>
