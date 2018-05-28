@@ -13,7 +13,7 @@
 /* OnActive Tab */
 .navbar-custom .navbar-nav > .active > a {
     color: black;
-    background: white;	
+    background: white;
 }
 
 .navbar-custom .navbar-nav > li > a:hover,
@@ -32,8 +32,6 @@
 }
 
 .navbar-custom .navbar-brand:hover{
-  color: black;
-  background-color: #efefef;
 }
 
 /**

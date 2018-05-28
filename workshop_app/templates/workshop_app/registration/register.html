@@ -8,18 +8,21 @@
 	 <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Python Workshops</a>
 		</div>
 
 		<ul class="nav navbar-nav navbar-right">
-		  <li class="active"><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-		  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li class="active"><a href="{{URL_ROOT}}/register">Sign Up</a></li>
+        <li><a href="{{URL_ROOT}}/login">Login</a></li>
+        <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+        <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
+        <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
 		</ul>
 	  	</div>
 	  </nav>
   {% endblock %}
 
- 
+
 {% block content %}
 
 	<style type="text/css">
@@ -27,7 +30,7 @@
     	content: "*";
     	color: red;
 		}
-		
+
 		.errorlist {
       color: red;
     }

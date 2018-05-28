@@ -1,20 +1,32 @@
 {% extends 'workshop_app/base.html' %}
 
+
+{% block title %}
+    Workshops
+{% endblock %}
+
 {% block header %}
    <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT }}/manage/">Home</a>
-		</div>
+        <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
+    </div>
 		<ul class="nav navbar-nav">
 		  <li ><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-		   <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-		   <li ><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-		   <li><a href="{{ URL_ROOT }}/statistics/">Workshop Stats</a></li>
-		   <li><a href="{{ URL_ROOT }}/statistics/profile_stats/" >Profile Stats</a></li>
+		   <li ><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
+		   <li class="active"><a href="{{ URL_ROOT }}/manage/"> Workshops</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		    <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
+                <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
+                <li><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
+            </ul>
+        </li>
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{request.user.first_name }} </a></li>
 		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		</ul>
 		</div>
@@ -49,13 +61,13 @@
 					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
 				},
 			});
-			
+
 			window.location.reload();
 			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
 		}
 	</script>
 
-	
+
 {% endblock %}
 
 
@@ -117,11 +129,11 @@
 	{% else %}
 		<div class="container">
 			<div class="jumbotron">
-    			<h1>Welcome Instructor</h1>      
+    			<h1>Welcome {{ user.first_name }}</h1>
     			<p>Please navigate to <b>View Workshop list</b> and depending upon
     			your expertise and availability create a workshop by going to
     			<b>Create Workshop</b>. you can also check any workshop
-    			requests by going to <b>My Workshops</b></p>
+    			requests by going to <b>Workshop Status</b></p>
 
   			</div>
 		</div>

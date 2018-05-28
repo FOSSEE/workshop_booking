@@ -9,6 +9,8 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
 
     <script>
     var dateToday = new Date();
@@ -35,18 +37,24 @@
   <nav class="navbar navbar-default navbar-custom">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Home</a>
+        <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
       </div>
       <ul class="nav navbar-nav">
-       <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-       <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-       <li><a href="{{ URL_ROOT }}/faq/"> FAQ's</a></li>
-       <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+       <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
+       <li class="dropdown">
+           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
+               <span class="caret"></span></a>
+           <ul class="dropdown-menu">
+               <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
+               <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+           </ul>
+       </li>
        <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-       <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+          <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+          <li><a href="{{ URL_ROOT }}/faq/"> FAQ's</a></li>
+        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
         <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
       </ul>
     </div>

@@ -10,6 +10,23 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link href='//fonts.googleapis.com/css?family=Antic Slab' rel='stylesheet'>
+  <style>
+   h1 {
+       font-family: 'Antic Slab';
+       color: #2952a2;
+   }
+   h4 {
+       padding-left: 3%;
+       padding-top: 1%;
+       color: #04a9cf;
+   }
+   img {
+       display: block;
+       margin: 0 auto;
+   }
+
+  </style>
 {% endblock %}
 
 {% block header %}
@@ -17,28 +34,36 @@
   <div class="container-fluid">
   {% if request.user.profile.position == 'coordinator' %}
   	<div class="navbar-header">
-		  <a class="navbar-brand"  href="{{ URL_ROOT}}/book/">Home</a>
+		  <a class="navbar-brand"  href="#">FOSSEE Python Workshops</a>
 	</div>
 		<ul class="nav navbar-nav">
-		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
-		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-		  <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+		  <li><a href="{{ URL_ROOT}}/my_workshops/">Workshop Status</a></li>
+      <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
+              <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
+              <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+          </ul>
+      </li>
 		  <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-		  <li class="active"><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		    <li class="active"><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+		    <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
+	      <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
 		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		</ul>
   {% else %}
 	<div class="navbar-header">
-	  <a class="navbar-brand" href="{{URL_ROOT}}/">FOSSEE Workshops</a>
+	  <a class="navbar-brand" href="{{URL_ROOT}}/">FOSSEE Python Workshops</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right">
-	  <li class="active"><a href="{{ URL_ROOT }}/how_to_participate/"><span class="glyphicon glyphicon-user"></span> How to Participate</a></li>
-	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="{{URL_ROOT}}/register">Register</a></li>
+      <li><a href="{{URL_ROOT}}/login">Login</a></li>
+      <li class="active"><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+      <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
+      <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
 	</ul>
   {% endif %}
   	</div>
@@ -47,10 +72,22 @@
 
 {% block content %}
 
-	<div class="container-fluid text-center" >
+	<div class="container-fluid" >
       <div class="row">
-          <div class="col-md-12">
-		          <img style="width:100%; height:auto;" src="{{ URL_ROOT }}/static/workshop_app/img/structure.png">
+          <div class="col-12">
+              <ul>
+                  <h1>Steps for conducting workshop</h1>
+                  <h4><li>Register on this website as a Coordinator</li></h4>
+                  <h4><li>Login using your credentials and propose a workshop or select a workshop from the list of available workshops</li></h4>
+                  <h4><li>Wait for instructor approval till you receive a confirmation mail</li></h4>
+                  <h4><li>Once the workshop request/proposal is approved, instructor will send you other workshop details</li></h4>
+                  <h4> <li>Conduct the workshop</li></h4>
+              </ul>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-12">
+		          <img style="width:auto ; height:auto; " class="img-responsive" src="{{ URL_ROOT }}/static/workshop_app/img/structure.png">
           </div>
       </div>
 		<br><br>

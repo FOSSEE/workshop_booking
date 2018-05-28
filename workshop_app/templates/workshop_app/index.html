@@ -20,13 +20,13 @@
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    
+
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <!-- Custom JS -->
-    <script src="{{ URL_ROOT }}/static/workshop_app/js/index.js"></script> 
-    <script src="{{ URL_ROOT }}/static/workshop_app/js/slick.js"></script> 
+    <script src="{{ URL_ROOT }}/static/workshop_app/js/index.js"></script>
+    <script src="{{ URL_ROOT }}/static/workshop_app/js/slick.js"></script>
 
 
     <title>Welcome</title>
@@ -51,14 +51,13 @@ $(document).ready(function(){
   $('.slick_carousal').slick({
     infinite: true,
     slidesToShow: 3,
-    
     slidesToScroll: 1
   });
 });
 </script>
 
 </head>
-<body class="container">
+<body >
 
 <div class="row" id="r1">
     <div class="col-md-6" id="r1_c1">
@@ -70,12 +69,12 @@ $(document).ready(function(){
           <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
           <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
           <li><a href="{{URL_ROOT}}/login">Login</a></li>
-          <li><a href="{{URL_ROOT}}/register">Sign Up</a></li>
+          <li><a href="{{URL_ROOT}}/register"> Register</a></li>
         </ul>
     </div>
 </div>
-
-<div class="row" id="r2">
+<div class="coverbox">
+    <div class="row" id="r2">
     <div class="col-md-6 rslides" id="r2_c1">
 
         <img src="{{ URL_ROOT}}/static/workshop_app/img/intro_img_1.png" >
@@ -101,7 +100,7 @@ $(document).ready(function(){
 </div>
 
 
-<div class="row slick_carousal" id="r4">
+<div class="row slick_carousal" id="r4" style="width:95%;">
     <div class="col-4">
         <br>
         <a href="{{URL_ROOT}}/view_workshoptype_details/4"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_1.png"></a>
@@ -115,7 +114,7 @@ $(document).ready(function(){
         <a href="{{URL_ROOT}}/self_workshop"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_3.png"></a>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-4">
         <br>
         <a href="#"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_4.png"></a>
     </div>
@@ -170,13 +169,13 @@ $(document).ready(function(){
         Phone: (+91) 22 2576 4133 <br>
         Email: workshops[at]fossee[dot]in
     </div>
- 
+
     <div class="col-md-4" id="r8_c3" >
         <div id="social">
                 <br> <br>
                 <a href="https://www.facebook.com/FOSSEENMEICT/" target="_blank" class="fa fa-facebook"></a> &nbsp;
                 <a href="https://plus.google.com/u/0/104012350840765676803" target="_blank" class="fa fa-google"></a> &nbsp;
-                <a href="https://www.youtube.com/channel/UCMtt6exSCmZI7JU73S6Wz_A" target="_blank" class="fa fa-youtube"></a> 
+                <a href="https://www.youtube.com/channel/UCMtt6exSCmZI7JU73S6Wz_A" target="_blank" class="fa fa-youtube"></a>
         </div>
     </div>
 
@@ -184,8 +183,9 @@ $(document).ready(function(){
         <hr>
         The FOSSEE project is funded by the National Mission on Education through ICT, MHRD, Government of India.  <br>
         This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License
-
+        <br><br>
     </div>
+</div>
 </div>
 
 </body>
