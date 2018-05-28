@@ -1,16 +1,16 @@
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 800px) {
-    .leftcolumn, .rightcolumn { 
+    .leftcolumn, .rightcolumn {
         width: 100%;
         padding: 0;
 
     },
- 
+
 }
 
 ul.topnav {
     list-style-type: none;
-    margin: 10px;
+    margin: 2px;
     padding: 0;
     overflow: hidden;
 
@@ -20,31 +20,30 @@ ul.topnav li {float: right;}
 
 ul.topnav li a {
     display: block;
-    color: black;
+    color: white;
     font-family: "Helvatica", arial, sans-serif;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 16px;
     text-decoration: none;
 }
 
 ul.topnav li a:hover:not(.active) {
-  background-color: #3bb1d1;
-  color:white;
-  padding: 14px 16px;
+  background-color: white;
+  color: black;
+  padding: 10px 16px;
 }
 
 ul.topnav li.right {float: right;}
 
 @media screen and (max-width: 600px){
-    ul.topnav li.right, 
+    ul.topnav li.right,
     ul.topnav li {float: none;}
 }
 
 /**/
-.container {
-  width: 100%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  align-content: center;
+.coverbox {
+    width: 90%;
+  margin: auto;
 }
 
 .row {
@@ -60,16 +59,22 @@ ul.topnav li.right {float: right;}
 
 }
 
+#r1 {
+    background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
+    height: 60px;
+    margin: 1px;
+    font-family: Sans-serif, "Arial";
+}
 
 #r1_c1
 {
-  font-size: 27px;
-  background: url("../img/hd_bg.png") no-repeat left top;
-  padding-bottom: 35px;
+  font-size: 18px;
+  padding-top: 14px;
   text-align: middle;
-  padding-top: 25px;
-  font-family: aaragh;  
+  color:white;
 }
+
+
 
 .rslides {
   position: relative;
@@ -101,6 +106,10 @@ ul.topnav li.right {float: right;}
   width: 100%;
   }
 
+#r2 {
+    padding-top: 10px;
+}
+
 #r2_c1 {
   margin: auto;
   width: 100%;
@@ -116,9 +125,8 @@ ul.topnav li.right {float: right;}
   color: white;
   background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
   padding-bottom: 25px;
-  margin-top: 15px; 
+  margin-top: 15px;
 }
-
 
 
 #r5 {
@@ -128,14 +136,14 @@ ul.topnav li.right {float: right;}
 #r5_c1 {
   text-align: center;
   font-size: 2vw;
-  font-family: aaragh; 
+  font-family: aaragh;
   margin-top: 10px;
 
 }
 
 #r5_c2 {
-  font-family: aaragh; 
-  
+  font-family: aaragh;
+
 }
 
 #r5_c3 {
@@ -147,12 +155,13 @@ ul.topnav li.right {float: right;}
   margin-top: 15px;
   width: 100%;
   background: linear-gradient(135deg , #2c5aa0,#2c5aa0 30%, #3bb1d1 );
-  
+  align-items: center;
+
 }
 
 #r6_c2 {
   text-align: center;
-  font-family: aaragh;  
+  font-family: aaragh;
   color: white;
 }
 
@@ -162,7 +171,6 @@ ul.topnav li.right {float: right;}
   overflow: hidden;
   padding: 0;
   margin: 0;
-  width: 10px;
   }
 
 .tslides li {
@@ -217,9 +225,8 @@ ul.topnav li.right {float: right;}
 
 #r8_c2 {
   font-size: 16px;
-  
   text-align: center;
-  
+
 }
 
 #social {
@@ -229,7 +236,6 @@ ul.topnav li.right {float: right;}
 #r8_c4 {
   text-align: center;
   font-size: 12px;
-  
   width: 100%;
 }
 

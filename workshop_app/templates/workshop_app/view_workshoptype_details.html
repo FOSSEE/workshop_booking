@@ -2,55 +2,64 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	View Workshops Type List
+	View Workshop details
 {% endblock %}
 
 
 {% block header %}
 	<nav class="navbar navbar-default navbar-custom">
   <div class="container-fluid">
+      <div class="navbar-header">
+       		<a class="navbar-brand" href="{{URL_ROOT }}/">FOSSEE Python Workshops</a>
+      </div>
       {% if request.user.profile.position == 'instructor' %}
-        <div class="navbar-header">
-       		<a class="navbar-brand" href="{{ URL_ROOT }}/manage/">Home</a>
-        </div>
           <ul class="nav navbar-nav">
             <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
-            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-            <li><a href="{{ URL_ROOT }}/statistics/">Workshop Stats</a></li>
-            <li><a href="{{ URL_ROOT }}/statistics/profile_stats/" >Profile Stats</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
+            <li><a href="{{ URL_ROOT }}/manage/">Workshops</a></li>
           </ul>
 
 	        <ul class="nav navbar-nav navbar-right">
-	            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+              <li class="active"><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
+              <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
+                      <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
+                      <li><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
+                  </ul>
+              </li>
+              <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ request.user.first_name }} </a></li>
 	            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 	        </ul>
           {% elif request.user.profile.position == 'coordinator' %}
-        <div class="navbar-header">
-       		<a class="navbar-brand" href="{{URL_ROOT}}/book/">Home</a>
-        </div>
           <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/my_workshops/">My Workshops</a></li>
-            <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-            <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+            <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
+                    <li class="active"><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+                </ul>
+            </li>
             <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-	    <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
           </ul>
 
 	        <ul class="nav navbar-nav navbar-right">
-	            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+	            <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+              <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
+	            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
 	            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 	        </ul>
         {% else %}
-          <div class="navbar-header">
-       		    <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
-          </div>
 
 	<ul class="nav navbar-nav navbar-right">
-	  <li><a href="{{ URL_ROOT }}/how_to_participate/"><span class="glyphicon glyphicon-user"></span> How to Participate</a></li>
-	  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-	  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="{{URL_ROOT}}/register"> Register</a></li>
+      <li><a href="{{URL_ROOT}}/login">Login</a></li>
+      <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+      <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
+      <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
 	</ul>
   {% endif %}
 

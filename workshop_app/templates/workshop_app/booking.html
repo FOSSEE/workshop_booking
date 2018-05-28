@@ -1,7 +1,7 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	Booking
+	Book a Workshop
 {% endblock %}
 
 
@@ -11,12 +11,12 @@
  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 	<script>
 	// Button function
 		function sendData(d){
-			var check_count;		
+			var check_count;
 			//For queue
 			var URL = "{{ URL_ROOT }}/book_workshop/";
 				c = d + ',0';
@@ -26,7 +26,7 @@
 					async: false,
 					type: "POST",
 					data: {
-						c, 
+						c,
 						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
 					},
 					success:function(response){
@@ -48,7 +48,7 @@
 						"Confirm": function(){
 						if($('#one').is(":checked") && $('#two').is(":checked") && $('#three').is(":checked")){
 								booking_confirmed(d);
-								$(this).dialog("close");	
+								$(this).dialog("close");
 						} else {
 								alert("Please select all the checkboxes.");
 								}
@@ -58,7 +58,7 @@
 						}
 					}
 				});
-			$dialog.dialog('open');	
+			$dialog.dialog('open');
 		}
 
 		function booking_confirmed(d){
@@ -68,10 +68,10 @@
 					url: URL,
 					type: "POST",
 					data: {
-						d, 
+						d,
 						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
 					},
-				
+
 					success:function(response){
 						window.location.reload();
 						alert("success: " + response);
@@ -86,18 +86,24 @@
 	<nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header" class="active">
-		  <a class="navbar-brand" href="{{ URL_ROOT}}/book/">Home</a>
+		  <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
 		</div>
 		<ul class="nav navbar-nav">
-		  <li><a href="{{ URL_ROOT}}/my_workshops/">My Workshops</a></li>
-		  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-		  <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-		  <li><a href="{{ URL_ROOT }}/benefits/">Benefits</a></li>
+		  <li><a href="{{ URL_ROOT}}/my_workshops/">Workshop Status</a></li>
+      <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
+              <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li class="active"><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
+              <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+          </ul>
+      </li>
 		  <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-		  <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile </a></li>
+		    <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
+		    <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
+		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
 		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		</ul>
 	  	</div>

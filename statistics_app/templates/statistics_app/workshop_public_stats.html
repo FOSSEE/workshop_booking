@@ -8,12 +8,15 @@
    <nav class="navbar navbar-default navbar-custom">
 	  <div class="container-fluid">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Workshops</a>
+		  <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Python Workshops</a>
 		</div>
-		
+
 		<ul class="nav navbar-nav navbar-right">
-		  <li><a href="{{ URL_ROOT }}/register/"><span class="glyphicon glyphicon-user"></span>Register</a></li>
-		  <li><a href="{{ URL_ROOT }}/login/"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+        <li><a href="{{URL_ROOT}}/register">Register</a></li>
+        <li><a href="{{URL_ROOT}}/login">Login</a></li>
+        <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+        <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
+        <li class="active"><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
 		</ul>
 		</div>
   </nav>
@@ -23,13 +26,13 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
- 
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
-  	<!-- For Charts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>                                                              
+  	<!-- For Charts -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
 	<!-- For Google GeoChart India Map -->
@@ -41,7 +44,7 @@
 
     dateToday.setDate(dateToday.getDate() - 1);
     upto.setFullYear(dateToday.getFullYear() + 1);
-  
+
   $( function() {
       from = $( "#from" )
         .datepicker({
@@ -95,7 +98,7 @@
 			    <input type="radio" name="radio-1" id="radio-3" value="MOIN">
 			  </fieldset>
 		</div>
-	
+
 	<div class="col-md-8">
 		<form method="POST" >
 			{% csrf_token %}
@@ -103,42 +106,42 @@
 			 <label>state: </label>
 			  <select name="states">
 			    <option value="all">ALL</option>
-			    <option value="IN-AP">Andhra Pradesh</option>	
-			    <option value="IN-AR">Arunachal Pradesh</option>	
-			    <option value="IN-AS">Assam</option>	
-			    <option value="IN-BR">Bihar</option>	
-			    <option value="IN-CT">Chhattisgarh</option>	
-			    <option value="IN-GA">Goa</option>	
-			    <option value="IN-GJ">Gujarat</option>	
-			    <option value="IN-HR">Haryana</option>	
-			    <option value="IN-HP">Himachal Pradesh</option>	
-			    <option value="IN-JK">Jammu and Kashmir</option>	
-			    <option value="IN-JH">Jharkhand</option>	
-			    <option value="IN-KA">Karnataka</option>	
-			    <option value="IN-KL">Kerala</option>	
-			    <option value="IN-MP">Madhya Pradesh</option>	
-			    <option value="IN-MH">Maharashtra</option>	
-			    <option value="IN-MN">Manipur</option>	
-			    <option value="IN-ML">Meghalaya</option>	
-			    <option value="IN-MZ">Mizoram</option>	
-			    <option value="IN-NL">Nagaland</option>	
-			    <option value="IN-OR">Odisha</option>	
-			    <option value="IN-PB">Punjab</option>	
-			    <option value="IN-RJ">Rajasthan</option>	
-			    <option value="IN-SK">Sikkim</option>	
-			    <option value="IN-TN">Tamil Nadu</option>	
-			    <option value="IN-TG">Telangana</option>	
+			    <option value="IN-AP">Andhra Pradesh</option>
+			    <option value="IN-AR">Arunachal Pradesh</option
+			    <option value="IN-AS">Assam</option>
+			    <option value="IN-BR">Bihar</option>
+			    <option value="IN-CT">Chhattisgarh</option>
+			    <option value="IN-GA">Goa</option>
+			    <option value="IN-GJ">Gujarat</option>
+			    <option value="IN-HR">Haryana</option>
+			    <option value="IN-HP">Himachal Pradesh</option>
+			    <option value="IN-JK">Jammu and Kashmir</option>
+			    <option value="IN-JH">Jharkhand</option>
+			    <option value="IN-KA">Karnataka</option>
+			    <option value="IN-KL">Kerala</option>
+			    <option value="IN-MP">Madhya Pradesh</option>
+			    <option value="IN-MH">Maharashtra</option>
+			    <option value="IN-MN">Manipur</option>
+			    <option value="IN-ML">Meghalaya</option>
+			    <option value="IN-MZ">Mizoram</option>
+			    <option value="IN-NL">Nagaland</option>
+			    <option value="IN-OR">Odisha</option>
+			    <option value="IN-PB">Punjab</option>
+			    <option value="IN-RJ">Rajasthan</option>
+			    <option value="IN-SK">Sikkim</option>
+			    <option value="IN-TN">Tamil Nadu</option>
+			    <option value="IN-TG">Telangana</option>
 			    <option value="IN-TR">Tripura</option>
-			    <option value="IN-UT">Uttarakhand</option>	
-			    <option value="IN-UP">Uttar Pradesh</option>	
+			    <option value="IN-UT">Uttarakhand</option>
+			    <option value="IN-UP">Uttar Pradesh</option>
 			    <option value="IN-WB">West Bengal</option>
-			    <option value="IN-AN">Andaman and Nicobar Islands</option>	
-			    <option value="IN-CH">Chandigarh</option>	
-			    <option value="IN-DN">Dadra and Nagar Haveli</option>	
-			    <option value="IN-DD">Daman and Diu</option>	
-			    <option value="IN-DL">Delhi</option>	
-			    <option value="IN-LD">Lakshadweep</option>	
-			    <option value="IN-PY">Puducherry</option>	
+			    <option value="IN-AN">Andaman and Nicobar Islands</option>
+			    <option value="IN-CH">Chandigarh</option>
+			    <option value="IN-DN">Dadra and Nagar Haveli</option>
+			    <option value="IN-DD">Daman and Diu</option>
+			    <option value="IN-DL">Delhi</option>
+			    <option value="IN-LD">Lakshadweep</option>
+			    <option value="IN-PY">Puducherry</option>
 	                  </select>
 			  <label>WorkshopType:  </label>
 			  <select name="workshoptype_name">
@@ -215,7 +218,7 @@
 		 	<ul class="pagination pagination-sm">
 			  	<li class="page-item">
 			      {% if workshop_list.has_previous %}
-					<a class="page-link" tabindex="-1" 
+					<a class="page-link" tabindex="-1"
 						href="?page={{ workshop_list.previous_page_number }}">Previous</a>
 				  {% endif %}
 			    </li>
@@ -227,7 +230,7 @@
 			    <li class="page-item">
 			    {% if workshop_list.has_next %}
 					<a class="page-link" href="?page={{ workshop_list.next_page_number }}">Next
-					</a>	
+					</a>
 				{% endif %}
 			    </li>
 		  	</ul>
@@ -248,7 +251,7 @@
 
 			var ctx1 = document.getElementById("myChartPie").getContext('2d');
 			var myChart;
- 
+
 			$('input[type=radio]').change(function() {
 		   if (this.value == 'OWC') { //Overall Workshop Count
 			        if(myChart){
@@ -257,7 +260,7 @@
 
 				    var dWidth = $(window).width() * 0.9;
 			        var dHeight = $(window).height() * 0.9;
-                
+
 			        $( "#myChartPie" ).dialog({
 					resizable: false,
 					draggable: true,
@@ -266,10 +269,10 @@
 					stack: true,
 					zIndex: 10000,
 					width: dWidth,
-					height: dHeight,    
+					height: dHeight,
 					modal: true
 					});
-	
+
 				document.getElementById("visualization").style.visibility='hidden';
 				myChart = new Chart(ctx1, {
 				    type: 'pie',
@@ -283,7 +286,7 @@
 				                'rgba(191, 191, 1, 1)',
 				                'rgba(75, 192, 192, 1)',
 					        'rgba(153, 102, 255, 1)'
-				           ] 
+				           ]
 				        }]
 				    },
 				    options: {
@@ -299,7 +302,7 @@
 
 				    var dWidth = $(window).width() * 0.9;
 			        var dHeight = $(window).height() * 0.9;
-                
+
 			        $( "#visualization" ).dialog({
 					resizable: false,
 					draggable: true,
@@ -308,10 +311,10 @@
 					stack: true,
 					zIndex: 10000,
 					width: dWidth,
-					height: dHeight,    
+					height: dHeight,
 					modal: true
 					});
-	
+
 					document.getElementById("visualization").style.visibility='visible';
 			        function drawVisualization() {
 					    var data = google.visualization.arrayToDataTable(
@@ -325,14 +328,14 @@
 					    resolution: 'provinces',
 					    datalessRegionColor: 'transparent',
 					    colorAxis: {colors: ['#e6e6e6','#ff8b3e']},
-					    
+
 
 					   	};
 
 					var geochart = new google.visualization.GeoChart(
 					document.getElementById('visualization'));
 							geochart.draw(data, opts);
-					    };	
+					    };
 					if(google) {
 					    google.load('visualization', '1.0', {
 						packages: ['geochart'],
@@ -341,10 +344,10 @@
 							drawVisualization();
 							}
 			            })
-				        }	
+				        }
 				}
 			});
-		</script>	
+		</script>
 		<style>
 		    #visualization path {
 		    stroke-width:1; /* control the countries borders width */
