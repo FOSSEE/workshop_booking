@@ -903,10 +903,6 @@ def view_workshoptype_list(request):
                 )
 
 
-def benefits(request):
-    return render(request, 'workshop_app/view_benefits.html')
-
-
 def faq(request):
     return render(request, 'workshop_app/view_faq.html')
 
@@ -936,22 +932,6 @@ def file_view(request, workshop_title):
         response.write(zipfile_name.read())
         return response
 
-
-def testimonials(request):
-    testimonials = Testimonial.objects.all().order_by('-id')
-    paginator = Paginator(testimonials, 3) #Show upto 12 workshops per page
-
-    page = request.GET.get('page')
-    try:
-        messages = paginator.page(page)
-    except PageNotAnInteger:
-        #If page is not an integer, deliver first page.
-        messages = paginator.page(1)
-    except EmptyPage:
-        #If page is out of range(e.g 999999), deliver last page.
-        messages = paginator.page(paginator.num_pages)
-    return render(request, 'workshop_app/testimonals.html', 
-                    {"messages":messages})
 
 
 def check_workshop_type(x):

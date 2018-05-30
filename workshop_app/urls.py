@@ -33,7 +33,6 @@ urlpatterns = [
     url(r'^book/$', views.book),
     url(r'^book_workshop/$', views.book_workshop),
     url(r'^my_workshops/$', views.my_workshops),
-    url(r'^benefits/$', views.benefits),
     url(r'^how_to_participate/$', views.how_to_participate),
     url(r'^faq/$', views.faq),
     url(r'^manage/$', views.manage),
@@ -43,8 +42,6 @@ urlpatterns = [
     url(r'^create_workshop/$', views.create_workshop),
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^workshop_stats/$', views.workshop_stats),
-    url(r'^testimonials/$', views.testimonials),
-    #url(r'^file_view/(?P<workshop_title>[\w|\W]+)$', views.file_view),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
     url(r'^self_workshop', views.self_workshop),
  ]
