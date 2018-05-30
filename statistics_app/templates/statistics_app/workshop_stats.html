@@ -1,38 +1,12 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-  Statistics
+ Workshop  Statistics
 {% endblock %}
 
-{% block header %}
-   <nav class="navbar navbar-default navbar-custom">
-	  <div class="container-fluid">
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
-		</div>
-		<ul class="nav navbar-nav">
-		  <li ><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-		   <li ><a href="{{ URL_ROOT }}/my_workshops/"> Workshop Status</a></li>
-       <li><a href="{{ URL_ROOT }}/manage/">Workshops</a></li>
-		</ul>
-		<ul class="nav navbar-nav navbar-right">
-		    <li ><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
-                <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li class="active"><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
-                <li ><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
-            </ul>
-        </li>
-        <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-		</ul>
-		</div>
-  </nav>
-{% endblock %}
 
 {% block extra %}
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

@@ -5,54 +5,6 @@
 {% endblock %}
 
 
-{% block header %}
-  <nav class="navbar navbar-default navbar-custom">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">FOSSEE Python Workshops </a>
-        </div>
-      {% if request.user.profile.position == 'instructor' %}
-      <ul class="nav navbar-nav">
-        <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-        <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-        <li><a href="{{ URL_ROOT }}/manage/">Workshops </a></li>
-      </ul>
-      {% else %}
-      <ul class="nav navbar-nav">
-          <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-          <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
-                  <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                  <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
-                  <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-              </ul>
-          </li>
-        <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
-      </ul>
-      {% endif %}
-      <ul class="nav navbar-nav navbar-right">
-          {% if request.user.profile.position == 'instructor' %}
-          <li><a href="{{ URL_ROOT }}/view_workshoptype_details/"> Workshop List</a></li>
-          <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
-                  <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                  <li><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
-                  <li><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
-              </ul>
-          </li>
-          {% else %}
-          <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
-          <li><a href="{{ URL_ROOT }}/faq/"> FAQ's</a></li>
-          {% endif %}
-		    <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-        <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-      </ul>
-      </div>
-  </nav>
-{% endblock %}
-
   {% block extra %}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>

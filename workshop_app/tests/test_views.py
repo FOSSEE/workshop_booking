@@ -283,10 +283,6 @@ class TestWorkshopDashboard(TestCase):
 	
 class TestStaticPages(TestCase):
 
-	def test_testimonials(self):
-		response = self.client.get('/testimonials/')
-		self.assertEqual(response.status_code, 200)
-
 	def test_register(self):
 		response = self.client.get('/register/')
 		self.assertEqual(response.status_code, 200)
@@ -297,10 +293,6 @@ class TestStaticPages(TestCase):
 
 	def test_how_to_participate(self):
 		response = self.client.get('/how_to_participate/')
-		self.assertEqual(response.status_code, 200)
-
-	def test_benefits(self): 
-		response = self.client.get('/benefits/')
 		self.assertEqual(response.status_code, 200)
 
 	def test_view_workshoptype_list(self):
