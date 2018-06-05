@@ -14,6 +14,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/index.css" type="text/css" />
+    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/sticky-footer.css" type="text/css" />
     <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/slick.css" type="text/css" />
     <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/slick-theme.css" type="text/css" />
 
@@ -59,20 +60,17 @@ $(document).ready(function(){
 </head>
 <body >
 
-<div class="row" id="r1">
-    <div class="col-md-6" id="r1_c1">
-        FOSSEE Python Workshops
-    </div>
-    <div class="col-md-6" >
-        <ul class="topnav">
-          <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
-          <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
-          <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
-          <li><a href="{{URL_ROOT}}/login">Login</a></li>
-          <li><a href="{{URL_ROOT}}/register"> Register</a></li>
+    <nav class="navbar navbar-expand-sm navbar-custom">
+        <a class="navbar-brand">FOSSEE Python Workshops</a>
+        <ul class=" nav navbar-nav ml-auto">
+            <li class="nav-link"><a href="{{URL_ROOT}}/register"> Register</a></li>
+            <li class="nav-link"><a href="{{URL_ROOT}}/login">Login</a></li>
+            <li class="nav-link"><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
+            <li class="nav-link"><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
+            <li class="nav-link"><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
         </ul>
-    </div>
-</div>
+    </nav>
+
 <div class="coverbox">
     <div class="row" id="r2">
     <div class="col-md-6 rslides" id="r2_c1">
@@ -103,11 +101,11 @@ $(document).ready(function(){
 <div class="row slick_carousal" id="r4" style="width:95%;">
     <div class="col-4">
         <br>
-        <a href="{{URL_ROOT}}/view_workshoptype_details/4"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_1.png"></a>
+        <a href="{{URL_ROOT}}/view_workshoptype_details/1"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_1.png"></a>
     </div>
     <div class="col-4">
         <br>
-        <a href="{{URL_ROOT}}/view_workshoptype_details/5"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_2.png"></a>
+        <a href="{{URL_ROOT}}/view_workshoptype_details/2"><img src="{{ URL_ROOT}}/static/workshop_app/img/Crs_2.png"></a>
     </div>
     <div class="col-4">
         <br>
