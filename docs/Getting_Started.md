@@ -27,7 +27,7 @@
 
 9. Under *settings.py* file see to it that all required variables are set then you're good to go!
 
-### Instrutor specific steps
+### Instructor specific steps
 
 1. An instructor can create workshops as per his/her availibility in __Create Workshop__ tab.
 
