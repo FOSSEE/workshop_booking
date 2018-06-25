@@ -1,8 +1,8 @@
 from workshop_app.views import view_profile, user_login, edit_profile
 from django.test import TestCase
 from workshop_app.models import Profile, User, Workshop, WorkshopType,\
-                    RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,\
-                    has_profile
+					RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,\
+					has_profile
 from datetime import datetime
 from json import dumps
 from django.test import Client
@@ -279,8 +279,8 @@ class TestWorkshopDashboard(TestCase):
 						workshop_title=self.workshoptype,
 						recurrences='RRULE:FREQ=WEEKLY;UNTIL=20170624T183000Z;BYDAY=WE;'
 						)
-	
-	
+
+
 class TestStaticPages(TestCase):
 
 	def test_register(self):
@@ -297,6 +297,10 @@ class TestStaticPages(TestCase):
 
 	def test_view_workshoptype_list(self):
 		response = self.client.get('/view_workshoptype_list/')
+		self.assertEqual(response.status_code, 200)
+
+	def test_view_self_workshop(self):
+		response = self.client.get('/self_workshop/')
 		self.assertEqual(response.status_code, 200)
 
 
