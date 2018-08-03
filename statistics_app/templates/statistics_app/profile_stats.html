@@ -94,7 +94,8 @@
 					{% if profile_data.count > 0 %}
 							<tr>
 								<td>{{ forloop.counter }}</td>
-								<td>{{ profile_data.profile.user.first_name}} {{ profile_data.profile.user.last_name}}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ profile_data.profile.user.id }}">
+								{{ profile_data.profile.user.get_full_name }}</a></td>
 								<td>{{ profile_data.profile.institute}}</td>
 								<td>{{ profile_data.profile.phone_number}}</td>
 								<td>{{ profile_data.profile.user.date_joined | date}}</td>
