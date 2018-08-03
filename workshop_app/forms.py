@@ -2,7 +2,8 @@ from django import forms
 from django.utils import timezone
 from .models import (
                     Profile, User, Workshop, WorkshopType,
-                    RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate
+                    RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,
+                    ProfileComments
                     )
 from string import punctuation, digits
 try:
@@ -263,3 +264,25 @@ class ProposeWorkshopDateForm(forms.ModelForm):
             'proposed_workshop_date': forms.DateInput(attrs={
                 'class':'datepicker'})
             }
+
+
+
+class ProfileCommentsForm(forms.ModelForm):
+    """
+    Instructors will post comments on Coordinators profile
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileCommentsForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].label = ""
+        self.fields['comment'].widget.attrs['rows'] = 5
+        self.fields['comment'].widget.attrs['cols'] = 95
+
+    class Meta:
+        model = ProfileComments
+        exclude = ['coordinator_profile', 'instructor_profile',
+                    'created_date'
+                ]
+        widgets = {
+            'comments' : forms.CharField(),
+        }

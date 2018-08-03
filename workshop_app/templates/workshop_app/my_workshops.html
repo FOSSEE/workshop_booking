@@ -149,7 +149,8 @@
 						<tr>
 						{% if workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.requested_workshop_coordinator.get_full_name }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
+									{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
 							{% else %}
 								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
 							{% endif %}
@@ -190,7 +191,8 @@
 						<tr>
 						{% if workshop.status == 'ACCEPTED' and workshop.requested_workshop_title %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.requested_workshop_coordinator.get_full_name }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
+								{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
 								<td>{{ workshop.requested_workshop_coordinator.profile.institute }}</td>
 							{% else %}
 								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
@@ -214,7 +216,8 @@
 						{% endif %}
 						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.proposed_workshop_coordinator.get_full_name }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
+								{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
 								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
 							{% else %}
 								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
@@ -273,7 +276,9 @@
 						<tr>
 						{% if workshop.status == 'Pending' and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.proposed_workshop_coordinator.get_full_name }}</td>
+							
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
+									{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
 								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
 							{% endif %}
 								<td>{{ workshop.proposed_workshop_title  }}</td>

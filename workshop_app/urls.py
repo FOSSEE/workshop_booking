@@ -44,5 +44,6 @@ urlpatterns = [
     url(r'^workshop_stats/$', views.workshop_stats),
     url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
     url(r'^self_workshop', views.self_workshop),
+    url(r'^view_comment_profile/([1-9][0-9]*)$', views.view_comment_profile),
  ]
 
