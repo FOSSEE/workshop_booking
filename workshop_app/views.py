@@ -1,14 +1,14 @@
 from .forms import (
             UserRegistrationForm, UserLoginForm,
             ProfileForm, CreateWorkshop,
-            ProposeWorkshopDateForm
+            ProposeWorkshopDateForm, ProfileCommentsForm
             )
 from .models import (
             Profile, User,
             has_profile, Workshop,
             WorkshopType, RequestedWorkshop,
             BookedWorkshop, ProposeWorkshopDate,
-            Testimonial
+            Testimonial, ProfileComments
             )
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
@@ -1180,3 +1180,50 @@ def workshop_stats(request):
 
 def self_workshop(request):
     return render(request, "workshop_app/self_workshop.html")
+
+
+
+@login_required
+def view_comment_profile(request, user_id):
+    '''instructor can view/post comments on coordinator profile '''
+    user = request.user
+    if is_instructor(user) and is_email_checked(user):
+        comment_form = ProfileCommentsForm()
+        coordinator_profile = Profile.objects.get(user_id=user_id)
+        try:
+            comments = ProfileComments.objects.filter(coordinator_profile_id=user_id).order_by('-created_date')
+        except:
+            comments = None
+        if request.method == 'POST':
+            comment_formpost = ProfileCommentsForm(request.POST)
+            if comment_formpost.is_valid():
+                form_data = comment_formpost.save(commit=False)
+                form_data.coordinator_profile_id = user_id
+                form_data.instructor_profile_id = user.id
+                form_data.save()
+
+                return render(request, "workshop_app/view_comment_profile.html",
+                        {"coordinator_profile": coordinator_profile,
+                        "comments": comments,
+                        "comment_form": comment_form
+                        })
+        else:
+            if comments is not None:
+                #Show upto 12 Workshops per page
+                paginator = Paginator(comments, 12)
+                page = request.GET.get('page')
+                try:
+                    comments = paginator.page(page)
+                except PageNotAnInteger:
+                #If page is not an integer, deliver first page.
+                    comments = paginator.page(1)
+                except EmptyPage:
+                    #If page is out of range(e.g 999999), deliver last page.
+                    comments = paginator.page(paginator.num_pages)
+            
+            return render(request, "workshop_app/view_comment_profile.html",
+                        {"coordinator_profile": coordinator_profile,
+                        "comments": comments,
+                        "comment_form": comment_form})
+    return redirect('/book/')
+

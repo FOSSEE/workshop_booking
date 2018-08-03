@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from recurrence.fields import RecurrenceField
+from django.utils import timezone
 import os
 
 position_choices = (
@@ -269,3 +270,23 @@ class Testimonial(models.Model):
                     self.institute,
                     self.department
                     )
+
+
+
+class ProfileComments(models.Model):
+    """
+    Contains comments posted by instructors on coordinator profile
+    """
+
+    coordinator_profile = models.ForeignKey(User,
+                          on_delete=models.CASCADE)
+    comment = models.TextField()
+    instructor_profile = models.ForeignKey(User,
+                        related_name="%(app_label)s_%(class)s_related")
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return u"{0} | {1}".format(
+            self.comment,
+            self.created_date
+        )

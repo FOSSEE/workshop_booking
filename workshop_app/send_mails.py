@@ -340,8 +340,8 @@ def send_email(	request, call_on,
 	elif call_on == 'Proposed Workshop':
 		if user_position == "instructor":
 			message = dedent("""\
-					A coordinator has proposed a workshop below are the
-					details:
+					A coordinator has proposed a workshop. The details are 
+					given below:
 
 					Coordinator name: {0}
 					Coordinator email: {1}
