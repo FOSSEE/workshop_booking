@@ -212,7 +212,10 @@ def send_email(	request, call_on,
 			Workshop title:{5}
 
 			You have accepted this booking.  Detailed instructions have
-			been sent to the coordinator. """.format(user_name, other_email,
+			been sent to the coordinator. 
+			
+			This is a auto-generated mail.
+			""".format(user_name, other_email,
 				phone_number, institute, workshop_date, workshop_title))
 
 			logging.info("Booking Confirmed by {0} for {1} ".format(request.user.email,
@@ -276,7 +279,10 @@ def send_email(	request, call_on,
 					Workshop title: {5}
 
 					You have rejected this booking.  The coordinator has
-					been notified.""".format(user_name, other_email,
+					been notified.
+					
+					This is a auto-generated mail.
+					""".format(user_name, other_email,
 					phone_number, institute,
 					workshop_date, workshop_title))
 
@@ -302,7 +308,10 @@ def send_email(	request, call_on,
 					has been rejected due to unavailability of the
 					instructor. You may try booking other available
 					slots {2}/book/ or you can also Propose a workshop
-					based on your available date."""
+					based on your available date.
+					
+					This is a auto-generated mail.
+					"""
 					.format(workshop_date, workshop_title, PRODUCTION_URL))
 
 			try:
@@ -321,7 +330,10 @@ def send_email(	request, call_on,
 				You have deleted a Workshop.
 
 				Workshop date:{0}
-				Workshop title:{1}"""
+				Workshop title:{1}
+				
+				This is a auto-generated mail.
+				"""
 				.format(workshop_date, workshop_title))
 
 		logging.info("Workshop Deleted by {0} for {1} ".format(request.user.email,
@@ -351,7 +363,10 @@ def send_email(	request, call_on,
 					Workshop title: {5}
 
 					Please Accept only if you are willing to take the workshop.
-					{6}/my_workshops/ """
+					{6}/my_workshops/ 
+
+					This is a auto-generated mail.
+					"""
 					.format(user_name, request.user.email,
 					phone_number, institute,
 					workshop_date, workshop_title,
@@ -369,7 +384,10 @@ def send_email(	request, call_on,
 			message = dedent("""\
 					Dear Instructor,
 
-					Your workshop date has been changed from {0} to {1}."""
+					Your workshop date has been changed from {0} to {1}.
+					
+					This is a auto-generated mail.
+					"""
 					.format(
 					workshop_date, new_workshop_date))
 
@@ -391,7 +409,10 @@ def send_email(	request, call_on,
 			message = dedent("""\
 					Dear Coordinator,
 
-					Your workshop has been rescheduled from {0} to {1}."""
+					Your workshop has been rescheduled from {0} to {1}.
+					
+					This is a auto-generated mail.
+					"""
 					.format(
 					workshop_date, new_workshop_date
 					))
