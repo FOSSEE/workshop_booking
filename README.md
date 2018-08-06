@@ -9,6 +9,7 @@
         * Monthly Workshop Count
         * Instructor/Coordinator Profile stats
         * Upcoming Workshops
+        * View/Post comments on Coordinator's Profile
     2. Open to All
         * Workshops taken over Map of India
         * Pie chart based on Total Workshops taken to Type of Workshops.

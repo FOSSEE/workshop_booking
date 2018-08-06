@@ -288,5 +288,7 @@ class ProfileComments(models.Model):
     def __str__(self):
         return u"{0} | {1}".format(
             self.comment,
-            self.created_date
+            self.created_date,
+            self.coordinator_profile,
+            self.instructor_profile
         )
