@@ -5,7 +5,7 @@ from .models import (
 				Profile, WorkshopType, 
 				Workshop, ProposeWorkshopDate,
 				RequestedWorkshop, BookedWorkshop,
-				Testimonial
+				Testimonial, ProfileComments
 				)
 try:
     from StringIO import StringIO as string_io
@@ -192,6 +192,11 @@ class BookedWorkshopAdmin(admin.ModelAdmin):
 	download_csv.short_description = "Download CSV file for selected stats."
 
 
+
+class ProfileCommentAdmin(admin.ModelAdmin):
+	list_display = ['comment', 'created_date', 'coordinator_profile', 'instructor_profile']
+
+
 # Register your models here.
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(WorkshopType, WorkshopTypeAdmin)
@@ -200,3 +205,4 @@ admin.site.register(ProposeWorkshopDate, ProposeWorkshopDateAdmin)
 admin.site.register(RequestedWorkshop, RequestedWorkshopAdmin)
 admin.site.register(BookedWorkshop, BookedWorkshopAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
+admin.site.register(ProfileComments, ProfileCommentAdmin)

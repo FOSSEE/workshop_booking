@@ -33,6 +33,8 @@
 
 2. Instructor can see monthly workshop count, upcoming workshop etc. in Statistics > Workshop Statistics
 
+3. Instructors can view and post comments on coordinator's profile from Profile Statistics or Workshop Status page.
+
 
 ### Coordinator specific steps
 

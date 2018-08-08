@@ -2,7 +2,7 @@ from django.test import TestCase
 from workshop_app.models import (
                     Profile, User, Workshop, WorkshopType,
                     RequestedWorkshop, BookedWorkshop, ProposeWorkshopDate,
-                    Testimonial
+                    Testimonial, ProfileComments
                     )
 from datetime import datetime
 
@@ -196,6 +196,8 @@ class BookedWorkshopModelTest(TestCase):
 		self.assertEqual(self.bwr.booked_workshop_requested.requested_workshop_title.workshoptype_name,
 						'ISCP' )
 
+
+
 class TestimonialModelTest(TestCase):
 	'''
 	This class tests the Testimonial Model
@@ -224,3 +226,25 @@ class TestimonialModelTest(TestCase):
 				consequat. Duis aute irure dolor in reprehenderit in voluptat\
 				cillum dolore eu fugiat nulla pariatur. Excepteur sint \
 				proident, sunt in culpa qui officia deserunt mollit anim')
+
+
+
+class ProfileCommentsTest(TestCase):
+	'''
+	This class tests the ProfileComments Model
+	'''
+
+	def setUp(self):
+		self.coordinator_prof = User.objects.get(username='demouser2')
+		self.instructor_prof = User.objects.get(username='testuser2')
+
+		self.comment = ProfileComments.objects.create(
+			coordinator_profile=self.coordinator_prof,
+			comment="This is a test comment",
+			instructor_profile=self.instructor_prof,
+			created_date='2017-06-06 12:00:12'
+		)
+
+	def test_profilecomments_model(self):
+		self.assertEqual(self.coordinator_prof.email, 'test.user@gmail.com')
+		self.assertEqual(self.comment.comment, 'This is a test comment')
