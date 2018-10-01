@@ -79,7 +79,6 @@ def pie_chart():
     del workshoptype_title, workshoptype_num
 
     return workshoptype_count
-   
 
 
 def india_map():
@@ -164,7 +163,6 @@ def workshop_stats(request):
 
     # For India Map
     states = india_map()
-        
     # For Data Downloading and Viewing
     if request.method == 'POST':
         try:
@@ -207,11 +205,13 @@ def workshop_stats(request):
                 writer = csv.writer(response)
                 header = [
                     'coordinator name',
+                    'coordinator email',
                     'instructor name',
                     'workshop',
                     'date',
                     'status',
-                    'institute name'
+                    'institute name',
+                    'state'
                 ]
 
                 writer.writerow(header)
@@ -219,21 +219,27 @@ def workshop_stats(request):
                 for workshop in upcoming_workshops:
                     try:
                         row = [
-                            workshop.proposed_workshop_coordinator,
-                            workshop.proposed_workshop_instructor,
-                            workshop.proposed_workshop_title,
-                            workshop.proposed_workshop_date,
-                            workshop.status,
-                            workshop.proposed_workshop_coordinator.profile.institute]
+                       workshop.proposed_workshop_coordinator,
+                       str(workshop.propossed_workshop_coordinator.profile.user.email),
+                       workshop.proposed_workshop_instructor,
+                       workshop.proposed_workshop_title,
+                       workshop.proposed_workshop_date,
+                       workshop.status,
+                       workshop.proposed_workshop_coordinator.profile.institute,
+                       str(workshop.proposed_workshop_coordinator.profile.state)
+                        ]
 
                     except BaseException:
                         row = [
-                            workshop.requested_workshop_coordinator,
-                            workshop.requested_workshop_instructor,
-                            workshop.requested_workshop_title,
-                            workshop.requested_workshop_date,
-                            workshop.status,
-                            workshop.requested_workshop_coordinator.profile.institute]
+                        workshop.requested_workshop_coordinator,
+                        str(workshop.requested_workshop_coordinator.profile.user.email),
+                        workshop.requested_workshop_instructor,
+                        workshop.requested_workshop_title,
+                        workshop.requested_workshop_date,
+                        workshop.status,
+                        workshop.requested_workshop_coordinator.profile.institute,
+                        str(workshop.requested_workshop_coordinator.profile.state)
+                        ]
 
                     writer.writerow(row)
                 return response
@@ -304,12 +310,12 @@ def workshop_public_stats(request):
     user = request.user
     today = datetime.now()
     upto = today + dt.timedelta(days=15)
-    
+
     #For Pie Chart
     workshoptype_count = pie_chart()
 
     # For India Map
-    states = india_map() 
+    states = india_map()
 
     # Select By WorkshopType
     workshoptype_list = list(WorkshopType.objects.all())

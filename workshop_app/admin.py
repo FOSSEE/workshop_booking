@@ -1,8 +1,8 @@
 import csv
 from django.http import HttpResponse
-from django.contrib import admin  
+from django.contrib import admin
 from .models import (
-				Profile, WorkshopType, 
+				Profile, WorkshopType,
 				Workshop, ProposeWorkshopDate,
 				RequestedWorkshop, BookedWorkshop,
 				Testimonial, ProfileComments
@@ -20,7 +20,7 @@ class ProfileAdmin(admin.ModelAdmin):
 	actions = ['download_csv']
 
 	def download_csv(self, request, queryset):
-		openfile = string_io() 
+		openfile = string_io()
 		response = HttpResponse(content_type='text/csv')
 		response['Content-Disposition'] = 'attachment;\
 										filename=profile_data.csv'
@@ -29,7 +29,7 @@ class ProfileAdmin(admin.ModelAdmin):
 		writer.writerow(['email_id', 'title','username', 'first_name', 'last_name', 
 						'institute', 'location', 'department',
 						'phone_number', 'position'])
-		
+
 		for q in queryset:
 			writer.writerow([q.user.email, q.title, q.user, q.user.first_name,
 							q.user.last_name, q.institute,
@@ -39,7 +39,7 @@ class ProfileAdmin(admin.ModelAdmin):
 		openfile.seek(0)
 		response.write(openfile.read())
 		return response
-	
+
 	download_csv.short_description = "Download CSV file for selected stats."
 
 
@@ -58,9 +58,8 @@ class ProposeWorkshopDateAdmin(admin.ModelAdmin):
 
 		writer = csv.writer(response)
 		writer.writerow(['proposed_workshop_title', 'proposed_workshop_date',
-		 				 'proposed_workshop_coordinator', 'status',
-		 				 'proposed_workshop_instructor'])
-		
+                   'proposed_workshop_coordinator', 'status','proposed_workshop_instructor'])
+
 		for q in queryset:
 			writer.writerow([q.proposed_workshop_title, q.proposed_workshop_date,
 							q.proposed_workshop_coordinator, q.status,
