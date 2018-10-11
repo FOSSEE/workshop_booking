@@ -151,7 +151,7 @@ EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_TIMEOUT = 300
 SENDER_EMAIL = SENDER_EMAIL
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #Change this to the production url
 PRODUCTION_URL = 'your_production_url'
@@ -159,7 +159,7 @@ PRODUCTION_URL = 'your_production_url'
 ADMIN_EMAIL = 'your admin email'
 
 #Set True or False to view/hide
-SHOW_WORKSHOP_STATS = False
+SHOW_WORKSHOP_STATS = True
 
 LOGIN_REDIRECT_URL = '/profile'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

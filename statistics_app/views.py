@@ -205,7 +205,6 @@ def workshop_stats(request):
                 writer = csv.writer(response)
                 header = [
                     'coordinator name',
-                    'coordinator email',
                     'instructor name',
                     'workshop',
                     'date',
@@ -220,7 +219,6 @@ def workshop_stats(request):
                     try:
                         row = [
                        workshop.proposed_workshop_coordinator,
-                       str(workshop.propossed_workshop_coordinator.profile.user.email),
                        workshop.proposed_workshop_instructor,
                        workshop.proposed_workshop_title,
                        workshop.proposed_workshop_date,
@@ -232,7 +230,6 @@ def workshop_stats(request):
                     except BaseException:
                         row = [
                         workshop.requested_workshop_coordinator,
-                        str(workshop.requested_workshop_coordinator.profile.user.email),
                         workshop.requested_workshop_instructor,
                         workshop.requested_workshop_title,
                         workshop.requested_workshop_date,

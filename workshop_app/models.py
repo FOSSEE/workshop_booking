@@ -205,7 +205,7 @@ class ProposeWorkshopDate(models.Model):
     """
 
     condition_one = models.BooleanField(default=False, help_text='We assure to\
-     give minimum 30 participants for the workshop.')
+     give minimum 25 participants for the workshop.')
     condition_two = models.BooleanField(default=False, help_text='We agree \
                                 that this booking won\'t be cancelled without \
                          2days of prior notice to the instructor and fossee.')
