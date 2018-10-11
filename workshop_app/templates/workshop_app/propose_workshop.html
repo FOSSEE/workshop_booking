@@ -45,6 +45,11 @@
   </style>
 
   <div class="container">
+	<div class="alert alert-info">
+  		Please Note: Students have to take a mandatory test before Advanced Python
+		Workshop only those who will clear this test will be eligible to attend
+		the workshop.
+	</div>
     <form method="post">
       {% csrf_token %}
       <br/>
@@ -52,5 +57,7 @@
       <br><br>
       <button class="btn btn-success" type="submit">Submit</button>
     </form>
+    <br>
+
   </div>
 {% endblock %}
