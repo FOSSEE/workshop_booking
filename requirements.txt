@@ -6,3 +6,4 @@ pytz==2016.10
 six==1.10.0
 coverage
 pyaml
+pandas==0.18.0
