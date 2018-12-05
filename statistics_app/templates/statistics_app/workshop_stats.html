@@ -153,7 +153,6 @@
 				{% endif %}
 			{% endfor %}
 		</table>
-
 		<!-- Page Navigation -->
 		<div class="container">
 		<div class="Page-Nav" align="center">
@@ -246,7 +245,20 @@
 					                'rgba(191, 191, 191, 1)'
 					            ],
 					            borderWidth: 1
-					        }]
+					        },
+							{
+								label: 'Expected Workshops',
+								type: 'line',
+								data: {{ workshop_mean }},
+								fill: false,
+								borderColor: [
+								'rgba(0, 0, 128, 0.7)'
+								]
+
+
+							}
+
+							]
 					    },
 					    options: {
 					    	responsive: true,
