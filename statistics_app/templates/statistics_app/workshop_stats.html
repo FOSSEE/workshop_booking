@@ -210,7 +210,7 @@
 			               
 			        document.getElementById("visualization").style.visibility='hidden';
 					myChart = new Chart(ctx1, {
-					    type: 'bar',
+					    type: 'horizontalBar',
 					    data: {
 					        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', '	December'],
 							datasets: [{
@@ -245,18 +245,7 @@
 					                'rgba(191, 191, 191, 1)'
 					            ],
 					            borderWidth: 1
-					        },
-							{
-								label: 'Expected Workshops',
-								type: 'line',
-								data: {{ workshop_mean }},
-								fill: false,
-								borderColor: [
-								'rgba(0, 0, 128, 0.7)'
-								]
-
-
-							}
+					        }
 
 							]
 					    },
