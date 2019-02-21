@@ -11,6 +11,8 @@ from random import randint
 from smtplib import SMTP
 from django.utils.crypto import get_random_string
 from string import punctuation, digits
+
+
 try:
 	from string import letters
 except ImportError:

@@ -659,20 +659,20 @@ def my_workshops(request):
             workshop_occurence_list = RequestedWorkshop.objects.filter(
                                     requested_workshop_instructor=user.id,
                                     requested_workshop_date__gt=today,
-                                    ).order_by('-requested_workshop_date')
+                                    ).order_by('requested_workshop_date')
             for w in workshop_occurence_list:
                 workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
                             proposed_workshop_instructor=user.id,
                             proposed_workshop_date__gt=today,
-                            ).order_by('-proposed_workshop_date')
+                            ).order_by('proposed_workshop_date')
             for p in proposed_workshop:
                 workshops.append(p)
 
             proposed_workshop_pending  = ProposeWorkshopDate.objects.filter(
                                     status='Pending'
-                                    ).order_by('-proposed_workshop_date')
+                                    ).order_by('proposed_workshop_date')
             for p in proposed_workshop_pending:
                 workshops.append(p)
 
@@ -778,7 +778,9 @@ def view_profile(request):
     if is_superuser(user):
         return redirect('/admin')
     if is_email_checked(user) and user.is_authenticated():
-        return render(request, "workshop_app/view_profile.html")
+        requested_workshop = RequestedWorkshop.objects.filter(requested_workshop_coordinator=user.id).order_by('requested_workshop_title')
+        propose_workshop = ProposeWorkshopDate.objects.filter(proposed_workshop_coordinator=user.id).order_by('proposed_workshop_date')
+        return render(request, "workshop_app/view_profile.html",{'Requested_Workshop':requested_workshop,'Proposed_workshop':propose_workshop})
     else:
         if user.is_authenticated():
             return render(request, 'workshop_app/activation.html')
@@ -1048,8 +1050,7 @@ def workshop_stats(request):
             #Fetches Accepted workshops which were proposed by Coordinators
             proposed_workshops = ProposeWorkshopDate.objects.filter(
                     proposed_workshop_date__range=(from_dates, to_dates),
-                    status='ACCEPTED'
-                    )
+                    status='ACCEPTED')
 
             # Fetches Accepted workshops which were Accepted by
             # Instructors based on their Availability
