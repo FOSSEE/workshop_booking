@@ -527,6 +527,7 @@ def workshop_public_stats(request):
 @login_required
 def profile_stats(request):
     user = request.user
+    print is_instructor(user)
     if is_instructor(user) and is_email_checked(user):
         profiles = Profile.objects.all()
 

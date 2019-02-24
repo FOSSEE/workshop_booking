@@ -1190,6 +1190,10 @@ def view_comment_profile(request, user_id):
     if is_instructor(user) and is_email_checked(user):
         comment_form = ProfileCommentsForm()
         coordinator_profile = Profile.objects.get(user_id=user_id)
+        requested_workshop = RequestedWorkshop.objects.filter(requested_workshop_coordinator=user_id).order_by(
+            'requested_workshop_title')
+        propose_workshop = ProposeWorkshopDate.objects.filter(proposed_workshop_coordinator=user_id).order_by(
+            'proposed_workshop_date')
         try:
             comments = ProfileComments.objects.filter(coordinator_profile_id=user_id).order_by('-created_date')
         except:
@@ -1224,6 +1228,68 @@ def view_comment_profile(request, user_id):
             return render(request, "workshop_app/view_comment_profile.html",
                         {"coordinator_profile": coordinator_profile,
                         "comments": comments,
-                        "comment_form": comment_form})
+                        "comment_form": comment_form,
+                         "Proposed_workshop":propose_workshop,
+                         "Requested_Workshop":requested_workshop})
     return redirect('/book/')
 
+@login_required
+def download_csv_data(request):
+    user=request.user
+    if user.profile.position == 'instructor':
+        requested_workshop = RequestedWorkshop.objects.filter(requested_workshop_instructor=user.id).order_by(
+            'requested_workshop_title')
+        propose_workshop = ProposeWorkshopDate.objects.filter(proposed_workshop_instructor=user.id).order_by(
+            'proposed_workshop_date')
+        upcoming_workshops = []
+        for workshop in propose_workshop:
+            upcoming_workshops.append(workshop)
+
+        for workshop in requested_workshop:
+            upcoming_workshops.append(workshop)
+
+        response = HttpResponse(content_type='text/csv')
+
+        response['Content-Disposition'] = 'attachment;\
+                        filename="records_of_{0}.csv"'.format(
+            user.username
+        )
+
+        writer = csv.writer(response)
+        header = [
+            'coordinator name',
+            'instructor name',
+            'workshop',
+            'date',
+            'status',
+            'institute name'
+        ]
+
+        writer.writerow(header)
+
+        for workshop in upcoming_workshops:
+            try:
+                row = [
+                    workshop.proposed_workshop_coordinator,
+                    workshop.proposed_workshop_instructor,
+                    workshop.proposed_workshop_title,
+                    workshop.proposed_workshop_date,
+                    workshop.status,
+                    workshop.proposed_workshop_coordinator.profile.institute
+                ]
+
+            except:
+                row = [
+                    workshop.requested_workshop_coordinator,
+                    workshop.requested_workshop_instructor,
+                    workshop.requested_workshop_title,
+                    workshop.requested_workshop_date,
+                    workshop.status,
+                    workshop.requested_workshop_coordinator.profile.institute
+                ]
+
+            writer.writerow(row)
+        return response
+
+    else:
+        return redirect('/book/')
