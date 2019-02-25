@@ -2,9 +2,9 @@
 # db etc.
 
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '465'
-EMAIL_HOST_USER = 'borajay33@gmail.com'
-EMAIL_HOST_PASSWORD = '123J@ybora'
+EMAIL_HOST = 'YOUR HOST'
+EMAIL_PORT = 'YOUR HOST PORT'
+EMAIL_HOST_USER = 'Your mail'
+EMAIL_HOST_PASSWORD = 'Your Password'
 EMAIL_USE_TLS = True
-SENDER_EMAIL = 'borajay33@gmail.com'
+SENDER_EMAIL = 'YOUR PRODUCTION MAIL'
