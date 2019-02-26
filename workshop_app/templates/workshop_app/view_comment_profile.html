@@ -57,19 +57,20 @@
             <th><label for="id_workshop_date"><h5>Workshop date</h5></label></th>
             <th><label for="id_workshop_type"><h5>Workshop type</h5></label></th>
       </tr>
-          {% for foo in Requested_Workshop %}
-            <tr>
-                <td><label for="id_instructor_name"><h5>{{ foo.requested_workshop_instructor  }}</h5></label></td>
-                <td><label for="id_workshop_date"><h5>{{ foo.requested_workshop_date }}</h5></label></td>
-                <td><label for="id_workshop_type"><h5>{{ foo.requested_workshop_title }}</h5></label></td>
-            </tr>
-          {% endfor %}
-      {% for bar in Proposed_workshop %}
-            <tr>
-                <td><label for="id_instructor_name"><h5>{{ bar.proposed_workshop_instructor  }}</h5></label></td>
-                <td><label for="id_workshop_date"><h5>{{ bar.proposed_workshop_date }}</h5></label></td>
-                <td><label for="id_workshop_type"><h5>{{ bar.proposed_workshop_title }}</h5></label></td>
-            </tr>
+          {% for workshop in Workshops%}
+              {% if workshop.proposed_workshop_date %}
+                <tr>
+                <td><label for="id_instructor_name"><h5>{{ workshop.proposed_workshop_instructor  }}</h5></label></td>
+                <td><label for="id_workshop_date"><h5>{{ workshop.proposed_workshop_date }}</h5></label></td>
+                <td><label for="id_workshop_type"><h5>{{ workshop.proposed_workshop_title }}</h5></label></td>
+                </tr>
+                  {% else %}
+                  <tr>
+                <td><label for="id_instructor_name"><h5>{{ workshop.requested_workshop_instructor  }}</h5></label></td>
+                <td><label for="id_workshop_date"><h5>{{ workshop.requested_workshop_date }}</h5></label></td>
+                <td><label for="id_workshop_type"><h5>{{ workshop.requested_workshop_title }}</h5></label></td>
+                </tr>
+              {% endif %}
           {% endfor %}
       </table>
   </div>

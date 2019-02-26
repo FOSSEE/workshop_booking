@@ -1194,6 +1194,12 @@ def view_comment_profile(request, user_id):
             'requested_workshop_title')
         propose_workshop = ProposeWorkshopDate.objects.filter(proposed_workshop_coordinator=user_id).order_by(
             'proposed_workshop_date')
+        workshops=[]
+        for workshop in propose_workshop:
+            workshops.append(workshop)
+
+        for workshop in requested_workshop:
+            workshops.append(workshop)
         try:
             comments = ProfileComments.objects.filter(coordinator_profile_id=user_id).order_by('-created_date')
         except:
@@ -1224,13 +1230,12 @@ def view_comment_profile(request, user_id):
                 except EmptyPage:
                     #If page is out of range(e.g 999999), deliver last page.
                     comments = paginator.page(paginator.num_pages)
-            
+            workshop={}
             return render(request, "workshop_app/view_comment_profile.html",
                         {"coordinator_profile": coordinator_profile,
                         "comments": comments,
                         "comment_form": comment_form,
-                         "Proposed_workshop":propose_workshop,
-                         "Requested_Workshop":requested_workshop})
+                         "Workshops":workshops})
     return redirect('/book/')
 
 @login_required
