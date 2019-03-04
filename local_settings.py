@@ -2,9 +2,9 @@
 # db etc.
 
 
-EMAIL_HOST = 'your smtp host name' 
-EMAIL_PORT = 'PORT Number'
-EMAIL_HOST_USER = 'your username'
-EMAIL_HOST_PASSWORD = 'your password'  
+EMAIL_HOST = 'YOUR HOST'
+EMAIL_PORT = 'YOUR HOST PORT'
+EMAIL_HOST_USER = 'Your mail'
+EMAIL_HOST_PASSWORD = 'Your Password'
 EMAIL_USE_TLS = True
-SENDER_EMAIL = 'your email address'
+SENDER_EMAIL = 'YOUR PRODUCTION MAIL'
