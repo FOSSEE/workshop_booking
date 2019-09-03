@@ -676,20 +676,8 @@ def my_workshops(request):
             for p in proposed_workshop_pending:
                 workshops.append(p)
 
-
-            #Show upto 12 Workshops per page
-            paginator = Paginator(workshops, 12)
-            page = request.GET.get('page')
-            try:
-                workshop_occurences = paginator.page(page)
-            except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
-                workshop_occurences = paginator.page(1)
-            except EmptyPage:
-                #If page is out of range(e.g 999999), deliver last page.
-                workshop_occurences = paginator.page(paginator.num_pages)
             return render(request, 'workshop_app/my_workshops.html',
-                { "workshop_occurences" :workshop_occurences,
+                { "workshops" :workshops,
                   "today": today})
 
         else:
@@ -706,19 +694,8 @@ def my_workshops(request):
             for p in proposed_workshop:
                 workshops.append(p)
 
-            #Show upto 12 Workshops per page
-            paginator = Paginator(workshops, 12)
-            page = request.GET.get('page')
-            try:
-                workshop_occurences = paginator.page(page)
-            except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
-                workshop_occurences = paginator.page(1)
-            except EmptyPage:
-                #If page is out of range(e.g 999999), deliver last page.
-                workshop_occurences = paginator.page(paginator.num_pages)
             return render(request, 'workshop_app/my_workshops.html',
-                {"workshop_occurences": workshop_occurences})
+                {"workshops": workshops})
     else:
         return redirect('/login/')
 
