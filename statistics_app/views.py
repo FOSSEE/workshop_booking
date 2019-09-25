@@ -10,6 +10,8 @@ from workshop_app.models import (
     BookedWorkshop, ProposeWorkshopDate,
     Testimonial
 )
+from teams.models import Team
+
 from django.template.loader import get_template
 from django.template import RequestContext
 from datetime import datetime, date
@@ -582,3 +584,27 @@ def profile_stats(request):
     else:
         logout(request)
         return render(request, "workshop_app/logout.html")
+
+@login_required
+def team_stats(request, team_id):
+    user = request.user
+    team = Team.objects.get(team_id)
+    if user not in team.members.all():
+        if user.groups.filter(name='instructor').count() > 0:
+            return redirect('/manage/')
+        return redirect('/book/')
+
+    member_workshop_data = {}
+    for member in team.members.all():
+        workshop_count = ProposeWorkshopDate.objects.filter(proposed_workshop_instructor=member.id).count()
+        if member_workshop_data.get('data'):
+            member_workshop_data['data'].append(workshop_count)
+        else:
+            member_workshop_data['data'] = [workshop_count]
+        if member_workshop_data.get('labels'):
+            member_workshop_data['labels'].append(member.user.username)
+        else:
+            member_workshop_data['labels'] = [member.user.username]
+    return render(request, 'statistics_app/team_stats.html', {'workshop_data': member_workshop_data})
+
+

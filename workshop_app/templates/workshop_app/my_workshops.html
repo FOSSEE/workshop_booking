@@ -125,6 +125,38 @@
 
 	<!-- Pending View -->
 	<div class="container">
+	{% if request.user.profile.position == 'instructor'%}
+	    <h3 align="center" style="color: #04a9cf;"><strong><u>Team Member Requests</u></strong></h3>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Coordinator Name</th>
+					<th>Team Member</th>
+					<th>Workshop Name</th>
+					<th>Workshop Day</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for workshop in team_workshops %}
+				<tr>	
+					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
+						{{ workshop.proposed_workshop_coordinator.get_full_name }}</a>
+					</td>
+					<td>
+						{{ workshop.proposed_workshop_instructor.get_full_name }}
+					</td>
+					<td>
+						{{ workshop.proposed_workshop_title }}
+					</td>
+					<td>
+						{{ workshop.proposed_workshop_date | date }}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
 	{% if request.user.profile.position == 'instructor' %}
 	    <h3 align="center" style="color: #04a9cf;"><strong><u>Requests for Me</u></strong></h3>
 	{% else %}
