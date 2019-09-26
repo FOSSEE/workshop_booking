@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'workshop_app',
     'recurrence',
     'statistics_app',
+    'teams',
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -10,6 +10,7 @@ from .models import (
             BookedWorkshop, ProposeWorkshopDate,
             Testimonial, ProfileComments
             )
+from teams.models import Team
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -658,38 +659,36 @@ def my_workshops(request):
             today = datetime.today().date()
             workshop_occurence_list = RequestedWorkshop.objects.filter(
                                     requested_workshop_instructor=user.id,
-                                    requested_workshop_date__gt=today,
+                                    requested_workshop_date__gte=today,
                                     ).order_by('-requested_workshop_date')
-            for w in workshop_occurence_list:
-                workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
                             proposed_workshop_instructor=user.id,
-                            proposed_workshop_date__gt=today,
+                            proposed_workshop_date__gte=today,
                             ).order_by('-proposed_workshop_date')
-            for p in proposed_workshop:
-                workshops.append(p)
 
             proposed_workshop_pending  = ProposeWorkshopDate.objects.filter(
                                     status='Pending'
                                     ).order_by('-proposed_workshop_date')
-            for p in proposed_workshop_pending:
-                workshops.append(p)
 
+            workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
 
-            #Show upto 12 Workshops per page
-            paginator = Paginator(workshops, 12)
-            page = request.GET.get('page')
-            try:
-                workshop_occurences = paginator.page(page)
-            except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
-                workshop_occurences = paginator.page(1)
-            except EmptyPage:
-                #If page is out of range(e.g 999999), deliver last page.
-                workshop_occurences = paginator.page(paginator.num_pages)
+            # team_members = list(set(user.profile.team_set.all().values_list('members', flat=True)))
+            teams = Team.objects.filter(members=user.profile)
+            team_workshops = []
+
+            if teams:
+                team_members = Profile.objects.filter(team__in=teams).exclude(id=user.profile.id).distinct()
+                team_member_ids = team_members.values_list('user__id')
+                team_workshops = ProposeWorkshopDate.objects.filter(
+                                    proposed_workshop_date__gte=today,
+                                    proposed_workshop_instructor_id__in=team_member_ids,
+                                )
+                print(team_workshops)
+
             return render(request, 'workshop_app/my_workshops.html',
-                { "workshop_occurences" :workshop_occurences,
+                { "workshops" :workshops,
+                  "team_workshops": team_workshops,
                   "today": today})
 
         else:
@@ -697,28 +696,15 @@ def my_workshops(request):
             workshop_occurence_list = RequestedWorkshop.objects.filter(
                         requested_workshop_coordinator=user.id
                         ).order_by('-requested_workshop_date')
-            for w in workshop_occurence_list:
-                workshops.append(w)
 
             proposed_workshop = ProposeWorkshopDate.objects.filter(
                 proposed_workshop_coordinator=user.id
                 ).order_by('-proposed_workshop_date')
-            for p in proposed_workshop:
-                workshops.append(p)
 
-            #Show upto 12 Workshops per page
-            paginator = Paginator(workshops, 12)
-            page = request.GET.get('page')
-            try:
-                workshop_occurences = paginator.page(page)
-            except PageNotAnInteger:
-            #If page is not an integer, deliver first page.
-                workshop_occurences = paginator.page(1)
-            except EmptyPage:
-                #If page is out of range(e.g 999999), deliver last page.
-                workshop_occurences = paginator.page(paginator.num_pages)
+            workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
+
             return render(request, 'workshop_app/my_workshops.html',
-                {"workshop_occurences": workshop_occurences})
+                {"workshops": workshops})
     else:
         return redirect('/login/')
 
