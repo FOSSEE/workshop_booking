@@ -292,3 +292,14 @@ class ProfileComments(models.Model):
             self.coordinator_profile,
             self.instructor_profile
         )
+
+class Banner(models.Model):
+    """
+    Add HTML for banner display on homepage
+    """
+    title = models.CharField(max_length=500)
+    html = models.TextField()
+    active = models.BooleanField()
+
+    def __str__(self):
+        return self.title
