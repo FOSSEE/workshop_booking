@@ -67,13 +67,23 @@ $(document).ready(function(){
 
 </head>
 <body>
-		<!--
-		<center>
-				<a href="https://fossee.in/fellowship/2019"><img
-				src="https://static.fossee.in/fossee/banners/fellowship_2019_3.gif"/>
-				</a>
-		</center>
-		-->
+    <div>
+        {% if banners %}
+            {% for banner in banners %}
+                {% if banner.active %}
+                    {{ banner.html | safe}}
+                {% endif %}
+
+        		<!--
+        		<center>
+        				<a href="https://fossee.in/fellowship/2019"><img
+        				src="https://static.fossee.in/fossee/banners/fellowship_2019_3.gif"/>
+        				</a>
+        		</center>
+        		-->
+            {% endfor %}
+        {% endif %}
+    </div>
     <nav class="navbar navbar-expand-sm navbar-custom">
         <a class="navbar-brand">FOSSEE Python Workshops</a>
         <ul class=" nav navbar-nav ml-auto">

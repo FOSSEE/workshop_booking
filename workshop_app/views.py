@@ -8,7 +8,7 @@ from .models import (
             has_profile, Workshop,
             WorkshopType, RequestedWorkshop,
             BookedWorkshop, ProposeWorkshopDate,
-            Testimonial, ProfileComments
+            Testimonial, ProfileComments, Banner
             )
 from datetime import datetime, date
 from django.contrib.auth import login, logout, authenticate
@@ -71,8 +71,13 @@ def index(request):
                 return redirect('/manage/')
             return redirect('/book/')
 
-    return render(request, "workshop_app/index.html", {"form": form,
-        "testimonials": testimonials })
+    return render(request, "workshop_app/index.html", 
+        {
+            "form": form,
+            "testimonials": testimonials,
+            "banners": Banner.objects.all(), 
+        }
+    )
 
 
 def is_instructor(user):

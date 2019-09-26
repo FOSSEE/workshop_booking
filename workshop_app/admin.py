@@ -5,7 +5,7 @@ from .models import (
 				Profile, WorkshopType,
 				Workshop, ProposeWorkshopDate,
 				RequestedWorkshop, BookedWorkshop,
-				Testimonial, ProfileComments
+				Testimonial, ProfileComments, Banner
 				)
 try:
     from StringIO import StringIO as string_io
@@ -205,3 +205,4 @@ admin.site.register(RequestedWorkshop, RequestedWorkshopAdmin)
 admin.site.register(BookedWorkshop, BookedWorkshopAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
 admin.site.register(ProfileComments, ProfileCommentAdmin)
+admin.site.register(Banner)
