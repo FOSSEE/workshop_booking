@@ -606,5 +606,3 @@ def team_stats(request, team_id):
         else:
             member_workshop_data['labels'] = [member.user.username]
     return render(request, 'statistics_app/team_stats.html', {'workshop_data': member_workshop_data})
-
-
