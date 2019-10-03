@@ -27,7 +27,6 @@ from os import listdir, path, sep
 from zipfile import ZipFile
 from django.contrib import messages
 from operator import itemgetter
-from pandas import DataFrame
 import datetime as dt
 import csv
 try:
@@ -163,50 +162,14 @@ def monthly_accepted_chart():
     return workshop_count
 
 
-
-def monthly_avg():
-    '''This function returns monthly mean of workshops from the
-    beginning to current year'''
-    current_year = datetime.today().year
-    start_year = 2017
-    total_monthly_workshop = {}
-    for i in range(start_year, current_year+1):
-        total_monthly_workshop[i] = []
-
-    years = total_monthly_workshop.keys()
-
-    for i in years:
-        for j in range(12):
-            data = RequestedWorkshop.objects.filter(
-                requested_workshop_date__year=str(i),
-                requested_workshop_date__month=str(j+1),
-                status='ACCEPTED').count()
-
-            data += ProposeWorkshopDate.objects.filter(
-                proposed_workshop_date__year=str(i),
-                proposed_workshop_date__month=str(j+1),
-                status='ACCEPTED').count()
-            total_monthly_workshop[i].append(data)
-
-    df = DataFrame.from_dict(total_monthly_workshop)
-    monthly_workshop_mean = df.mean(axis=1)
-
-    return list(monthly_workshop_mean)
-
-
-
 @login_required
 def workshop_stats(request):
     user = request.user
     today = datetime.now()
     upto = today + dt.timedelta(days=15)
 
-
     #For Monthly Chart
     workshop_count = monthly_accepted_chart()
-
-    #For Monthly Workshop Mean
-    workshop_mean = monthly_avg()
 
     # For Pie Chart
     workshoptype_count = pie_chart()
@@ -296,7 +259,6 @@ def workshop_stats(request):
                               {"upcoming_workshops": upcoming_workshops,
                                "show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
                                "workshop_count": workshop_count,
-                               "workshop_mean": workshop_mean,
                                "workshoptype_count": workshoptype_count,
                                "india_map": states})
         except BaseException:
@@ -347,7 +309,6 @@ def workshop_stats(request):
                           "upcoming_workshops": upcoming_workshops,
                           "show_workshop_stats": settings.SHOW_WORKSHOP_STATS,
                           "workshop_count": workshop_count,
-                          "workshop_mean": workshop_mean,
                           "workshoptype_count": workshoptype_count,
                           "india_map": states
                       })
