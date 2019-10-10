@@ -678,7 +678,6 @@ def my_workshops(request):
 
             workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
 
-            # team_members = list(set(user.profile.team_set.all().values_list('members', flat=True)))
             teams = Team.objects.filter(members=user.profile)
             team_workshops = []
 
@@ -689,7 +688,6 @@ def my_workshops(request):
                                     proposed_workshop_date__gte=today,
                                     proposed_workshop_instructor_id__in=team_member_ids,
                                 )
-                print(team_workshops)
 
             return render(request, 'workshop_app/my_workshops.html',
                 { "workshops" :workshops,
