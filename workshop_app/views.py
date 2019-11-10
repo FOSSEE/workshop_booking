@@ -1,3 +1,26 @@
+from textwrap import dedent
+from os import listdir, path, sep
+from zipfile import ZipFile
+import datetime as dt
+import csv
+import logging
+try:
+    from StringIO import StringIO as string_io
+except ImportError:
+    from io import BytesIO as string_io
+from datetime import datetime, date
+from itertools import chain
+
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
+from django.contrib import messages
+
 from .forms import (
             UserRegistrationForm, UserLoginForm,
             ProfileForm, CreateWorkshop,
@@ -11,27 +34,7 @@ from .models import (
             Testimonial, ProfileComments, Banner
             )
 from teams.models import Team
-from datetime import datetime, date
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect
-from django.utils import timezone
 from .send_mails import send_email
-from django.http import HttpResponse, HttpResponseRedirect
-from textwrap import dedent
-from django.conf import settings
-from os import listdir, path, sep
-from zipfile import ZipFile
-from django.contrib import messages
-import datetime as dt
-import csv
-import logging
-try:
-    from StringIO import StringIO as string_io
-except ImportError:
-    from io import BytesIO as string_io
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
@@ -706,7 +709,7 @@ def my_workshops(request):
                 proposed_workshop_coordinator=user.id
                 ).order_by('-proposed_workshop_date')
 
-            workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
+            workshops = list(chain(workshop_occurence_list, proposed_workshop))
 
             return render(request, 'workshop_app/my_workshops.html',
                 {"workshops": workshops})
