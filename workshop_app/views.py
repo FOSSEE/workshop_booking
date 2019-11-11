@@ -709,7 +709,7 @@ def my_workshops(request):
                 proposed_workshop_coordinator=user.id
                 ).order_by('-proposed_workshop_date')
 
-            workshops = list(chain(workshop_occurence_list, proposed_workshop))
+            workshops = list(workshop_occurence_list) + list(proposed_workshop)
 
             return render(request, 'workshop_app/my_workshops.html',
                 {"workshops": workshops})
