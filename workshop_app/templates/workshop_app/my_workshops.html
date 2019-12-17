@@ -139,8 +139,8 @@
 			</thead>
 			<tbody>
 				{% for workshop in team_workshops %}
-				<tr>	
-					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
+				<tr>
+					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.id }}">
 						{{ workshop.proposed_workshop_coordinator.get_full_name }}</a>
 					</td>
 					<td>
