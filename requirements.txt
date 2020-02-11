@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.11.28
 django-recurrence==1.4.1
 packaging==16.8
 python-dateutil==2.6.0
