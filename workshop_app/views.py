@@ -487,6 +487,38 @@ def my_workshops(request):
                         phone_number=inum
                         )
 
+                elif action == 'reject':
+                    # Change Status of the selected workshop
+                    workshop_status = RequestedWorkshop.objects.get(id=client_data.get('workshop_id'))
+                    workshop_status.status = 'REJECTED'
+                    workshop_status.save()
+                    ws = workshop_status
+                    # Parameters for emails
+                    wtitle = ws.requested_workshop_title.workshoptype_name
+                    cmail = ws.requested_workshop_coordinator.email
+                    cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
+                    cnum = ws.requested_workshop_coordinator.profile.phone_number
+                    cinstitute = ws.requested_workshop_coordinator.profile.institute
+                    workshop_date = str(ws.requested_workshop_date)
+
+                    #For Instructor
+                    send_email(request, call_on='Booking Request Rejected',
+                        user_position='instructor',
+                        workshop_date=workshop_date,
+                        workshop_title=wtitle,
+                        user_name=str(cname),
+                        other_email=cmail,
+                        phone_number=cnum,
+                        institute=cinstitute
+                        )
+
+                    #For Coordinator
+                    send_email(request, call_on='Booking Request Rejected',
+                        workshop_date=workshop_date,
+                        workshop_title=wtitle,
+                        other_email=cmail
+                        )
+
                 elif client_data[-1] == 'DELETED':
                     workshop_date = client_data[1]
                     workshops_list = Workshop.objects.filter(workshop_instructor=request.user.id,
@@ -616,43 +648,7 @@ def my_workshops(request):
 
                     return HttpResponse("Date Changed")
 
-                else:
-                    workshop_date = datetime.strptime(
-                                        client_data[1], "%Y-%m-%d"
-                                        )
-                    coordinator_obj = User.objects.get(username=client_data[0][2:])
-                    workshop_status = RequestedWorkshop.objects.get(
-                                        requested_workshop_instructor=user.id,
-                                        requested_workshop_date=workshop_date,
-                                        requested_workshop_coordinator=coordinator_obj.id,
-                                        requested_workshop_title=client_data[2]
-                                        )
-                    workshop_status.status = client_data[-1]
-                    workshop_status.save()
-                    ws = workshop_status
-                    wtitle = ws.requested_workshop_title.workshoptype_name
-                    cmail = ws.requested_workshop_coordinator.email
-                    cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
-                    cnum = ws.requested_workshop_coordinator.profile.phone_number
-                    cinstitute = ws.requested_workshop_coordinator.profile.institute
 
-                    #For Instructor
-                    send_email(request, call_on='Booking Request Rejected', 
-                        user_position='instructor', 
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        user_name=str(cname),
-                        other_email=cmail,
-                        phone_number=cnum,
-                        institute=cinstitute
-                        )
-
-                    #For Coordinator
-                    send_email(request, call_on='Booking Request Rejected',
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        other_email=cmail
-                        )
 
 
             workshops = []
