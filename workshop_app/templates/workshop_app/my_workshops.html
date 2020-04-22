@@ -32,8 +32,8 @@
 				},
 			});
 
-			window.location.reload();
-			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
+			{#window.location.reload();#}
+            console.log(d);
 		}
 	</script>
 
@@ -191,7 +191,12 @@
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 						{% endif %}
 							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+								<td><form method="post">
+                                    <input type="hidden" name="action" value="accept">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button>
+                                </form></td>
 								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
 							{% endif %}
 						</tr>

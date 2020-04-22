@@ -447,40 +447,31 @@ def my_workshops(request):
     if user.is_authenticated() and is_email_checked(user):
         if is_instructor(user):
             if request.method == 'POST':
-                user_position = request.user.profile.position
-                client_data = request.body.decode("utf-8").split("&")
-                client_data = client_data[0].split("%2C")
-                if client_data[-1] == 'ACCEPTED':
-                    workshop_date = datetime.strptime(
-                                        client_data[1], "%Y-%m-%d"
-                                        )
-
-                    coordinator_obj = User.objects.get(username=client_data[0][2:])
-
-                    workshop_status = RequestedWorkshop.objects.get(
-                                    requested_workshop_instructor=user.id,
-                                    requested_workshop_date=workshop_date,
-                                    requested_workshop_coordinator=coordinator_obj.id,
-                                    requested_workshop_title=client_data[2]
-                                    )
-
-                    workshop_status.status = client_data[-1]
+                client_data = request.POST
+                action = request.POST.get('action')
+                if action == 'accept':
+                    # Change Status of the selected workshop
+                    workshop_status = RequestedWorkshop.objects.get(id=client_data.get('workshop_id'))
+                    workshop_status.status = 'ACCEPTED'
                     workshop_status.save()
+                    # Add selected workshop to booked workshops
                     booked_workshop_obj = BookedWorkshop()
                     booked_workshop_obj.booked_workshop_requested = workshop_status
                     booked_workshop_obj.save()
                     ws = workshop_status
+                    # Parameters for emails
                     cmail = ws.requested_workshop_coordinator.email
                     cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
                     cnum = ws.requested_workshop_coordinator.profile.phone_number
                     cinstitute = ws.requested_workshop_coordinator.profile.institute
                     inum = request.user.profile.phone_number
                     wtitle = ws.requested_workshop_title.workshoptype_name
+                    workshop_date = str(ws.requested_workshop_date)
 
                     #For Instructor
                     send_email(request, call_on='Booking Confirmed',
                         user_position='instructor',
-                        workshop_date=str(client_data[1]),
+                        workshop_date=workshop_date,
                         workshop_title=wtitle,
                         user_name=str(cname),
                         other_email=cmail,
@@ -490,7 +481,7 @@ def my_workshops(request):
 
                     #For Coordinator
                     send_email(request, call_on='Booking Confirmed',
-                        workshop_date=str(client_data[1]),
+                        workshop_date=workshop_date,
                         workshop_title=wtitle,
                         other_email=cmail,
                         phone_number=inum
@@ -663,6 +654,7 @@ def my_workshops(request):
                         other_email=cmail
                         )
 
+
             workshops = []
             today = datetime.today().date()
             workshop_occurence_list = RequestedWorkshop.objects.filter(
@@ -680,6 +672,7 @@ def my_workshops(request):
                                     ).order_by('-proposed_workshop_date')
 
             workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
+            print(len(workshop_occurence_list), len(proposed_workshop), len(proposed_workshop_pending))
 
             # team_members = list(set(user.profile.team_set.all().values_list('members', flat=True)))
             teams = Team.objects.filter(members=user.profile)
@@ -708,6 +701,7 @@ def my_workshops(request):
                 ).order_by('-proposed_workshop_date')
 
             workshops = list(workshop_occurence_list) + list(proposed_workshop)
+            print(len(workshop_occurence_list), len(proposed_workshop))
 
             return render(request, 'workshop_app/my_workshops.html',
                 {"workshops": workshops})
