@@ -565,6 +565,7 @@ def my_workshops(request):
                     if not BookedWorkshop.objects.filter(booked_workshop_proposed=workshop_status):
                         # Change Status of the selected workshop
                         workshop_status.status = 'ACCEPTED'
+                        workshop_status.proposed_workshop_instructor = user
                         workshop_status.save()
                         # Add selected workshop to booked workshops
                         booked_workshop_obj = BookedWorkshop()
