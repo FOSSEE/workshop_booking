@@ -111,7 +111,7 @@
 						alert(response);
 					}
 				});
-
+                console.log(data_c)
 			};
 
     </script>
@@ -246,9 +246,20 @@
 										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
+                                            <form method="post">
+                                                <input type="text" name="new_date" class="rDate{{forloop.counter}}" /><br>
+                                                {% if workshop.requested_workshop_date %}
+                                                    <input type="hidden" name="workshop_type" value="requested">
+                                                {% else %}
+                                                    <input type="hidden" name="workshop_type" value="proposed">
+                                                {% endif %}
+                                                <input type="hidden" name="action" value="change_date">
+                                                <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                                <input type="hidden" name="cid" value="{{ workshop.requested_workshop_coordinator_id }}">
+                                                {% csrf_token %}
+                                                <button class="btn btn-primary btn-xs" type="submit" >Save</button>
+                                            </form>
 
-											<input type="text" class="rDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
 										</div>
             						</td>
 								{% else %}
