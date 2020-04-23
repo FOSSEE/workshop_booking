@@ -376,6 +376,44 @@ def manage(request):
     user = request.user
 
     if user.is_authenticated() and is_email_checked(user):
+        if request.method == 'POST':
+            client_data = request.body.decode("utf-8").split("&")
+            client_data = client_data[0].split("%2C")
+            workshop_date = client_data[1]
+            workshops_list = Workshop.objects.filter(workshop_instructor=request.user.id,
+                                                     workshop_title_id=client_data[2]
+                                                     )
+
+            today = datetime.now() + dt.timedelta(days=3)
+            upto = datetime.now() + dt.timedelta(weeks=52)
+            for workshop in workshops_list:
+                workshop_recurrence_list = workshop.recurrences.between(
+                    today,
+                    upto,
+                    inc=True
+                )
+
+                for d in workshop_recurrence_list:
+                    if workshop_date == d.strftime("%Y-%m-%d"):
+                        rW_obj = RequestedWorkshop()
+                        rW_obj.requested_workshop_instructor = request.user
+                        rW_obj.requested_workshop_coordinator = request.user
+                        rW_obj.requested_workshop_date = workshop_date
+                        rW_obj.requested_workshop_title = workshop.workshop_title
+                        rW_obj.status = client_data[-1]
+                        rW_obj.save()
+                        bW_obj = BookedWorkshop()
+                        bW_obj.booked_workshop_requested = rW_obj
+                        bW_obj.save()
+
+            # For instructor
+            send_email(request, call_on='Workshop Deleted',
+                       workshop_date=str(client_data[1]),
+                       workshop_title=workshop.workshop_title
+                       )
+
+            # return HttpResponse("Workshop Deleted")
+
         #Move user to the group via admin
         if user.groups.filter(name='instructor').count() > 0:
             try:
@@ -447,40 +485,66 @@ def my_workshops(request):
     if user.is_authenticated() and is_email_checked(user):
         if is_instructor(user):
             if request.method == 'POST':
-                user_position = request.user.profile.position
-                client_data = request.body.decode("utf-8").split("&")
-                client_data = client_data[0].split("%2C")
-                if client_data[-1] == 'ACCEPTED':
-                    workshop_date = datetime.strptime(
-                                        client_data[1], "%Y-%m-%d"
-                                        )
+                client_data = request.POST
+                action = request.POST.get('action')
+                if action == 'accept':
+                    workshop_status = RequestedWorkshop.objects.get(id=client_data.get('workshop_id'))
+                    # Prevent creating multiple entries if user resubmits form by refreshing
+                    if not BookedWorkshop.objects.filter(booked_workshop_requested=workshop_status):
+                        # Change Status of the selected workshop
+                        workshop_status.status = 'ACCEPTED'
+                        workshop_status.save()
+                        # Add selected workshop to booked workshops
+                        booked_workshop_obj = BookedWorkshop()
+                        booked_workshop_obj.booked_workshop_requested = workshop_status
+                        booked_workshop_obj.save()
+                        ws = workshop_status
+                        # Parameters for emails
+                        cmail = ws.requested_workshop_coordinator.email
+                        cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
+                        cnum = ws.requested_workshop_coordinator.profile.phone_number
+                        cinstitute = ws.requested_workshop_coordinator.profile.institute
+                        inum = request.user.profile.phone_number
+                        wtitle = ws.requested_workshop_title.workshoptype_name
+                        workshop_date = str(ws.requested_workshop_date)
 
-                    coordinator_obj = User.objects.get(username=client_data[0][2:])
+                        #For Instructor
+                        send_email(request, call_on='Booking Confirmed',
+                            user_position='instructor',
+                            workshop_date=workshop_date,
+                            workshop_title=wtitle,
+                            user_name=str(cname),
+                            other_email=cmail,
+                            phone_number=cnum,
+                            institute=cinstitute
+                            )
 
-                    workshop_status = RequestedWorkshop.objects.get(
-                                    requested_workshop_instructor=user.id,
-                                    requested_workshop_date=workshop_date,
-                                    requested_workshop_coordinator=coordinator_obj.id,
-                                    requested_workshop_title=client_data[2]
-                                    )
+                        #For Coordinator
+                        send_email(request, call_on='Booking Confirmed',
+                            workshop_date=workshop_date,
+                            workshop_title=wtitle,
+                            other_email=cmail,
+                            phone_number=inum
+                            )
 
-                    workshop_status.status = client_data[-1]
+                elif action == 'reject':
+                    # Change Status of the selected workshop
+                    workshop_status = RequestedWorkshop.objects.get(id=client_data.get('workshop_id'))
+                    workshop_status.status = 'REJECTED'
                     workshop_status.save()
-                    booked_workshop_obj = BookedWorkshop()
-                    booked_workshop_obj.booked_workshop_requested = workshop_status
-                    booked_workshop_obj.save()
                     ws = workshop_status
+                    # Parameters for emails
+                    wtitle = ws.requested_workshop_title.workshoptype_name
                     cmail = ws.requested_workshop_coordinator.email
                     cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
                     cnum = ws.requested_workshop_coordinator.profile.phone_number
                     cinstitute = ws.requested_workshop_coordinator.profile.institute
-                    inum = request.user.profile.phone_number
-                    wtitle = ws.requested_workshop_title.workshoptype_name
+                    workshop_date = str(ws.requested_workshop_date)
 
-                    #For Instructor
-                    send_email(request, call_on='Booking Confirmed',
+                    # For Instructor
+                    send_email(request, call_on='Booking Request Rejected',
                         user_position='instructor',
-                        workshop_date=str(client_data[1]),
+                        workshop_date=workshop_date,
                         workshop_title=wtitle,
                         user_name=str(cname),
                         other_email=cmail,
@@ -488,179 +552,84 @@ def my_workshops(request):
                         institute=cinstitute
                         )
 
-                    #For Coordinator
-                    send_email(request, call_on='Booking Confirmed',
-                        workshop_date=str(client_data[1]),
+                    # For Coordinator
+                    send_email(request, call_on='Booking Request Rejected',
+                        workshop_date=workshop_date,
                         workshop_title=wtitle,
-                        other_email=cmail,
-                        phone_number=inum
+                        other_email=cmail
                         )
 
-                elif client_data[-1] == 'DELETED':
-                    workshop_date = client_data[1]
-                    workshops_list = Workshop.objects.filter(workshop_instructor=request.user.id,
-                                            workshop_title_id=client_data[2]
-                                            )
+                elif action == 'approve':
+                    workshop_status = ProposeWorkshopDate.objects.get(id=client_data.get('workshop_id'))
+                    # Prevent creating multiple entries if user resubmits form by refreshing
+                    if not BookedWorkshop.objects.filter(booked_workshop_proposed=workshop_status):
+                        # Change Status of the selected workshop
+                        workshop_status.status = 'ACCEPTED'
+                        workshop_status.proposed_workshop_instructor = user
+                        workshop_status.save()
+                        # Add selected workshop to booked workshops
+                        booked_workshop_obj = BookedWorkshop()
+                        booked_workshop_obj.booked_workshop_proposed = workshop_status
+                        booked_workshop_obj.save()
+                        # Parameters for emails
+                        ws = workshop_status
+                        cmail = ws.proposed_workshop_coordinator.email
+                        cname = ws.proposed_workshop_coordinator.profile.user.get_full_name()
+                        cnum = ws.proposed_workshop_coordinator.profile.phone_number
+                        cinstitute = ws.proposed_workshop_coordinator.profile.institute
+                        inum = request.user.profile.phone_number
+                        wtitle = ws.proposed_workshop_title.workshoptype_name
+                        workshop_date = str(ws.proposed_workshop_date)
 
-                    today = datetime.now() + dt.timedelta(days=3)
-                    upto = datetime.now() + dt.timedelta(weeks=52)
-                    for workshop in workshops_list:
-                        workshop_recurrence_list = workshop.recurrences.between(
-                                                    today,
-                                                    upto,
-                                                    inc=True
-                                                    )
+                        # For Instructor
+                        send_email(request, call_on='Booking Confirmed',
+                            user_position='instructor',
+                            workshop_date=workshop_date,
+                            workshop_title=wtitle,
+                            user_name=str(cname),
+                            other_email=cmail,
+                            phone_number=cnum,
+                            institute=cinstitute
+                            )
 
-                        for d in workshop_recurrence_list:
-                            if workshop_date == d.strftime("%Y-%m-%d"):
-                                rW_obj = RequestedWorkshop()
-                                rW_obj.requested_workshop_instructor = request.user
-                                rW_obj.requested_workshop_coordinator = request.user
-                                rW_obj.requested_workshop_date = workshop_date
-                                rW_obj.requested_workshop_title = workshop.workshop_title
-                                rW_obj.status = client_data[-1]
-                                rW_obj.save()
-                                bW_obj = BookedWorkshop()
-                                bW_obj.booked_workshop_requested = rW_obj
-                                bW_obj.save()
+                        # For Coordinator
+                        send_email(request, call_on='Booking Confirmed',
+                            workshop_date=workshop_date,
+                            workshop_title=wtitle,
+                            other_email=cmail,
+                            phone_number=inum
+                            )
 
-                    #For instructor
-                    send_email(request, call_on='Workshop Deleted',
-                        workshop_date=str(client_data[1]),
-                        workshop_title=workshop.workshop_title
-                        )
-
-                    return HttpResponse("Workshop Deleted")
-
-                elif client_data[-1] == 'APPROVED':
-                    workshop_date = datetime.strptime(
-                                        client_data[1], "%Y-%m-%d"
-                                        )
-
-                    coordinator_obj = User.objects.get(username=client_data[0][2:])
-                    workshop_status = ProposeWorkshopDate.objects.get(
-                                    proposed_workshop_date=workshop_date,
-                                    proposed_workshop_coordinator=coordinator_obj.id,
-                                    proposed_workshop_title=client_data[2]
-                                    )
-
-                    workshop_status.status = 'ACCEPTED'
-                    workshop_status.proposed_workshop_instructor = user
-                    workshop_status.save()
-                    booked_workshop_obj = BookedWorkshop()
-                    booked_workshop_obj.booked_workshop_proposed = workshop_status
-                    booked_workshop_obj.save()
-                    ws = workshop_status
-                    cmail = ws.proposed_workshop_coordinator.email
-                    cname = ws.proposed_workshop_coordinator.profile.user.get_full_name()
-                    cnum = ws.proposed_workshop_coordinator.profile.phone_number
-                    cinstitute = ws.proposed_workshop_coordinator.profile.institute
-                    inum = request.user.profile.phone_number
-                    wtitle = ws.proposed_workshop_title.workshoptype_name
-
-                    #For Instructor
-                    send_email(request, call_on='Booking Confirmed',
-                        user_position='instructor',
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        user_name=str(cname),
-                        other_email=cmail,
-                        phone_number=cnum,
-                        institute=cinstitute
-                        )
-
-                    #For Coordinator
-                    send_email(request, call_on='Booking Confirmed',  
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        other_email=cmail,
-                        phone_number=inum
-                        )
-
-                elif client_data[-1] == 'CHANGE_DATE':
-                    temp, iid = client_data[0].split("=")
-                    temp, new_workshop_date = client_data[-2].split("%3D")
-                    cid, workshop_title_id = client_data[1], client_data[2]
-                    new_workshop_date = datetime.strptime(
-                                    new_workshop_date, "%Y-%m-%d"
-                                    )
-                    workshop_date = datetime.strptime(
-                                    client_data[3], "%Y-%m-%d"
-                                    )
-
+                elif action == 'change_date':
+                    cid = client_data.get('cid')
+                    new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
                     cemail = User.objects.get(id=cid)
                     today = datetime.today()
                     if today > new_workshop_date:
-                        return HttpResponse("Please Give proper Date!")
+                        # Invalid date
+                        pass
                     else:
-                        result = RequestedWorkshop.objects.filter(
-                            requested_workshop_instructor=user.id,
-                            requested_workshop_coordinator=cid,
-                            requested_workshop_title_id=workshop_title_id,
-                            requested_workshop_date=workshop_date).update(
-                            requested_workshop_date=new_workshop_date)
-                        if result:
-                            del temp
+                        if client_data.get('workshop_type') == 'requested':
+                            workshop = RequestedWorkshop.objects.filter(id=client_data.get('workshop_id'))
+                            workshop_date = workshop[0].requested_workshop_date
+                            workshop.update(requested_workshop_date=new_workshop_date)
                         else:
-                            ProposeWorkshopDate.objects.filter(
-                            proposed_workshop_instructor=user.id,
-                            proposed_workshop_coordinator=cid,
-                            proposed_workshop_title_id=workshop_title_id,
-                            proposed_workshop_date=workshop_date).update(
-                            proposed_workshop_date=new_workshop_date)
+                            workshop = ProposeWorkshopDate.objects.objects.filter(id=client_data.get('workshop_id'))
+                            workshop_date = workshop.proposed_workshop_date
+                            workshop.update(proposed_workshop_date=new_workshop_date)
 
-                    #For Instructor
+                    # For Instructor
                     send_email(request, call_on='Change Date',
                         user_position='instructor',
-                        workshop_date=workshop_date.date(),
+                        workshop_date=str(workshop_date),
                         new_workshop_date=str(new_workshop_date.date())
                         )
 
-                    #For Coordinator
+                    # For Coordinator
                     send_email(request, call_on='Change Date',  
                         new_workshop_date=str(new_workshop_date.date()),
-                        workshop_date=str(workshop_date.date()),
+                        workshop_date=str(workshop_date),
                         other_email=cemail.email
-                        )
-
-                    return HttpResponse("Date Changed")
-
-                else:
-                    workshop_date = datetime.strptime(
-                                        client_data[1], "%Y-%m-%d"
-                                        )
-                    coordinator_obj = User.objects.get(username=client_data[0][2:])
-                    workshop_status = RequestedWorkshop.objects.get(
-                                        requested_workshop_instructor=user.id,
-                                        requested_workshop_date=workshop_date,
-                                        requested_workshop_coordinator=coordinator_obj.id,
-                                        requested_workshop_title=client_data[2]
-                                        )
-                    workshop_status.status = client_data[-1]
-                    workshop_status.save()
-                    ws = workshop_status
-                    wtitle = ws.requested_workshop_title.workshoptype_name
-                    cmail = ws.requested_workshop_coordinator.email
-                    cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
-                    cnum = ws.requested_workshop_coordinator.profile.phone_number
-                    cinstitute = ws.requested_workshop_coordinator.profile.institute
-
-                    #For Instructor
-                    send_email(request, call_on='Booking Request Rejected', 
-                        user_position='instructor', 
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        user_name=str(cname),
-                        other_email=cmail,
-                        phone_number=cnum,
-                        institute=cinstitute
-                        )
-
-                    #For Coordinator
-                    send_email(request, call_on='Booking Request Rejected',
-                        workshop_date=str(client_data[1]),
-                        workshop_title=wtitle,
-                        other_email=cmail
                         )
 
             workshops = []
@@ -680,6 +649,7 @@ def my_workshops(request):
                                     ).order_by('-proposed_workshop_date')
 
             workshops = list(workshop_occurence_list) + list(proposed_workshop) + list(proposed_workshop_pending)
+            print(len(workshop_occurence_list), len(proposed_workshop), len(proposed_workshop_pending))
 
             # team_members = list(set(user.profile.team_set.all().values_list('members', flat=True)))
             teams = Team.objects.filter(members=user.profile)
@@ -708,6 +678,7 @@ def my_workshops(request):
                 ).order_by('-proposed_workshop_date')
 
             workshops = list(workshop_occurence_list) + list(proposed_workshop)
+            print(len(workshop_occurence_list), len(proposed_workshop))
 
             return render(request, 'workshop_app/my_workshops.html',
                 {"workshops": workshops})

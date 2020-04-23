@@ -32,8 +32,8 @@
 				},
 			});
 
-			window.location.reload();
-			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
+			{#window.location.reload();#}
+            console.log(d);
 		}
 	</script>
 
@@ -111,7 +111,7 @@
 						alert(response);
 					}
 				});
-
+                console.log(data_c)
 			};
 
     </script>
@@ -191,8 +191,18 @@
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 						{% endif %}
 							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
-								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
+								<td><form method="post">
+                                    <input type="hidden" name="action" value="accept">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button>
+                                </form></td>
+                                <td><form method="post">
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button>
+                                </form></td>
 							{% endif %}
 						</tr>
 					</tbody>
@@ -236,9 +246,20 @@
 										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
+                                            <form method="post">
+                                                <input type="text" name="new_date" class="rDate{{forloop.counter}}" /><br>
+                                                {% if workshop.requested_workshop_date %}
+                                                    <input type="hidden" name="workshop_type" value="requested">
+                                                {% else %}
+                                                    <input type="hidden" name="workshop_type" value="proposed">
+                                                {% endif %}
+                                                <input type="hidden" name="action" value="change_date">
+                                                <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                                <input type="hidden" name="cid" value="{{ workshop.requested_workshop_coordinator_id }}">
+                                                {% csrf_token %}
+                                                <button class="btn btn-primary btn-xs" type="submit" >Save</button>
+                                            </form>
 
-											<input type="text" class="rDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
 										</div>
             						</td>
 								{% else %}
@@ -318,7 +339,12 @@
 
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+                                <td><form method="post">
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button>
+                                </form></td>
 							{% endif %}
 						{% endif %}
 						</tr>
