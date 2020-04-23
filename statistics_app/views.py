@@ -38,9 +38,9 @@ except ImportError:
 # Create your views here.
 def check_workshop_type(x):
     try:
-        y = datetime.strftime(x.proposed_workshop_date, '%d-%m-%Y')
+        y = x.proposed_workshop_date
     except BaseException:
-        y = datetime.strftime(x.requested_workshop_date, '%d-%m-%Y')
+        y = x.requested_workshop_date
     return y
 
 
@@ -203,8 +203,13 @@ def workshop_stats(request):
             for workshop in requested_workshops:
                 upcoming_workshops.append(workshop)
 
-            upcoming_workshops = sorted(upcoming_workshops,
-                                        key=lambda x: check_workshop_type(x))
+            if 'sort_by_date' in request.GET:
+                if request.GET.get('sort_by_date') == 'asc':
+                    upcoming_workshops = sorted(upcoming_workshops,
+                                                key=lambda x: check_workshop_type(x))
+                elif request.GET.get('sort_by_date') == 'desc':
+                    upcoming_workshops = sorted(upcoming_workshops,
+                                                key=lambda x: check_workshop_type(x), reverse=True)
 
             download = request.POST.get('Download')
             if download:
@@ -286,8 +291,13 @@ def workshop_stats(request):
             for workshop in requested_workshops:
                 upcoming_workshops.append(workshop)
 
-            upcoming_workshops = sorted(upcoming_workshops,
-                                        key=lambda x: check_workshop_type(x))
+            if 'sort_by_date' in request.GET:
+                if request.GET.get('sort_by_date') == 'asc':
+                    upcoming_workshops = sorted(upcoming_workshops,
+                                                key=lambda x: check_workshop_type(x))
+                elif request.GET.get('sort_by_date') == 'desc':
+                    upcoming_workshops = sorted(upcoming_workshops,
+                                                key=lambda x: check_workshop_type(x), reverse=True)
 
         except BaseException:
             upcoming_workshops = []
