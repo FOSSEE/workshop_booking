@@ -31,6 +31,25 @@
     dateToday.setDate(dateToday.getDate() - 1);
     upto.setFullYear(dateToday.getFullYear() + 1);
 
+    function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+    sort_date_by = getParameterByName('sort_by_date')
+    console.log(sort_date_by)
+    function sort_date(){
+        if(sort_date_by == 'asc')
+            window.location = '?sort_by_date=desc'
+        else
+            window.location = '?sort_by_date=asc'
+    }
+
   $( function() {
       from = $( "#from" )
         .datepicker({
@@ -122,7 +141,7 @@
 					<th>Institute Name</th>
 					<th>Instructor Name</th>
 					<th>Workshop Name</th>
-					<th>Workshop Date</th>
+					<th><a onclick="sort_date()" style="cursor: pointer">Workshop Date</a></th>
 					<th>Requested/Proposed By</th>
 				</tr>
 			</thead>
