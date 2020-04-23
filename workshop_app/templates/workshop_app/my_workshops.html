@@ -328,7 +328,12 @@
 
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+                                <td><form method="post">
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button>
+                                </form></td>
 							{% endif %}
 						{% endif %}
 						</tr>
