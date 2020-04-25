@@ -140,17 +140,17 @@
 			<tbody>
 				{% for workshop in team_workshops %}
 				<tr>
-					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.id }}">
-						{{ workshop.proposed_workshop_coordinator.get_full_name }}</a>
+					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.id }}">
+						{{ workshop.coordinator.get_full_name }}</a>
 					</td>
 					<td>
-						{{ workshop.proposed_workshop_instructor.get_full_name }}
+						{{ workshop.instructor.get_full_name }}
 					</td>
 					<td>
-						{{ workshop.proposed_workshop_title }}
+						{{ workshop.title }}
 					</td>
 					<td>
-						{{ workshop.proposed_workshop_date | date }}
+						{{ workshop.date | date }}
 					</td>
 				</tr>
 				{% endfor %}
@@ -179,20 +179,20 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
+						{% if workshop.status == 'Pending' and workshop.instructor %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
-									{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+									{{ workshop.coordinator.get_full_name }}</a></td>
 							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.instructor.get_full_name }}</td>
 							{% endif %}
-								<td>{{ workshop.requested_workshop_title }}</td>
-								<td>{{ workshop.requested_workshop_date | date }}</td>
+								<td>{{ workshop.title }}</td>
+								<td>{{ workshop.date | date }}</td>
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 						{% endif %}
-							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
-								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
+							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.instructor %}
+								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.coordinator}},{{workshop.date| safe}},{{ workshop.title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.coordinator}},{{workshop.date| safe}},{{ workshop.title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
 							{% endif %}
 						</tr>
 					</tbody>
@@ -221,54 +221,54 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'ACCEPTED' and workshop.requested_workshop_title %}
+						{% if workshop.status == 'ACCEPTED' and workshop.title %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
-								{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.requested_workshop_coordinator.profile.institute }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+								{{ workshop.coordinator.get_full_name }}</a></td>
+								<td>{{ workshop.coordinator.profile.institute }}</td>
 							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.instructor.get_full_name }}</td>
 							{% endif %}
-								<td>{{ workshop.requested_workshop_title |capfirst }}</td>
-								{% if workshop.requested_workshop_date > today %}
-									<td>{{ workshop.requested_workshop_date | date }}
+								<td>{{ workshop.title |capfirst }}</td>
+								{% if workshop.date > today %}
+									<td>{{ workshop.date | date }}
 										<span class="glyphicon glyphicon-calendar" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
+										class="datepicker" onclick="changeDate('R,{{ workshop.date| safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
 
 											<input type="text" class="rDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.instructor_id}},{{workshop.coordinator_id}},{{ workshop.title_id }},{{ workshop.date | safe}}')">Save</button>
 										</div>
             						</td>
 								{% else %}
-									<td>{{ workshop.requested_workshop_date | date }}</td>
+									<td>{{ workshop.date | date }}</td>
 								{% endif %}
 								<td><span class = "label label-success">{{ workshop.status }}</span></td>
 						{% endif %}
 						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
-								{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+								{{ workshop.coordinator.get_full_name }}</a></td>
+								<td>{{ workshop.coordinator.profile.institute }}</td>
 							{% else %}
-								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.instructor.get_full_name }}</td>
 							{% endif %}
-								<td>{{ workshop.proposed_workshop_title  }}</td>
-								{% if workshop.proposed_workshop_date > today %}
-								<td>{{ workshop.proposed_workshop_date | date }}
+								<td>{{ workshop.title  }}</td>
+								{% if workshop.date > today %}
+								<td>{{ workshop.date | date }}
 									<span class="glyphicon glyphicon-calendar" 
 										class="datepicker" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}, {{forloop.counter}}')">
+										onclick="changeDate('P,{{ workshop.date | safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogP{{forloop.counter}}" style="display: none;" title="Select New Date">
 
 											<input type="text" class="pDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
+											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},P,{{workshop.instructor_id}},{{workshop.coordinator_id}},{{ workshop.title_id }},{{ workshop.date | safe}}')">Update</button>
 										</div>
 								</td>
 								{% else %}
-									<td>{{ workshop.proposed_workshop_date | date }}</td>
+									<td>{{ workshop.date | date }}</td>
 								{% endif %}
 								<td><span class = "label label-success">{{ workshop.status }}</span></td>
 						{% endif %}
@@ -306,19 +306,24 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'Pending' and workshop.condition_one %}
+						{% if workshop.status == 'Pending' and workshop.tnc_accepted %}
 							{% if request.user.profile.position == 'instructor' %}
 							
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
-									{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
+								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+									{{ workshop.coordinator.get_full_name }}</a></td>
+								<td>{{ workshop.coordinator.profile.institute }}</td>
 							{% endif %}
-								<td>{{ workshop.proposed_workshop_title  }}</td>
-								<td>{{ workshop.proposed_workshop_date | date }}</td>
+								<td>{{ workshop.title  }}</td>
+								<td>{{ workshop.date | date }}</td>
 
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
+								<td><form method="post">
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button>
+                                </form></td>
 							{% endif %}
 						{% endif %}
 						</tr>
@@ -351,12 +356,12 @@
 						<tr>
 						{% if workshop.status == 'DELETED' or workshop.status == 'REJECTED' %}
 							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.requested_workshop_coordinator.get_full_name }}</td>
+								<td>{{ workshop.coordinator.get_full_name }}</td>
 							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+								<td>{{ workshop.instructor.get_full_name }}</td>
 							{% endif %}
-								<td>{{ workshop.requested_workshop_title |  capfirst }}</td>
-								<td>{{ workshop.requested_workshop_date  | date }}</td>
+								<td>{{ workshop.title |  capfirst }}</td>
+								<td>{{ workshop.date  | date }}</td>
 
 								<td><span class = "label label-danger">{{ workshop.status }}</span></td>
 						{% endif %}

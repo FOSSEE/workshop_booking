@@ -41,8 +41,6 @@ source = (
     ("From other College", "From other College"),
 )
 
-# TODO: states and dept_chocies var also exists in forms.py. Use only one.
-
 states = (
     ("IN-AP", "Andhra Pradesh"),
     ("IN-AR", "Arunachal Pradesh"),
@@ -89,13 +87,13 @@ def has_profile(user):
 
 
 def attachments(instance, filename):
-    return os.sep.join((instance.workshoptype_name.replace(" ", '_'), filename))
+    return os.sep.join((instance.name.replace(" ", '_'), filename))
 
 
 class Profile(models.Model):
     """Profile for users(instructors and coordinators)"""
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=32, blank=True, choices=title)
     institute = models.CharField(max_length=150)
     department = models.CharField(max_length=150, choices=department_choices)
@@ -156,10 +154,11 @@ class Workshop(models.Model):
         Contains details of workshops
     """
     coordinator = models.ForeignKey(User, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related")
+    instructor = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related", on_delete=models.CASCADE)
     title = models.ForeignKey(WorkshopType, on_delete=models.CASCADE, help_text='Select the type of workshop.')
     date = models.DateField()
     status = models.CharField(max_length=32, default="Pending")
+    tnc_accepted = models.BooleanField(help_text="I accept the terms and conditions")
 
     def __str__(self):
         return u"{0} | {1} | {2} | {3} | {4}".format(
@@ -197,7 +196,7 @@ class ProfileComments(models.Model):
     coordinator = models.ForeignKey(User,
                                     on_delete=models.CASCADE)
     comment = models.TextField()
-    instructor = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related")
+    instructor = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related", on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
