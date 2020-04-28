@@ -156,7 +156,7 @@ class CreateWorkshop(forms.ModelForm):
 
     class Meta:
         model = Workshop
-        fields = ['title']
+        fields = ['workshop_type']
 
 
 # debug : Changed this
@@ -171,7 +171,7 @@ class WorkshopForm(forms.ModelForm):
         super(WorkshopForm, self).__init__(*args, **kwargs)
         self.fields['tnc_accepted'].label = ""
         self.fields['tnc_accepted'].required = True
-        self.fields['title'].label = "Workshop :"
+        self.fields['workshop_type'].label = "Workshop :"
         self.fields['date'].label = "Workshop Date :"
 
     class Meta:

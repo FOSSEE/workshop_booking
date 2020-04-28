@@ -87,7 +87,7 @@ def has_profile(user):
 
 
 def attachments(instance, filename):
-    return os.sep.join((instance.name.replace(" ", '_'), filename))
+    return os.sep.join((instance.workshop_type.name.replace(" ", '_'), filename))
 
 
 class Profile(models.Model):
@@ -136,11 +136,6 @@ class WorkshopType(models.Model):
     duration = models.CharField(max_length=32,
                                 help_text='Please write this in \
                     following format eg: 3days, 8hours a day')
-    attachments = models.FileField(upload_to=attachments, blank=True,
-                                   help_text='Please upload workshop documents one by one, \
-                    ie.workshop schedule, instructions etc. \
-                    Please Note: Name of Schedule file should be similar to \
-                    WorkshopType Name')
     terms_and_conditions = models.TextField()
 
     def __str__(self):
@@ -149,25 +144,43 @@ class WorkshopType(models.Model):
                                  )
 
 
+class AttachmentFile(models.Model):
+    attachments = models.FileField(upload_to=attachments, blank=True,
+                                   help_text='Please upload workshop documents one by one, \
+                        ie.workshop schedule, instructions etc. \
+                        Please Note: Name of Schedule file should be similar to \
+                        WorkshopType Name')
+    workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE)
+
+
 class Workshop(models.Model):
     """
         Contains details of workshops
     """
     coordinator = models.ForeignKey(User, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related", on_delete=models.CASCADE)
-    title = models.ForeignKey(WorkshopType, on_delete=models.CASCADE, help_text='Select the type of workshop.')
+    instructor = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related",
+                                   on_delete=models.CASCADE)
+    workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE, help_text='Select the type of workshop.')
     date = models.DateField()
-    status = models.CharField(max_length=32, default="Pending")
+    # status = models.CharField(max_length=32, default="Pending")
+    status_choices = [(0, 'Pending'),
+                      (1, 'Accepted'),
+                      (2, 'Deleted')]
+
+    status = models.IntegerField(choices=status_choices, default=0)
     tnc_accepted = models.BooleanField(help_text="I accept the terms and conditions")
 
     def __str__(self):
         return u"{0} | {1} | {2} | {3} | {4}".format(
             self.date,
-            self.title,
+            self.workshop_type,
             self.coordinator,
             self.instructor,
-            self.status
+            self.status_choices[self.status][1]
         )
+
+    def get_status(self):
+        return str(self.status_choices[self.status][1])
 
 
 class Testimonial(models.Model):

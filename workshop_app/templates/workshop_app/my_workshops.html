@@ -179,7 +179,7 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'Pending' and workshop.instructor %}
+						{% if workshop.status == 0 and workshop.instructor %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
 									{{ workshop.coordinator.get_full_name }}</a></td>
@@ -190,7 +190,7 @@
 								<td>{{ workshop.date | date }}</td>
 								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
 						{% endif %}
-							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.instructor %}
+							{% if request.user.profile.position == 'instructor' and workshop.status == 0 and workshop.instructor %}
 								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.coordinator}},{{workshop.date| safe}},{{ workshop.title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
 								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.coordinator}},{{workshop.date| safe}},{{ workshop.title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
 							{% endif %}
@@ -236,9 +236,14 @@
 										class="datepicker" onclick="changeDate('R,{{ workshop.date| safe}}, {{forloop.counter}}')">
 										</span>
 										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
-
-											<input type="text" class="rDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.instructor_id}},{{workshop.coordinator_id}},{{ workshop.title_id }},{{ workshop.date | safe}}')">Save</button>
+                                        <form method="post">
+											<input type="text" name="new_date" class="rDate{{forloop.counter}}" /><br>
+											<input type="hidden" name="action" value="change_date">
+                                            <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                            <input type="hidden" name="cid" value="{{ workshop.coordinator.id }}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-xs" type="submit" >Save</button>
+                                        </form>
 										</div>
             						</td>
 								{% else %}
@@ -306,18 +311,18 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'Pending' and workshop.tnc_accepted %}
+						{% if workshop.status == 0 and workshop.tnc_accepted %}
 							{% if request.user.profile.position == 'instructor' %}
 							
 								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
 									{{ workshop.coordinator.get_full_name }}</a></td>
 								<td>{{ workshop.coordinator.profile.institute }}</td>
 							{% endif %}
-								<td>{{ workshop.title  }}</td>
+								<td>{{ workshop.workshop_type  }}</td>
 								<td>{{ workshop.date | date }}</td>
 
-								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
-								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
+								<td><span class = "label label-warning">{{ workshop.get_status }}</span></td>
+								{% if request.user.profile.position == 'instructor' and workshop.status == 0  %}
 								<td><form method="post">
                                     <input type="hidden" name="action" value="approve">
                                     <input type="hidden" name="workshop_id" value="{{ workshop.id }}">

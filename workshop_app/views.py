@@ -442,7 +442,7 @@ def my_workshops(request):
             if request.method == 'POST':
                 client_data = request.POST
                 action = request.POST.get('action')
-                if action == 'accept' or 'approve':
+                if action == 'accept' or action == 'approve':
                     workshop_status = Workshop.objects.get(id=client_data.get('workshop_id'))
                     # Change Status of the selected workshop
                     workshop_status.status = 'ACCEPTED'
@@ -477,38 +477,6 @@ def my_workshops(request):
                                phone_number=inum
                                )
 
-                elif action == 'reject':
-                    # Change Status of the selected workshop
-                    workshop_status = RequestedWorkshop.objects.get(id=client_data.get('workshop_id'))
-                    workshop_status.status = 'REJECTED'
-                    workshop_status.save()
-                    ws = workshop_status
-                    # Parameters for emails
-                    wtitle = ws.requested_workshop_title.workshoptype_name
-                    cmail = ws.requested_workshop_coordinator.email
-                    cname = ws.requested_workshop_coordinator.profile.user.get_full_name()
-                    cnum = ws.requested_workshop_coordinator.profile.phone_number
-                    cinstitute = ws.requested_workshop_coordinator.profile.institute
-                    workshop_date = str(ws.requested_workshop_date)
-
-                    # For Instructor
-                    send_email(request, call_on='Booking Request Rejected',
-                               user_position='instructor',
-                               workshop_date=workshop_date,
-                               workshop_title=wtitle,
-                               user_name=str(cname),
-                               other_email=cmail,
-                               phone_number=cnum,
-                               institute=cinstitute
-                               )
-
-                    # For Coordinator
-                    send_email(request, call_on='Booking Request Rejected',
-                               workshop_date=workshop_date,
-                               workshop_title=wtitle,
-                               other_email=cmail
-                               )
-
                 elif action == 'change_date':
                     cid = client_data.get('cid')
                     new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
@@ -518,14 +486,9 @@ def my_workshops(request):
                         # Invalid date
                         pass
                     else:
-                        if client_data.get('workshop_type') == 'requested':
-                            workshop = RequestedWorkshop.objects.filter(id=client_data.get('workshop_id'))
-                            workshop_date = workshop[0].requested_workshop_date
-                            workshop.update(requested_workshop_date=new_workshop_date)
-                        else:
-                            workshop = ProposeWorkshopDate.objects.objects.filter(id=client_data.get('workshop_id'))
-                            workshop_date = workshop.proposed_workshop_date
-                            workshop.update(proposed_workshop_date=new_workshop_date)
+                        workshop = Workshop.objects.filter(id=client_data.get('workshop_id'))
+                        workshop_date = workshop[0].date
+                        workshop.update(date=new_workshop_date)
 
                     # For Instructor
                     send_email(request, call_on='Change Date',
@@ -575,6 +538,7 @@ def my_workshops(request):
             workshops = Workshop.objects.filter(
                 coordinator=user.id
             ).order_by('-date')
+            print(workshops)
             return render(request, 'workshop_app/my_workshops.html',
                           {"workshops": workshops})
     else:
@@ -600,7 +564,7 @@ def propose_workshop(request):
                     # Avoiding Duplicate workshop entries for same date and workshop_title
                     if Workshop.objects.filter(
                             date=form_data.date,
-                            title=form_data.title,
+                            workshop_type=form_data.workshop_type,
                             coordinator=form_data.coordinator
                     ).exists():
                         return redirect('/my_workshops/')

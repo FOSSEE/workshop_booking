@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .models import (
     Profile, WorkshopType,
     Workshop,
-    Testimonial, ProfileComments, Banner
+    Testimonial, ProfileComments, Banner, AttachmentFile
 )
 
 try:
@@ -44,8 +44,8 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class WorkshopAdmin(admin.ModelAdmin):
-    list_display = ['title', 'instructor', 'date', 'status', 'coordinator']
-    list_filter = ['title', 'date']
+    list_display = ['workshop_type', 'instructor', 'date', 'status', 'coordinator']
+    list_filter = ['workshop_type', 'date']
     actions = ['download_csv']
 
     def download_csv(self, request, queryset):
@@ -53,7 +53,7 @@ class WorkshopAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment;filename=workshop_data.csv'
         writer = csv.writer(response)
-        writer.writerow(['title', 'date', 'instructor', 'coordinator', 'status'])
+        writer.writerow(['workshop_type', 'date', 'instructor', 'coordinator', 'status'])
 
         for q in queryset:
             writer.writerow([q.title, q.date, q.instructor, q.coordinator, q.status])
@@ -65,10 +65,15 @@ class WorkshopAdmin(admin.ModelAdmin):
     download_csv.short_description = "Download CSV file for selected stats."
 
 
+class AttachmentFileInline(admin.TabularInline):
+    model = AttachmentFile
+
+
 class WorkshopTypeAdmin(admin.ModelAdmin):
     list_display = ['name', 'duration']
     list_filter = ['name']
     actions = ['download_csv']
+    inlines = [AttachmentFileInline]
 
     def download_csv(self, request, queryset):
         openfile = string_io()
@@ -123,3 +128,4 @@ admin.site.register(Workshop, WorkshopAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
 admin.site.register(ProfileComments, ProfileCommentAdmin)
 admin.site.register(Banner)
+admin.site.register(AttachmentFile)
