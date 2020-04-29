@@ -221,7 +221,7 @@
 			{% for workshop in workshops %}
 					<tbody>
 						<tr>
-						{% if workshop.status == 'ACCEPTED' and workshop.title %}
+						{% if workshop.status == 1 and workshop.workshop_type %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
 								{{ workshop.coordinator.get_full_name }}</a></td>
@@ -249,9 +249,9 @@
 								{% else %}
 									<td>{{ workshop.date | date }}</td>
 								{% endif %}
-								<td><span class = "label label-success">{{ workshop.status }}</span></td>
+								<td><span class = "label label-success">{{ workshop.get_status }}</span></td>
 						{% endif %}
-						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
+						{% if workshop.status == 1 and workshop.condition_one %}
 							{% if request.user.profile.position == 'instructor' %}
 								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
 								{{ workshop.coordinator.get_full_name }}</a></td>

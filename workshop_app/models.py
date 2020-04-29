@@ -162,12 +162,11 @@ class Workshop(models.Model):
                                    on_delete=models.CASCADE)
     workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE, help_text='Select the type of workshop.')
     date = models.DateField()
-    # status = models.CharField(max_length=32, default="Pending")
-    status_choices = [(0, 'Pending'),
+    STATUS_CHOICES = [(0, 'Pending'),
                       (1, 'Accepted'),
                       (2, 'Deleted')]
 
-    status = models.IntegerField(choices=status_choices, default=0)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     tnc_accepted = models.BooleanField(help_text="I accept the terms and conditions")
 
     def __str__(self):
@@ -176,11 +175,11 @@ class Workshop(models.Model):
             self.workshop_type,
             self.coordinator,
             self.instructor,
-            self.status_choices[self.status][1]
+            self.STATUS_CHOICES[self.status][1]
         )
 
     def get_status(self):
-        return str(self.status_choices[self.status][1])
+        return str(self.STATUS_CHOICES[self.status][1])
 
 
 class Testimonial(models.Model):

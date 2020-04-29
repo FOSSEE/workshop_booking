@@ -445,7 +445,7 @@ def my_workshops(request):
                 if action == 'accept' or action == 'approve':
                     workshop_status = Workshop.objects.get(id=client_data.get('workshop_id'))
                     # Change Status of the selected workshop
-                    workshop_status.status = 'ACCEPTED'
+                    workshop_status.status = 1
                     workshop_status.instructor = user
                     workshop_status.save()
                     ws = workshop_status
@@ -455,7 +455,7 @@ def my_workshops(request):
                     cnum = ws.coordinator.profile.phone_number
                     cinstitute = ws.coordinator.profile.institute
                     inum = request.user.profile.phone_number
-                    wtitle = ws.title.name
+                    wtitle = ws.workshop_type.name
                     workshop_date = str(ws.date)
 
                     # For Instructor
@@ -512,7 +512,7 @@ def my_workshops(request):
             ).order_by('-date')
 
             proposed_workshop_pending = Workshop.objects.filter(
-                status='Pending'
+                status=0
             ).order_by('-date')
 
             workshops = list(proposed_workshop) + list(proposed_workshop_pending)

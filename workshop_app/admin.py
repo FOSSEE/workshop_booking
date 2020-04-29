@@ -83,7 +83,7 @@ class WorkshopTypeAdmin(admin.ModelAdmin):
         writer.writerow(['name', 'duration'])
 
         for q in queryset:
-            writer.writerow([q.name, q.workshoptype_duration])
+            writer.writerow([q.name, q.duration])
 
         openfile.seek(0)
         response.write(openfile.read())
