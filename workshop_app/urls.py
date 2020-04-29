@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import url
 from workshop_app import views
-import django
 
 js_info_dict = {
     'packages': ('recurrence', ),
@@ -30,21 +29,8 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout),
     url(r'^view_profile/$', views.view_profile),
     url(r'^edit_profile/$', views.edit_profile),
-    # url(r'^book/$', views.book),
-    # url(r'^book_workshop/$', views.book_workshop),
     url(r'^my_workshops/$', views.my_workshops),
-    # url(r'^how_to_participate/$', views.how_to_participate),
-    # url(r'^faq/$', views.faq),
-    # url(r'^manage/$', views.manage),
-    # url(r'^view_workshoptype_list/$', views.view_workshoptype_list),
-    # url(r'^view_workshoptype_details/([1-9][0-9]*)$', \
-    #     views.view_workshoptype_details),
-    # url(r'^create_workshop/$', views.create_workshop),
     url(r'^propose_workshop/$', views.propose_workshop),
-    # url(r'^workshop_stats/$', views.workshop_stats),
-    # url(r'^jsi18n/$', django.views.i18n.javascript_catalog, js_info_dict),
-    # url(r'^self_workshop', views.self_workshop),
-    # url(r'^view_comment_profile/([1-9][0-9]*)$', views.view_comment_profile),
-    # url(r'^download/',views.download_csv_data),
+    url(r'^workshop_type_list/$', views.workshop_type_list),
+    url(r'^workshop_type_details/([1-9][0-9]*)$', views.workshop_type_details),
  ]
-
