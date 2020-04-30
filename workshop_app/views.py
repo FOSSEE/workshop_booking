@@ -63,6 +63,7 @@ def index(request):
 
 # User views
 
+# TODO: Forgot password workflow
 def user_login(request):
     """User Login"""
     user = request.user
@@ -186,9 +187,7 @@ def edit_profile(request):
             form_data.user.save()
             form_data.save()
 
-            return render(
-                request, 'workshop_app/profile_updated.html'
-            )
+            return redirect('/view_profile/')
         else:
             return render(request, 'workshop_app/edit_profile.html')
     else:
@@ -198,6 +197,7 @@ def edit_profile(request):
 
 # Workshop views
 
+# TODO: View and comment profile view for instructors
 @login_required
 def my_workshops(request):
     user = request.user
@@ -297,6 +297,7 @@ def my_workshops(request):
         return redirect('/login/')
 
 
+# TODO: Show terms n conditions of selected ws type
 @login_required
 def propose_workshop(request):
     """Coordinator proposed a workshop and date"""

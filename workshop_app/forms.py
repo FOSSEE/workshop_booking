@@ -108,10 +108,10 @@ class UserLoginForm(forms.Form):
     """Creates a form which will allow the user to log into the system."""
 
     username = forms.CharField(max_length=32,
-                               widget=forms.TextInput())
+                               widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
 
     password = forms.CharField(max_length=32,
-                               widget=forms.PasswordInput())
+                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
 
     def clean(self):
         super(UserLoginForm, self).clean()
@@ -144,21 +144,6 @@ class ProfileForm(forms.ModelForm):
         self.fields['last_name'].initial = user.last_name
 
 
-class CreateWorkshop(forms.ModelForm):
-    """
-    Instructors can create Workshops based on the Types 
-    of available workshops.
-    """
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label_suffix', '')
-        super(CreateWorkshop, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Workshop
-        fields = ['workshop_type']
-
-
 # debug : Changed this
 class WorkshopForm(forms.ModelForm):
     """
@@ -179,7 +164,12 @@ class WorkshopForm(forms.ModelForm):
         exclude = ['status', 'instructor', 'coordinator']
         widgets = {
             'date': forms.DateInput(attrs={
-                'class': 'datepicker'})
+                'class': 'datepicker form-control', 'placeholder': 'Workshop Date'}),
+            'workshop_type': forms.Select(attrs={
+                'class': 'form-control'}),
+            'tnc_accepted': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            })
         }
 
 

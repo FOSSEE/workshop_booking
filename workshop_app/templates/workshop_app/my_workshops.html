@@ -4,15 +4,14 @@
     Workshop Status
 {% endblock %}
 
-{% block extra %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="{{ URL_ROOT }}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
-    <script src="{{ URL_ROOT }}/static/workshop_app/js/jquery-1.12.1-ui.min.js"></script>
-
+{% block extra-dependencies %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+{% endblock %}
+{% block extra-custom-scripts %}
     <script>
-        //ToolTip popup function onhover
+        //ToolTip popup function on-hover
         $(document).ready(function () {
             $('[data-toggle="popover"]').popover({
                 placement: 'top',
@@ -20,26 +19,7 @@
             });
         });
 
-        function sendData(d) {
-            var URL = "{{ URL_ROOT }}/my_workshops/"
-            $.ajax({
-                url: URL,
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    d,
-                    csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-                },
-            });
-
-            window.location.reload();
-            alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
-        }
-    </script>
-
-    <!-- Change Workshop Date -->
-    <script type="text/javascript">
-        //ToolTip popup function onhover
+        //ToolTip popup function on-hover
         $(document).ready(function () {
             $('[data-toggle="popinfo"]').popover({
                 placement: 'top',
@@ -47,6 +27,7 @@
             });
         });
 
+        // Change date modal
         function changeDate(date) {
             var previous_date = new Date(date);
             var dateToday = new Date();
@@ -86,33 +67,6 @@
             }
         };
 
-        function submitNewDate(info) {
-            var data = info.split(",");
-            if (data[1] == 'R') {
-                var date = document.getElementsByClassName('rDate' + data[0]);
-                info = data.slice(2);
-            } else {
-                var date = document.getElementsByClassName('pDate' + data[0]);
-                info = data.slice(2);
-            }
-            var data_c = info + ',new_date=' + date[0].value + ',CHANGE_DATE';
-            var URL = "{{ URL_ROOT }}/my_workshops/";
-            $.ajax({
-                url: URL,
-                async: false,
-                type: "POST",
-                data: {
-                    data_c,
-                    csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-                },
-                success: function (response) {
-                    window.location.reload();
-                    alert(response);
-                }
-            });
-
-        };
-
     </script>
 {% endblock %}
 
@@ -122,84 +76,10 @@
         <h3 align="center" style="color:#2952a2;">The status of your workshops </h3>
         <br>
 
-        <!-- Pending View -->
-        <div class="container">
-            {% if request.user.profile.position == 'instructor' %}
-                <h3 align="center" style="color: #04a9cf;"><strong><u>Team Member Requests</u></strong></h3>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Coordinator Name</th>
-                        <th>Team Member</th>
-                        <th>Workshop Name</th>
-                        <th>Workshop Day</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            {% endif %}
-            {% if request.user.profile.position == 'instructor' %}
-                <h3 align="center" style="color: #04a9cf;"><strong><u>Requests for Me</u></strong></h3>
-            {% else %}
-                <h3 align="center" style="color: #04a9cf;"><strong><u>My Requests</u></strong></h3>
-            {% endif %}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    {% if request.user.profile.position == 'instructor' %}
-                        <th>Coordinator Name</th>
-                    {% else %}
-                        <th>Instructor Name</th>
-                    {% endif %}
-                    <th>Workshop Name</th>
-                    <th>Workshop Day</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                {% csrf_token %}
-                {% for workshop in workshops %}
-                    <tbody>
-                    <tr>
-                        {% if workshop.status == 0 and workshop.instructor %}
-                            {% if request.user.profile.position == 'instructor' %}
-                                <td>
-                                    <a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
-                                        {{ workshop.coordinator.get_full_name }}</a></td>
-                            {% else %}
-                                <td>{{ workshop.instructor.get_full_name }}</td>
-                            {% endif %}
-                            <td>{{ workshop.title }}</td>
-                            <td>{{ workshop.date | date }}</td>
-                            <td><span class="label label-warning">{{ workshop.status }}</span></td>
-                        {% endif %}
-                        {% if request.user.profile.position == 'instructor' and workshop.status == 0 and workshop.instructor %}
-                            <td>
-                                <button class="btn btn-primary btn-sm" id="book-btn"
-                                        onClick="sendData('{{ workshop.coordinator }},{{ workshop.date| safe }},{{ workshop.title_id }},ACCEPTED')"
-                                        data-toggle="popover" title="Please Note"
-                                        data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled">
-                                    Accept
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" id="book-btn"
-                                        onClick="sendData('{{ workshop.coordinator }},{{ workshop.date| safe }},{{ workshop.title_id }},REJECTED')"
-                                        data-toggle="popover" title="Please Note"
-                                        data-content="Once Rejected you cannot revoke this action."> Reject
-                                </button>
-                            </td>
-                        {% endif %}
-                    </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
-        </div>
-
         <!-- Accepted View -->
+        <br>
         <div class="container">
-            <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Accepted</u></strong></h3>
+            <h3 align="center" style="color: #04a9cf;"><strong>Workshops Accepted</strong></h3>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -230,11 +110,11 @@
                             <td>{{ workshop.title |capfirst }}</td>
                             {% if workshop.date > today %}
                                 <td>{{ workshop.date | date }}
-                                    <span class="glyphicon glyphicon-calendar" data-toggle="popinfo" title="Note"
+                                    <span class="material-icons" style="cursor:pointer;" data-toggle="popinfo"
+                                          title="Note"
                                           data-content="Click here to change date"
                                           class="datepicker"
-                                          onclick="changeDate('R,{{ workshop.date| safe }}, {{ forloop.counter }}')">
-										</span>
+                                          onclick="changeDate('R,{{ workshop.date| safe }}, {{ forloop.counter }}')">event</span>
                                     <div class="myDialogR{{ forloop.counter }}" style="display: none;"
                                          title="Select New Date">
                                         <form method="post">
@@ -250,7 +130,7 @@
                             {% else %}
                                 <td>{{ workshop.date | date }}</td>
                             {% endif %}
-                            <td><span class="label label-success">{{ workshop.get_status }}</span></td>
+                            <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
                         {% endif %}
                         {% if workshop.status == 1 and workshop.condition_one %}
                             {% if request.user.profile.position == 'instructor' %}
@@ -282,7 +162,7 @@
                             {% else %}
                                 <td>{{ workshop.date | date }}</td>
                             {% endif %}
-                            <td><span class="label label-success">{{ workshop.status }}</span></td>
+                            <td><span class="badge badge-success">{{ workshop.status }}</span></td>
                         {% endif %}
                     </tr>
                     </tbody>
@@ -294,12 +174,14 @@
 
 
         <!-- Proposed View -->
+        <br>
         <div class="container">
+
             {% if request.user.profile.position == 'instructor' %}
-                <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Coordinators</u></strong>
+                <h3 align="center" style="color: #04a9cf;"><strong>Workshops Proposed By Coordinators</strong>
                 </h3>
             {% else %}
-                <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Me</u></strong></h3>
+                <h3 align="center" style="color: #04a9cf;"><strong>Workshops Proposed By Me</strong></h3>
             {% endif %}
             <table class="table table-striped">
                 <thead>
@@ -313,6 +195,9 @@
                     <th>Workshop Name</th>
                     <th>Workshop Day</th>
                     <th>Status</th>
+                    {% if request.user.profile.position == 'instructor' %}
+                        <th>Action</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 {% csrf_token %}
@@ -330,7 +215,7 @@
                             <td>{{ workshop.workshop_type }}</td>
                             <td>{{ workshop.date | date }}</td>
 
-                            <td><span class="label label-warning">{{ workshop.get_status }}</span></td>
+                            <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                             {% if request.user.profile.position == 'instructor' and workshop.status == 0 %}
                                 <td>
                                     <form method="post">
@@ -353,44 +238,6 @@
             </table>
         </div>
 
-
-        <!-- Deleted/Rejected View -->
-        <div class="container">
-            <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Deleted/Rejected</u></strong></h3>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    {% if request.user.profile.position == 'instructor' %}
-                        <th>Coordinator Name</th>
-                    {% else %}
-                        <th>Instructor Name</th>
-                    {% endif %}
-                    <th>Workshop Name</th>
-                    <th>Workshop Day</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                {% csrf_token %}
-                {% for workshop in workshops %}
-                    <tbody>
-                    <tr>
-                        {% if workshop.status == 'DELETED' or workshop.status == 'REJECTED' %}
-                            {% if request.user.profile.position == 'instructor' %}
-                                <td>{{ workshop.coordinator.get_full_name }}</td>
-                            {% else %}
-                                <td>{{ workshop.instructor.get_full_name }}</td>
-                            {% endif %}
-                            <td>{{ workshop.title |  capfirst }}</td>
-                            <td>{{ workshop.date  | date }}</td>
-
-                            <td><span class="label label-danger">{{ workshop.status }}</span></td>
-                        {% endif %}
-                    </tr>
-                    </tbody>
-
-                {% endfor %}
-            </table>
-        </div>
 
 
     {% else %}
