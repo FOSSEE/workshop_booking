@@ -36,7 +36,7 @@ def is_email_checked(user):
 
 def is_instructor(user):
     """Check if the user is having instructor rights"""
-    user.groups.filter(name='instructor').exists()
+    return user.groups.filter(name='instructor').exists()
 
 
 def get_landing_page(user):
@@ -194,7 +194,6 @@ def edit_profile(request):
 
 # Workshop views
 
-# TODO: View and comment profile view for instructors
 @login_required
 def my_workshops(request):
     user = request.user
@@ -202,6 +201,7 @@ def my_workshops(request):
     if user.is_authenticated:
         # View for instructor
         if is_instructor(user):
+            print('inst')
             if request.method == 'POST':
                 client_data = request.POST
                 action = request.POST.get('action')
@@ -305,6 +305,7 @@ def propose_workshop(request):
     if is_instructor(user):
         return redirect(get_landing_page(user))
     else:
+        form = WorkshopForm()
         if request.method == 'POST':
             form = WorkshopForm(request.POST)
             if form.is_valid():
@@ -332,7 +333,7 @@ def propose_workshop(request):
                                    )
                     return redirect('/my_workshops/')
         # GET request
-        form = WorkshopForm()
+        print(form.errorlist_css_class)
         return render(
             request, 'workshop_app/propose_workshop.html',
             {"form": form}
@@ -373,3 +374,18 @@ def workshop_type_list(request):
         workshop_type = paginator.get_page(paginator.num_pages)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
+
+
+@login_required
+def view_comment_profile(request, user_id):
+    """instructor can view/post comments on coordinator profile """
+    user = request.user
+    if is_instructor(user) and is_email_checked(user):
+        coordinator_profile = Profile.objects.get(user_id=user_id)
+        workshops = Workshop.objects.filter(coordinator=user_id).order_by(
+            'date')
+
+        return render(request, "workshop_app/view_profile.html",
+                      {"coordinator_profile": coordinator_profile,
+                       "Workshops": workshops})
+    return redirect(get_landing_page(user))

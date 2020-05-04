@@ -101,13 +101,13 @@
                         {% if workshop.status == 1 and workshop.workshop_type %}
                             {% if request.user.profile.position == 'instructor' %}
                                 <td>
-                                    <a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+                                    <a href="{{ URL_ROOT }}/view_profile/{{ workshop.coordinator.profile.user.id }}">
                                         {{ workshop.coordinator.get_full_name }}</a></td>
                                 <td>{{ workshop.coordinator.profile.institute }}</td>
                             {% else %}
                                 <td>{{ workshop.instructor.get_full_name }}</td>
                             {% endif %}
-                            <td>{{ workshop.title |capfirst }}</td>
+                            <td>{{ workshop.workshop_type |capfirst }}</td>
                             {% if workshop.date > today %}
                                 <td>{{ workshop.date | date }}
                                     <span class="material-icons" style="cursor:pointer;" data-toggle="popinfo"
@@ -131,38 +131,6 @@
                                 <td>{{ workshop.date | date }}</td>
                             {% endif %}
                             <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
-                        {% endif %}
-                        {% if workshop.status == 1 and workshop.condition_one %}
-                            {% if request.user.profile.position == 'instructor' %}
-                                <td>
-                                    <a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
-                                        {{ workshop.coordinator.get_full_name }}</a></td>
-                                <td>{{ workshop.coordinator.profile.institute }}</td>
-                            {% else %}
-                                <td>{{ workshop.instructor.get_full_name }}</td>
-                            {% endif %}
-                            <td>{{ workshop.title }}</td>
-                            {% if workshop.date > today %}
-                                <td>{{ workshop.date | date }}
-                                    <span class="glyphicon glyphicon-calendar"
-                                          class="datepicker" data-toggle="popinfo" title="Note"
-                                          data-content="Click here to change date"
-                                          onclick="changeDate('P,{{ workshop.date | safe }}, {{ forloop.counter }}')">
-										</span>
-                                    <div class="myDialogP{{ forloop.counter }}" style="display: none;"
-                                         title="Select New Date">
-
-                                        <input type="text" class="pDate{{ forloop.counter }}"/><br>
-                                        <button class="btn btn-primary btn-xs" type="submit"
-                                                onclick="submitNewDate('{{ forloop.counter }},P,{{ workshop.instructor_id }},{{ workshop.coordinator_id }},{{ workshop.title_id }},{{ workshop.date | safe }}')">
-                                            Update
-                                        </button>
-                                    </div>
-                                </td>
-                            {% else %}
-                                <td>{{ workshop.date | date }}</td>
-                            {% endif %}
-                            <td><span class="badge badge-success">{{ workshop.status }}</span></td>
                         {% endif %}
                     </tr>
                     </tbody>

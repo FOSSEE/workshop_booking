@@ -60,7 +60,15 @@
                             {{ form.date }}
                             <br>
                             {{ form.tnc_accepted }} I accept the <a href="/tnc">terms and conditions</a>
-                            <br><br>
+                            <br>
+                            {% if form.errors %}
+                                <br>
+                                <div style="text-align: left; border: 1px solid red; padding-top: 5px">
+                                    <h5 style="text-align: center; color: red; font-weight: bolder">Errors</h5>
+                                    {{ form.errors }}
+                                </div>
+                            {% endif %}
+                            <br>
                             <button class="btn btn-success" type="submit">Submit</button>
                         </form>
                     </div>
