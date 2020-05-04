@@ -362,14 +362,7 @@ def workshop_type_list(request):
     paginator = Paginator(workshop_types, 12)  # Show upto 12 workshops per page
 
     page = request.GET.get('page')
-    try:
-        workshop_type = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        workshop_type = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range(e.g 999999), deliver last page.
-        workshop_type = paginator.get_page(paginator.num_pages)
+    workshop_type = paginator.get_page(paginator.num_pages)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
 
