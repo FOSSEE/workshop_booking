@@ -15,13 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from workshop_app import views
-#from chatterbot.ext.django_chatterbot import urls as chatterbot_urls
-import django
-
-js_info_dict = {
-    'packages': ('recurrence', ),
-}
 
 
 urlpatterns = [
