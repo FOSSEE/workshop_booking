@@ -27,7 +27,5 @@ js_info_dict = {
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('workshop_app.urls')),
-    # url(r'^', include('workshop_app.urls_password_reset')),
-    # url(r'^', include('statistics_app.urls')),
 
 ]

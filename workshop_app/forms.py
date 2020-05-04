@@ -91,7 +91,6 @@ class UserRegistrationForm(forms.Form):
         new_profile = Profile(user=new_user)
         new_profile.institute = cleaned_data["institute"]
         new_profile.department = cleaned_data["department"]
-        # new_profile.position = cleaned_data["position"]
         new_profile.phone_number = cleaned_data["phone_number"]
         new_profile.location = cleaned_data["location"]
         new_profile.title = cleaned_data["title"]
@@ -100,8 +99,7 @@ class UserRegistrationForm(forms.Form):
         new_profile.activation_key = generate_activation_key(new_user.username)
         new_profile.key_expiry_time = timezone.now() + timezone.timedelta(days=1)
         new_profile.save()
-        key = Profile.objects.get(user=new_user).activation_key
-        return u_name, pwd, key
+        return u_name, pwd, new_profile.activation_key
 
 
 class UserLoginForm(forms.Form):
@@ -144,7 +142,6 @@ class ProfileForm(forms.ModelForm):
         self.fields['last_name'].initial = user.last_name
 
 
-# debug : Changed this
 class WorkshopForm(forms.ModelForm):
     """
     Coordinators will propose a workshop and date 

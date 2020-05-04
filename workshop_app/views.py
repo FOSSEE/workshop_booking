@@ -31,20 +31,17 @@ __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
 # Helper functions
 
 def is_email_checked(user):
-    if hasattr(user, 'profile'):
-        return True if user.profile.is_email_verified else False
-    else:
-        return False
+    return user.profile.is_email_verified
 
 
 def is_instructor(user):
     """Check if the user is having instructor rights"""
-    return True if user.groups.filter(name='instructor').count() > 0 else False
+    user.groups.filter(name='instructor').exists()
 
 
 def get_landing_page(user):
     # For now, landing pages of both instructor and coordinator are same
-    if user.groups.filter(name='instructor').count() > 0:
+    if is_instructor(user):
         return '/my_workshops/'
     return '/my_workshops/'
 
@@ -99,14 +96,14 @@ def activate_user(request, key=None):
     if user.is_superuser:
         return redirect("/admin")
     if key is None:
-        if user.is_authenticated and user.profile.is_email_verified == 0 and \
+        if user.is_authenticated and not user.profile.is_email_verified and \
                 timezone.now() > user.profile.key_expiry_time:
             status = "1"
             Profile.objects.get(user_id=user.profile.user_id).delete()
             User.objects.get(id=user.profile.user_id).delete()
             return render(request, 'workshop_app/activation.html',
                           {'status': status})
-        elif user.is_authenticated and user.profile.is_email_verified == 0:
+        elif user.is_authenticated and not user.profile.is_email_verified:
             return render(request, 'workshop_app/activation.html')
         elif user.is_authenticated and user.profile.is_email_verified:
             status = "2"
@@ -116,8 +113,8 @@ def activate_user(request, key=None):
             return redirect('/register/')
 
     user = Profile.objects.filter(activation_key=key)
-    if user.count() > 0:
-        user = user[0]
+    if user.exists():
+        user = user.first()
     else:
         logout(request)
         return redirect('/register/')
@@ -252,7 +249,7 @@ def my_workshops(request):
                         pass
                     else:
                         workshop = Workshop.objects.filter(id=client_data.get('workshop_id'))
-                        workshop_date = workshop[0].date
+                        workshop_date = workshop.first().date
                         workshop.update(date=new_workshop_date)
 
                         # For Instructor
@@ -269,7 +266,7 @@ def my_workshops(request):
                                    other_email=coordinator_email.email
                                    )
 
-            today = datetime.today().date()
+            today = timezone.now()
             proposed_workshop = Workshop.objects.filter(
                 instructor=user.id,
                 date__gte=today,
@@ -328,7 +325,7 @@ def propose_workshop(request):
                                    user_position='instructor',
                                    workshop_date=str(form_data.date),
                                    workshop_title=form_data.workshop_type,
-                                   user_name=str(user.get_full_name()),
+                                   user_name=user.get_full_name(),
                                    other_email=i.user.email,
                                    phone_number=user.profile.phone_number,
                                    institute=user.profile.institute
@@ -373,6 +370,6 @@ def workshop_type_list(request):
         workshop_type = paginator.page(1)
     except EmptyPage:
         # If page is out of range(e.g 999999), deliver last page.
-        workshop_type = paginator.page(paginator.num_pages)
+        workshop_type = paginator.get_page(paginator.num_pages)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
