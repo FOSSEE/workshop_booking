@@ -201,7 +201,6 @@ def my_workshops(request):
     if user.is_authenticated:
         # View for instructor
         if is_instructor(user):
-            print('inst')
             if request.method == 'POST':
                 client_data = request.POST
                 action = request.POST.get('action')
@@ -333,7 +332,6 @@ def propose_workshop(request):
                                    )
                     return redirect('/my_workshops/')
         # GET request
-        print(form.errorlist_css_class)
         return render(
             request, 'workshop_app/propose_workshop.html',
             {"form": form}
