@@ -1,100 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>
-		{% block title %}
-			HomePage
-		{% endblock %}
-	</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}
+            HomePage
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-    <link href="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/sticky-footer.css" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    {% block extra-dependencies %}
+    {% endblock %}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/base.css" type="text/css"/>
     <!-- favicon -->
-    <link rel="shortcut icon" type="image/png" href="{{ URL_ROOT}}/static/workshop_app/img/fevicon_python.png"/>
+    <link rel="shortcut icon" type="image/png" href="{{ URL_ROOT }}/static/workshop_app/img/fevicon_python.png"/>
+    {% block extra-custom-scripts %}
+    {% endblock %}
 </head>
 
-	<!-- For js/ajax and other related scripts -->
-	{% block extra %}
-	{% endblock %}
-
 <body style="overflow: scroll;">
- {% block header %}
- <nav class="navbar navbar-default navbar-custom">
-  <div class="container-fluid">
-      {% if request.user.profile.position == 'instructor' %}
-	<div class="navbar-header">
-	    <a class="navbar-brand" >FOSSEE Python Workshops</a>
-	</div>
-          <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/manage/">Manage Workshops</a></li>
-            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-          </ul>
-        {% elif request.user.profile.position == 'coordinator' %}
-	        <div class="navbar-header">
-	            <a class="navbar-brand" >FOSSEE Python Workshops</a>
-	        </div>
-          <ul class="nav navbar-nav">
-            <li ><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
-                    <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
-                    <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
-                </ul>
-            </li>
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-          </ul>
-          {% else %}
-	        <div class="navbar-header">
-	            <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Python Workshops</a>
-	        </div>
+{% block header %}
+    <nav class=" navbar-custom navbar navbar-expand-lg bg-light">
+        <a class="navbar-brand" href="/">FOSSEE Python Workshops</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        {% endif %}
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if request.user.profile.position == 'coordinator' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/my_workshops/">Workshop Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/propose_workshop/">Propose Workshop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/workshop_types/">Workshop Types</a>
+                    </li>
+                {% elif request.user.profile.position == 'instructor' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/my_workshops/">Workshop Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/workshop_types/">Workshop Types</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <div class="my-2 my-lg-0">
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
+                                    class="material-icons" style="vertical-align: middle">account_circle</span>
+                                &nbsp;<p
+                                        style="display: inline; vertical-align: middle">{{ user.first_name }} {{ user.last_name }}</p>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/view_profile/">Profile</a>
+                                <a class="dropdown-item" href="/logout">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register/">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login/">Login</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+{% endblock %}
 
-        <ul class="nav navbar-nav navbar-right">
-            {% if request.user.profile.position == 'instructor' %}
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
-                    <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
-                    <li><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
-                </ul>
-            </li>
-            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            {%  elif request.user.profile.position == 'coordinator' %}
-	          <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
-            <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            {% else %}
-                <li><a href="{{URL_ROOT}}/register">Register</a></li>
-                <li><a href="{{URL_ROOT}}/login">Login</a></li>
-                <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
-                <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
-                <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
-        </ul>
-            {% endif %}
-  	</div>
-  </nav>
-  {% endblock %}
+{% block content %}
+    <h1>Base Template Content. Please override me</h1>
+{% endblock %}
 
-	{% block content %}
-		<h1>Base Template Content. Please override me</h1>
-	{% endblock %}
 
-	
 </body>
-	<footer class="footer">
-		<div class="container">
-			 <p align="center">Developed by FOSSEE group, IIT Bombay</p>
-		 </div>
-	</footer>
+<footer class="footer">
+    <div class="container">
+        Developed by FOSSEE group, IIT Bombay
+    </div>
+</footer>
 </html>

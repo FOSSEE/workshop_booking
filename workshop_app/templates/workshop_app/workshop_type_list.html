@@ -63,13 +63,13 @@
 		    </tr>
 		  </thead>
 
-		{% for w in workshoptype %}
+		{% for w in workshop_type %}
 		  <tbody>
 		    <tr  >
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
-		      <td>{{ w.workshoptype_name }}</td>
-		      <td>{{ w.workshoptype_duration }}</td>
-		      <td><a href="{{URL_ROOT}}/view_workshoptype_details/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
+		      <td>{{ w.name }}</td>
+		      <td>{{ w.duration }}</td>
+		      <td><a href="{{URL_ROOT}}/workshop_type_details/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
 		    </tr>
 		  </tbody>
 		 {% endfor %}
@@ -101,17 +101,17 @@
 			  	<li class="page-item">
 			      {% if workshoptype.has_previous %}
 					<a class="page-link" tabindex="-1" 
-							href="?page={{ workshoptype.previous_page_number }}">Previous</a>
+							href="?page={{ workshop_type.previous_page_number }}">Previous</a>
 				{% endif %}
 			    </li>
 			    <li class="page-item">
 			    <span class="current">
-				Page {{ workshoptype.number }} of {{ workshoptype.paginator.num_pages }}
+				Page {{ workshop_type.number }} of {{ workshop_type.paginator.num_pages }}
 					</span>
 				</li>
 			    <li class="page-item">
-			    {% if workshoptype.has_next %}
-					<a class="page-link" href="?page={{ workshoptype.next_page_number }}">Next
+			    {% if workshop_type.has_next %}
+					<a class="page-link" href="?page={{ workshop_type.next_page_number }}">Next
 					</a>
 				{% endif %}
 			    </li>

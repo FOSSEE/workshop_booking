@@ -1,23 +1,25 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	Awating activation
+    Awaiting activation
 {% endblock %}
 
 {% block header %}
-	<nav class="navbar navbar-default navbar-custom">
-	  <div class="container-fluid">
-		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
-		</div>
-		<ul class="nav navbar-nav navbar-right">
-		{% if request.user.profile.is_email_verified %}
-		  <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-		
-		  <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-		{% endif %}
-		</ul>
-	  	</div>
+    <nav class="navbar navbar-default navbar-custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">FOSSEE Python Workshops</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.profile.is_email_verified %}
+                    <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span>
+                        Profile</a></li>
+
+                    <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
 {% endblock %}
 
@@ -26,45 +28,46 @@
 {% endblock %}
 
 {% block content %}
-	{% if status == '2' %}
-	<div class="container">
-			<div class="jumbotron">
-				<p> Your email is already verified, Please view your profile <a href="{{ URL_ROOT }}/view_profile/">here</a> </p>
-				
-			</div>
-	</div>
-	{% elif status == '1' %}
-	<script type="text/javascript">
-		window.setTimeout(function()
-		{   
-			location.href="{{ URL_ROOT }}/register/"
-		}, 3000);
-	</script>
-	<div class="container">
-			<div class="jumbotron">
-				<p> Your activation has expired please register again</p>
-			</div>
-	</div>
-	{% elif status == '0' %}
-	<div class="container">
-			<div class="jumbotron">
-				<p> Your account has been activated. Please view your profile <a href="{{ URL_ROOT }}/view_profile/">here</a> </p>
-				
-			</div>
-	</div>
-	{% else %}
-	<script type="text/javascript">
-		window.setTimeout(function()
-		{   
-			location.href="{{ URL_ROOT }}/logout/"
-		}, 5000);
-	</script>
+    {% if status == '2' %}
+        <div class="container">
+            <div class="jumbotron">
+                <p> Your email is already verified, Please view your profile <a
+                        href="{{ URL_ROOT }}/view_profile/">here</a></p>
 
-	<div class="container">
-		<div class="jumbotron">
-			<h1>Activation Awaiting</h1>      
-			<p>The Activation Link has been sent to your email. The link expires in <strong>24hours</strong> from the date of registration. You will be logged out automatically.</p>
-		</div>
-	</div>
-	{% endif %}
+            </div>
+        </div>
+    {% elif status == '1' %}
+        <script type="text/javascript">
+            window.setTimeout(function () {
+                location.href = "{{ URL_ROOT }}/register/"
+            }, 3000);
+        </script>
+        <div class="container">
+            <div class="jumbotron">
+                <p> Your activation has expired please register again</p>
+            </div>
+        </div>
+    {% elif status == '0' %}
+        <div class="container">
+            <div class="jumbotron">
+                <p> Your account has been activated. Please view your profile <a href="{{ URL_ROOT }}/view_profile/">here</a>
+                </p>
+
+            </div>
+        </div>
+    {% else %}
+        <script type="text/javascript">
+            window.setTimeout(function () {
+                location.href = "{{ URL_ROOT }}/logout/"
+            }, 5000);
+        </script>
+
+        <div class="container">
+            <div class="jumbotron">
+                <h1>Activation Awaiting</h1>
+                <p>The Activation Link has been sent to your email. The link expires in <strong>24hours</strong> from
+                    the date of registration. You will be logged out automatically.</p>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

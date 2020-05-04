@@ -1,393 +1,234 @@
 {% extends "workshop_app/base.html" %}
 
 {% block title %}
-	 Workshop Status
+    Workshop Status
 {% endblock %}
 
-{% block extra %}
-	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
- 	<script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
-	<script src="{{URL_ROOT}}/static/workshop_app/js/jquery-1.12.1-ui.min.js"></script>
+{% block extra-dependencies %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+{% endblock %}
+{% block extra-custom-scripts %}
+    <script>
+        //ToolTip popup function on-hover
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover({
+                placement: 'top',
+                trigger: 'hover'
+            });
+        });
 
-	<script>
-		//ToolTip popup function onhover
-		$(document).ready(function(){
-	    $('[data-toggle="popover"]').popover({
-	        placement : 'top',
-	        trigger : 'hover'
-	    	});
-		});
+        //ToolTip popup function on-hover
+        $(document).ready(function () {
+            $('[data-toggle="popinfo"]').popover({
+                placement: 'top',
+                trigger: 'hover'
+            });
+        });
 
-		function sendData(d){
-			var URL = "{{ URL_ROOT }}/my_workshops/"
-			$.ajax({
-				url: URL,
-				type: "POST",
-				dataType: 'json',
-				data: {
-					d,
-					csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-				},
-			});
+        // Change date modal
+        function changeDate(date) {
+            var previous_date = new Date(date);
+            var dateToday = new Date();
+            var upto = new Date();
 
-			window.location.reload();
-			alert("Refreshing Page please wait, if you don't see your changes, please refresh this page again.");
-		}
-	</script>
+            previous_date.setDate(previous_date.getDate() + 1);
+            upto.setFullYear(dateToday.getFullYear() + 1);
 
-	<!-- Change Workshop Date -->
-	<script type="text/javascript">
-		//ToolTip popup function onhover
-		$(document).ready(function(){
-	    $('[data-toggle="popinfo"]').popover({
-	        placement : 'top',
-	        trigger : 'hover'
-	    	});
-		});
+            if (date[0] == 'P') {
+                var counter = date.split(" ");
+                var id = counter.slice(-1).pop();
+                counter = '.pDate' + id
+                $(counter).datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    minDate: dateToday,
+                    maxDate: upto,
+                    dateFormat: "yy-mm-dd",
+                });
+                $(".ui-dialog-content").dialog("close");
+                $('.myDialogP' + id).dialog();
 
-			function changeDate(date){
-				var previous_date = new Date(date);
-				var dateToday = new Date();
-    			var upto = new Date();
+            } else {
+                var counter = date.split(" ");
+                var id = counter.slice(-1).pop();
+                counter = '.rDate' + id;
+                $(counter).datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    minDate: dateToday,
+                    maxDate: upto,
+                    dateFormat: "yy-mm-dd",
+                });
+                $(".ui-dialog-content").dialog("close");
+                $('.myDialogR' + id).dialog();
 
-    			previous_date.setDate(previous_date.getDate() + 1);
-    			upto.setFullYear(dateToday.getFullYear() + 1);
-
-    			if(date[0]=='P'){
-    				var counter = date.split(" ");
-    				var id = counter.slice(-1).pop();
-    				counter = '.pDate'+id
-			        $(counter).datepicker({
-			        	changeMonth: true,
-	         			changeYear: true,
-	          			minDate: dateToday,
-	          			maxDate: upto,
-	          			dateFormat:"yy-mm-dd",
-			        });
-			        $(".ui-dialog-content").dialog("close");
-			        $('.myDialogP'+id).dialog();
-
-			    } else {
-			    	var counter = date.split(" ");
-			    	var id = counter.slice(-1).pop();
-    				counter = '.rDate'+id;
-					 $(counter).datepicker({
-			        	changeMonth: true,
-	         			changeYear: true,
-	          			minDate: dateToday,
-	          			maxDate: upto,
-	          			dateFormat:"yy-mm-dd",
-			        });
-			       	 $(".ui-dialog-content").dialog("close");
-			       	 $('.myDialogR'+id).dialog();
-
-			       	}
-				};
-
-			function submitNewDate(info){
-				var data = info.split(",");
-				if(data[1] == 'R'){
-					var date = document.getElementsByClassName('rDate'+data[0]);
-					info = data.slice(2);
-				}
-				else{
-					var date = document.getElementsByClassName('pDate'+data[0]);
-					info = data.slice(2);
-				}
-				var data_c = info + ',new_date=' + date[0].value +',CHANGE_DATE';
-				var URL = "{{ URL_ROOT }}/my_workshops/";
-				$.ajax({
-					url: URL,
-					async: false,
-					type: "POST",
-					data: {
-						data_c,
-						csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
-					},
-					success:function(response){
-						window.location.reload();
-						alert(response);
-					}
-				});
-
-			};
+            }
+        };
 
     </script>
 {% endblock %}
 
 
 {% block content %}
-{% if workshops %}
-	<h3 align="center" style="color:#2952a2;">The status of your workshops </h3>
-	<br>
+    {% if workshops %}
+        <h3 align="center" style="color:#2952a2;">The status of your workshops </h3>
+        <br>
 
-	<!-- Pending View -->
-	<div class="container">
-	{% if request.user.profile.position == 'instructor'%}
-	    <h3 align="center" style="color: #04a9cf;"><strong><u>Team Member Requests</u></strong></h3>
+        <!-- Accepted View -->
+        <br>
+        <div class="container">
+            <h3 align="center" style="color: #04a9cf;"><strong>Workshops Accepted</strong></h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    {% if request.user.profile.position == 'instructor' %}
+                        <th>Coordinator Name</th>
+                        <th>Institute</th>
+                    {% else %}
+                        <th>Instructor Name</th>
+                    {% endif %}
+                    <th>Workshop Name</th>
+                    <th>Workshop Day</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                {% csrf_token %}
+                {% for workshop in workshops %}
+                    <tbody>
+                    <tr>
+                        {% if workshop.status == 1 and workshop.workshop_type %}
+                            {% if request.user.profile.position == 'instructor' %}
+                                <td>
+                                    <a href="{{ URL_ROOT }}/view_profile/{{ workshop.coordinator.profile.user.id }}">
+                                        {{ workshop.coordinator.get_full_name }}</a></td>
+                                <td>{{ workshop.coordinator.profile.institute }}</td>
+                            {% else %}
+                                <td>{{ workshop.instructor.get_full_name }}</td>
+                            {% endif %}
+                            <td>{{ workshop.workshop_type |capfirst }}</td>
+                            {% if workshop.date > today %}
+                                <td>{{ workshop.date | date }}
+                                    <span class="material-icons" style="cursor:pointer;" data-toggle="popinfo"
+                                          title="Note"
+                                          data-content="Click here to change date"
+                                          class="datepicker"
+                                          onclick="changeDate('R,{{ workshop.date| safe }}, {{ forloop.counter }}')">event</span>
+                                    <div class="myDialogR{{ forloop.counter }}" style="display: none;"
+                                         title="Select New Date">
+                                        <form method="post">
+                                            <input type="text" name="new_date" class="rDate{{ forloop.counter }}"/><br>
+                                            <input type="hidden" name="action" value="change_date">
+                                            <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                            <input type="hidden" name="cid" value="{{ workshop.coordinator.id }}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-xs" type="submit">Save</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td>{{ workshop.date | date }}</td>
+                            {% endif %}
+                            <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
+                        {% endif %}
+                    </tr>
+                    </tbody>
 
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Coordinator Name</th>
-					<th>Team Member</th>
-					<th>Workshop Name</th>
-					<th>Workshop Day</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for workshop in team_workshops %}
-				<tr>
-					<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.id }}">
-						{{ workshop.proposed_workshop_coordinator.get_full_name }}</a>
-					</td>
-					<td>
-						{{ workshop.proposed_workshop_instructor.get_full_name }}
-					</td>
-					<td>
-						{{ workshop.proposed_workshop_title }}
-					</td>
-					<td>
-						{{ workshop.proposed_workshop_date | date }}
-					</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	{% endif %}
-	{% if request.user.profile.position == 'instructor' %}
-	    <h3 align="center" style="color: #04a9cf;"><strong><u>Requests for Me</u></strong></h3>
-	{% else %}
-	 <h3 align="center" style="color: #04a9cf;"><strong><u>My Requests</u></strong></h3>
-	{% endif %}
-		<table class="table table-striped">
-			<thead>
-				<tr>
-				{% if request.user.profile.position == 'instructor' %}
-					<th>Coordinator Name</th>
-				{% else %}
-					<th>Instructor Name</th>
-				{% endif %}
-					<th>Workshop Name</th>
-					<th>Workshop Day</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			{% csrf_token %}
-			{% for workshop in workshops %}
-					<tbody>
-						<tr>
-						{% if workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
-							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
-									{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
-							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
-							{% endif %}
-								<td>{{ workshop.requested_workshop_title }}</td>
-								<td>{{ workshop.requested_workshop_date | date }}</td>
-								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
-						{% endif %}
-							{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending' and workshop.requested_workshop_instructor %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},ACCEPTED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
-								<td><button class="btn btn-danger btn-sm" id="book-btn" onClick="sendData('{{workshop.requested_workshop_coordinator}},{{workshop.requested_workshop_date| safe}},{{ workshop.requested_workshop_title_id }},REJECTED')" data-toggle="popover" title="Please Note" data-content="Once Rejected you cannot revoke this action."> Reject </button></td>
-							{% endif %}
-						</tr>
-					</tbody>
-			{% endfor %}
-		</table>
-	</div>
+                {% endfor %}
 
-	<!-- Accepted View -->
-	<div class="container">
-	    <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Accepted</u></strong></h3>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-				{% if request.user.profile.position == 'instructor' %}
-					<th>Coordinator Name</th>
-					<th>Institute</th>
-				{% else %}
-					<th>Instructor Name</th>
-				{% endif %}
-					<th>Workshop Name</th>
-					<th>Workshop Day</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			{% csrf_token %}
-			{% for workshop in workshops %}
-					<tbody>
-						<tr>
-						{% if workshop.status == 'ACCEPTED' and workshop.requested_workshop_title %}
-							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.requested_workshop_coordinator.profile.user.id }}">
-								{{ workshop.requested_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.requested_workshop_coordinator.profile.institute }}</td>
-							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
-							{% endif %}
-								<td>{{ workshop.requested_workshop_title |capfirst }}</td>
-								{% if workshop.requested_workshop_date > today %}
-									<td>{{ workshop.requested_workshop_date | date }}
-										<span class="glyphicon glyphicon-calendar" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										class="datepicker" onclick="changeDate('R,{{ workshop.requested_workshop_date| safe}}, {{forloop.counter}}')">
-										</span>
-										<div class="myDialogR{{forloop.counter}}" style="display: none;" title="Select New Date">
-
-											<input type="text" class="rDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},R,{{workshop.requested_workshop_instructor_id}},{{workshop.requested_workshop_coordinator_id}},{{ workshop.requested_workshop_title_id }},{{ workshop.requested_workshop_date | safe}}')">Save</button>
-										</div>
-            						</td>
-								{% else %}
-									<td>{{ workshop.requested_workshop_date | date }}</td>
-								{% endif %}
-								<td><span class = "label label-success">{{ workshop.status }}</span></td>
-						{% endif %}
-						{% if workshop.status == 'ACCEPTED' and workshop.condition_one %}
-							{% if request.user.profile.position == 'instructor' %}
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
-								{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
-							{% else %}
-								<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
-							{% endif %}
-								<td>{{ workshop.proposed_workshop_title  }}</td>
-								{% if workshop.proposed_workshop_date > today %}
-								<td>{{ workshop.proposed_workshop_date | date }}
-									<span class="glyphicon glyphicon-calendar" 
-										class="datepicker" data-toggle="popinfo" title="Note" data-content="Click here to change date"
-										onclick="changeDate('P,{{ workshop.proposed_workshop_date | safe}}, {{forloop.counter}}')">
-										</span>
-										<div class="myDialogP{{forloop.counter}}" style="display: none;" title="Select New Date">
-
-											<input type="text" class="pDate{{forloop.counter}}" /><br>
-											<button class="btn btn-primary btn-xs" type="submit" onclick="submitNewDate('{{forloop.counter}},P,{{workshop.proposed_workshop_instructor_id}},{{workshop.proposed_workshop_coordinator_id}},{{ workshop.proposed_workshop_title_id }},{{ workshop.proposed_workshop_date | safe}}')">Update</button>
-										</div>
-								</td>
-								{% else %}
-									<td>{{ workshop.proposed_workshop_date | date }}</td>
-								{% endif %}
-								<td><span class = "label label-success">{{ workshop.status }}</span></td>
-						{% endif %}
-						</tr>
-					</tbody>
-
-			{% endfor %}
-
-		</table>
-	</div>
+            </table>
+        </div>
 
 
-<!-- Proposed View -->
-<div class="container">
-      {% if request.user.profile.position == 'instructor' %}
-	<h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Coordinators</u></strong></h3>
-      {% else %}
-	<h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Proposed By Me</u></strong></h3>
-      {% endif %}
-		<table class="table table-striped">
-			<thead>
-				<tr>
-				{% if request.user.profile.position == 'instructor' %}
-					<th>Coordinator Name</th>
-					<th>Institute</th>
-				{% else %}
+        <!-- Proposed View -->
+        <br>
+        <div class="container">
 
-				{% endif %}
-					<th>Workshop Name</th>
-					<th>Workshop Day</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			{% csrf_token %}
-			{% for workshop in workshops %}
-					<tbody>
-						<tr>
-						{% if workshop.status == 'Pending' and workshop.condition_one %}
-							{% if request.user.profile.position == 'instructor' %}
-							
-								<td><a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.proposed_workshop_coordinator.profile.user.id }}">
-									{{ workshop.proposed_workshop_coordinator.get_full_name }}</a></td>
-								<td>{{ workshop.proposed_workshop_coordinator.profile.institute }}</td>
-							{% endif %}
-								<td>{{ workshop.proposed_workshop_title  }}</td>
-								<td>{{ workshop.proposed_workshop_date | date }}</td>
+            {% if request.user.profile.position == 'instructor' %}
+                <h3 align="center" style="color: #04a9cf;"><strong>Workshops Proposed By Coordinators</strong>
+                </h3>
+            {% else %}
+                <h3 align="center" style="color: #04a9cf;"><strong>Workshops Proposed By Me</strong></h3>
+            {% endif %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    {% if request.user.profile.position == 'instructor' %}
+                        <th>Coordinator Name</th>
+                        <th>Institute</th>
+                    {% else %}
 
-								<td><span class = "label label-warning">{{ workshop.status }}</span></td>
-								{% if request.user.profile.position == 'instructor' and workshop.status == 'Pending'  %}
-								<td><button class="btn btn-primary btn-sm" id="book-btn" onClick="sendData('{{workshop.proposed_workshop_coordinator}},{{workshop.proposed_workshop_date| safe}},{{ workshop.proposed_workshop_title_id }},APPROVED')" data-toggle="popover" title="Please Note" data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled"> Accept</button></td>
-							{% endif %}
-						{% endif %}
-						</tr>
-					</tbody>
+                    {% endif %}
+                    <th>Workshop Name</th>
+                    <th>Workshop Day</th>
+                    <th>Status</th>
+                    {% if request.user.profile.position == 'instructor' %}
+                        <th>Action</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                {% csrf_token %}
+                {% for workshop in workshops %}
+                    <tbody>
+                    <tr>
+                        {% if workshop.status == 0 and workshop.tnc_accepted %}
+                            {% if request.user.profile.position == 'instructor' %}
 
-			{% endfor %}
-		</table>
-	</div>
+                                <td>
+                                    <a href="{{ URL_ROOT }}/view_comment_profile/{{ workshop.coordinator.profile.user.id }}">
+                                        {{ workshop.coordinator.get_full_name }}</a></td>
+                                <td>{{ workshop.coordinator.profile.institute }}</td>
+                            {% endif %}
+                            <td>{{ workshop.workshop_type }}</td>
+                            <td>{{ workshop.date | date }}</td>
 
+                            <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
+                            {% if request.user.profile.position == 'instructor' and workshop.status == 0 %}
+                                <td>
+                                    <form method="post">
+                                        <input type="hidden" name="action" value="accept">
+                                        <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover"
+                                                title="Please Note"
+                                                data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled">
+                                            Accept
+                                        </button>
+                                    </form>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    </tr>
+                    </tbody>
 
-<!-- Deleted/Rejected View -->
-<div class="container">
-	  <h3 align="center" style="color: #04a9cf;"><strong><u>Workshops Deleted/Rejected</u></strong></h3>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-				{% if request.user.profile.position == 'instructor' %}
-					<th>Coordinator Name</th>
-				{% else %}
-					<th>Instructor Name</th>
-				{% endif %}
-					<th>Workshop Name</th>
-					<th>Workshop Day</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			{% csrf_token %}
-			{% for workshop in workshops %}
-					<tbody>
-						<tr>
-						{% if workshop.status == 'DELETED' or workshop.status == 'REJECTED' %}
-							{% if request.user.profile.position == 'instructor' %}
-								<td>{{ workshop.requested_workshop_coordinator.get_full_name }}</td>
-							{% else %}
-								<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
-							{% endif %}
-								<td>{{ workshop.requested_workshop_title |  capfirst }}</td>
-								<td>{{ workshop.requested_workshop_date  | date }}</td>
-
-								<td><span class = "label label-danger">{{ workshop.status }}</span></td>
-						{% endif %}
-						</tr>
-					</tbody>
-
-			{% endfor %}
-		</table>
-	</div>
+                {% endfor %}
+            </table>
+        </div>
 
 
-{% else %}
-	{% if request.user.profile.position == 'instructor' %}
-		<div class="container">
-			<div class="jumbotron">
-				<h1>Welcome {{ user.first_name }}</h1>
-				<p>Your workshop related information will be shown here, Please navigate to <b>Workshop list</b> and depending upon
-				your expertise and availability create a workshop by going to
-				<b>Create Workshop</b>.</p>
-			</div>
-		</div>
-	{% else %}
-		<div class="container">
-			<div class="jumbotron">
-				<h1>Welcome {{ user.first_name }}</h1>
-				<p>Information Related to your workshops will be shown here, you can also
-				propose a Workshop as per your available date in <strong>Workshops > Propose a Workshop tab</strong> .</p>
-			</div>
-		</div>
-	{% endif %}
-{% endif %}
+
+    {% else %}
+        {% if request.user.profile.position == 'instructor' %}
+            <div class="container">
+                <div class="jumbotron">
+                    <h1>Welcome {{ user.first_name }}</h1>
+                    <p>Your workshop related information will be shown here, Please navigate to <b>Workshop list</b> and
+                        depending upon
+                        your expertise and availability create a workshop by going to
+                        <b>Create Workshop</b>.</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="container">
+                <div class="jumbotron">
+                    <h1>Welcome {{ user.first_name }}</h1>
+                    <p>Information Related to your workshops will be shown here, you can also
+                        propose a Workshop as per your available date in <strong>Workshops > Propose a Workshop
+                            tab</strong> .</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
 
 {% endblock %}
-

@@ -1,63 +1,81 @@
 {% extends "workshop_app/base.html" %}
 
 {% block title %}
-	Propose a workshop
+    Propose a workshop
 {% endblock %}
 
-  {% block extra %}
+{% block extra-dependencies %}
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
-
-    <!-- calender -->
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+{% endblock %}
 
+{% block extra-custom-scripts %}
     <script>
-    var dateToday = new Date();
-    var upto = new Date();
+        var dateToday = new Date();
+        var upto = new Date();
 
-    dateToday.setDate(dateToday.getDate() + 3);
-    upto.setFullYear(dateToday.getFullYear() + 1);
+        dateToday.setDate(dateToday.getDate() + 3);
+        upto.setFullYear(dateToday.getFullYear() + 1);
 
-      $(function() {
-        $( ".datepicker" ).datepicker({
-          changeMonth: true,
-          changeYear: true,
-          minDate: dateToday,
-          maxDate: upto,
-          beforeShowDay: $.datepicker.noWeekends,
-
-          // You can put more options here.
+        $(function () {
+            $(".datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                minDate: dateToday,
+                maxDate: upto,
+                beforeShowDay: $.datepicker.noWeekends,
+            });
         });
-      });
-  </script>
-  {% endblock %}
+    </script>
+{% endblock %}
 
 
 {% block content %}
-  <style type="text/css">
-      .errorlist {
-      color: red;
-    }
-  </style>
+    <style type="text/css">
+        .errorlist {
+            color: red;
+        }
+    </style>
 
-  <div class="container">
-	<div class="alert alert-info">
-  		Please Note: Students have to take a mandatory test before Advanced Python
-		Workshop only those who will clear this test will be eligible to attend
-		the workshop.
-	</div>
-    <form method="post">
-      {% csrf_token %}
-      <br/>
-      {{ form.as_p }}
-      <br><br>
-      <button class="btn btn-success" type="submit">Submit</button>
-    </form>
-    <br>
+    <div class="container" align="center">
+        <div class="alert alert-info">
+            Please Note: Students have to take a mandatory test before Advanced Python
+            Workshop only those who will clear this test will be eligible to attend
+            the workshop.
+        </div>
+        <br><br>
+        <div class="col-md-6 col-md-offset-6">
+            <div class="card border-primary">
+                <div class="card-header">
+                    <h3>Propose Workshop</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <form method="post">
+                            {% csrf_token %}
+                            <br/>
+                            {{ form.workshop_type }}
+                            <br>
+                            {{ form.date }}
+                            <br>
+                            {{ form.tnc_accepted }} I accept the <a href="/tnc">terms and conditions</a>
+                            <br>
+                            {% if form.errors %}
+                                <br>
+                                <div style="text-align: left; border: 1px solid red; padding-top: 5px">
+                                    <h5 style="text-align: center; color: red; font-weight: bolder">Errors</h5>
+                                    {{ form.errors }}
+                                </div>
+                            {% endif %}
+                            <br>
+                            <button class="btn btn-success" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
 
-  </div>
+    </div>
 {% endblock %}
