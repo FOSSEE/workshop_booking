@@ -234,6 +234,8 @@ def workshop_status(request):
 @login_required
 def accept_workshop(request, workshop_id):
     user = request.user
+    if not is_instructor(user):
+        return redirect(get_landing_page(user))
     workshop = Workshop.objects.get(id=workshop_id)
     # Change Status of the selected workshop
     workshop.status = 1
@@ -265,6 +267,9 @@ def accept_workshop(request, workshop_id):
 
 @login_required
 def change_workshop_date(request, workshop_id):
+    user = request.user
+    if not is_instructor(user):
+        return redirect(get_landing_page(user))
     if request.method == 'POST':
         client_data = request.POST
         new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
