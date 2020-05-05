@@ -17,7 +17,7 @@ from django.conf.urls import url
 from workshop_app import views
 
 js_info_dict = {
-    'packages': ('recurrence', ),
+    'packages': ('recurrence',),
 }
 
 urlpatterns = [
@@ -29,9 +29,10 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout),
     url(r'^view_profile/$', views.view_profile),
     url(r'^edit_profile/$', views.edit_profile),
-    url(r'^my_workshops/$', views.my_workshops),
+    url(r'^my_workshops/$', views.my_workshops, name='my_workshops'),  # Coordinator
+    url(r'^workshop_status/$', views.workshop_status, name='workshop_status'),  # Instructor
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^workshop_types/$', views.workshop_type_list),
     url(r'^workshop_type_details/([1-9][0-9]*)$', views.workshop_type_details),
     url(r'^view_profile/([1-9][0-9]*)$', views.view_comment_profile),
- ]
+]
