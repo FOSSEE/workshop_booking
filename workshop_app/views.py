@@ -196,9 +196,7 @@ def edit_profile(request):
 
 # Workshop views
 
-
-
-
+@login_required
 def my_workshops(request):
     """ Workshops proposed by Coordinator """
     user = request.user
@@ -211,6 +209,7 @@ def my_workshops(request):
                   {"workshops": workshops})
 
 
+@login_required
 def workshop_status(request):
     """ Workshops to accept and accepted by Instructor """
     user = request.user
@@ -230,6 +229,65 @@ def workshop_status(request):
     return render(request, 'workshop_app/workshop_status.html',
                   {"workshops": workshops,
                    "today": today})
+
+
+@login_required
+def accept_workshop(request, workshop_id):
+    user = request.user
+    workshop = Workshop.objects.get(id=workshop_id)
+    # Change Status of the selected workshop
+    workshop.status = 1
+    workshop.instructor = user
+    workshop.save()
+
+    coordinator_profile = workshop.coordinator.profile
+
+    # For Instructor
+    send_email(request, call_on='Booking Confirmed',
+               user_position='instructor',
+               workshop_date=str(workshop.date),
+               workshop_title=workshop.workshop_type.name,
+               user_name=str(coordinator_profile.user.get_full_name()),
+               other_email=workshop.coordinator.email,
+               phone_number=coordinator_profile.phone_number,
+               institute=coordinator_profile.institute
+               )
+
+    # For Coordinator
+    send_email(request, call_on='Booking Confirmed',
+               workshop_date=str(workshop.date),
+               workshop_title=workshop.workshop_type.name,
+               other_email=workshop.coordinator.email,
+               phone_number=request.user.profile.phone_number
+               )
+    return redirect(reverse('workshop_status'))
+
+
+@login_required
+def change_workshop_date(request, workshop_id):
+    if request.method == 'POST':
+        client_data = request.POST
+        new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
+        today = datetime.today()
+        if today <= new_workshop_date:
+            workshop = Workshop.objects.filter(id=workshop_id)
+            workshop_date = workshop.first().date
+            workshop.update(date=new_workshop_date)
+
+            # For Instructor
+            send_email(request, call_on='Change Date',
+                       user_position='instructor',
+                       workshop_date=str(workshop_date),
+                       new_workshop_date=str(new_workshop_date.date())
+                       )
+
+            # For Coordinator
+            send_email(request, call_on='Change Date',
+                       new_workshop_date=str(new_workshop_date.date()),
+                       workshop_date=str(workshop_date),
+                       other_email=workshop.first().coordinator.email
+                       )
+    return redirect(reverse('workshop_status'))
 
 
 # TODO: Show terms n conditions of selected ws type

@@ -108,12 +108,9 @@
                                           onclick="changeDate('R,{{ workshop.date| safe }}, {{ forloop.counter }}')">event</span>
                                     <div class="myDialogR{{ forloop.counter }}" style="display: none;"
                                          title="Select New Date">
-                                        <form method="post">
+                                        <form method="post" action="{% url 'change_workshop_date' workshop.id %}">
                                             <input type="text" placeholder="New date" name="new_date"
                                                    class="rDate{{ forloop.counter }}"/><br>
-                                            <input type="hidden" name="action" value="change_date">
-                                            <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
-                                            <input type="hidden" name="cid" value="{{ workshop.coordinator.id }}">
                                             {% csrf_token %}
                                             <button class="btn btn-primary btn-xs" type="submit">Save</button>
                                         </form>
@@ -161,16 +158,13 @@
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                             <td>
-                                <form method="post">
-                                    <input type="hidden" name="action" value="accept">
-                                    <input type="hidden" name="workshop_id" value="{{ workshop.id }}">
-                                    {% csrf_token %}
+                                <a href="{% url 'accept_workshop' workshop.id %}">
                                     <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover"
                                             title="Please Note"
                                             data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled">
                                         Accept
                                     </button>
-                                </form>
+                                </a>
                             </td>
                         {% endif %}
                     </tr>
