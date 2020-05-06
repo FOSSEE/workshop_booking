@@ -44,8 +44,8 @@ def is_instructor(user):
 def get_landing_page(user):
     # For now, landing pages of both instructor and coordinator are same
     if is_instructor(user):
-        return reverse('workshop_status')
-    return reverse('my_workshops')
+        return reverse('workshop_status_instructor')
+    return reverse('workshop_status_coordinator')
 
 
 # View functions
@@ -152,7 +152,7 @@ def user_register(request):
             )
     else:
         if request.user.is_authenticated and is_email_checked(request.user):
-            return redirect('/my_workshops/')
+            return redirect(get_landing_page(request.user))
         elif request.user.is_authenticated:
             return render(request, 'workshop_app/activation.html')
         form = UserRegistrationForm()
@@ -197,7 +197,7 @@ def edit_profile(request):
 # Workshop views
 
 @login_required
-def my_workshops(request):
+def workshop_status_coordinator(request):
     """ Workshops proposed by Coordinator """
     user = request.user
     if is_instructor(user):
@@ -205,12 +205,12 @@ def my_workshops(request):
     workshops = Workshop.objects.filter(
         coordinator=user.id
     ).order_by('-date')
-    return render(request, 'workshop_app/my_workshops.html',
+    return render(request, 'workshop_app/workshop_status_coordinator.html',
                   {"workshops": workshops})
 
 
 @login_required
-def workshop_status(request):
+def workshop_status_instructor(request):
     """ Workshops to accept and accepted by Instructor """
     user = request.user
     if not is_instructor(user):
@@ -226,7 +226,7 @@ def workshop_status(request):
     ).order_by('-date')
 
     workshops = list(proposed_workshop) + list(proposed_workshop_pending)
-    return render(request, 'workshop_app/workshop_status.html',
+    return render(request, 'workshop_app/workshop_status_instructor.html',
                   {"workshops": workshops,
                    "today": today})
 
@@ -262,7 +262,7 @@ def accept_workshop(request, workshop_id):
                other_email=workshop.coordinator.email,
                phone_number=request.user.profile.phone_number
                )
-    return redirect(reverse('workshop_status'))
+    return redirect(reverse('workshop_status_instructor'))
 
 
 @login_required
@@ -292,7 +292,7 @@ def change_workshop_date(request, workshop_id):
                        workshop_date=str(workshop_date),
                        other_email=workshop.first().coordinator.email
                        )
-    return redirect(reverse('workshop_status'))
+    return redirect(reverse('workshop_status_instructor'))
 
 
 # TODO: Show terms n conditions of selected ws type
@@ -318,7 +318,7 @@ def propose_workshop(request):
                         workshop_type=form_data.workshop_type,
                         coordinator=form_data.coordinator
                 ).exists():
-                    return redirect('/my_workshops/')
+                    return redirect(get_landing_page(user))
                 else:
                     form_data.save()
                     instructors = Profile.objects.filter(position='instructor')
@@ -332,7 +332,7 @@ def propose_workshop(request):
                                    phone_number=user.profile.phone_number,
                                    institute=user.profile.institute
                                    )
-                    return redirect('/my_workshops/')
+                    return redirect(get_landing_page(user))
         # GET request
         return render(
             request, 'workshop_app/propose_workshop.html',

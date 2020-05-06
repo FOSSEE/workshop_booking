@@ -16,10 +16,6 @@ Including another URLconf
 from django.conf.urls import url
 from workshop_app import views
 
-js_info_dict = {
-    'packages': ('recurrence',),
-}
-
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^register/$', views.user_register),
@@ -29,8 +25,8 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout),
     url(r'^view_profile/$', views.view_profile),
     url(r'^edit_profile/$', views.edit_profile),
-    url(r'^my_workshops/$', views.my_workshops, name='my_workshops'),  # Coordinator
-    url(r'^workshop_status/$', views.workshop_status, name='workshop_status'),  # Instructor
+    url(r'^workshop_status$', views.workshop_status_coordinator, name='workshop_status_coordinator'),
+    url(r'^dashboard$', views.workshop_status_instructor, name='workshop_status_instructor'),
     url(r'^accept_workshop/([1-9][0-9]*)$', views.accept_workshop, name='accept_workshop'),
     url(r'^change_workshop_date/([1-9][0-9]*)$', views.change_workshop_date, name='change_workshop_date'),
     url(r'^propose_workshop/$', views.propose_workshop),

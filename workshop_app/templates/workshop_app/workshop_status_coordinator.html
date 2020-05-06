@@ -5,7 +5,16 @@
 {% endblock %}
 
 {% block content %}
-    {% if workshops %}
+    {% if not workshops %}
+        <div class="container">
+            <div class="jumbotron">
+                <h1>Welcome {{ user.first_name }}</h1>
+                <p>Information Related to your workshops will be shown here, you can also
+                    propose a Workshop as per your available date in <strong>Workshops > Propose a Workshop
+                        tab</strong> .</p>
+            </div>
+        </div>
+    {% else %}
         <h3 class="text-center" style="color:#2952a2;">The status of your workshops </h3>
         <br>
 
@@ -66,16 +75,6 @@
 
                 {% endfor %}
             </table>
-        </div>
-
-    {% else %}
-        <div class="container">
-            <div class="jumbotron">
-                <h1>Welcome {{ user.first_name }}</h1>
-                <p>Information Related to your workshops will be shown here, you can also
-                    propose a Workshop as per your available date in <strong>Workshops > Propose a Workshop
-                        tab</strong> .</p>
-            </div>
         </div>
     {% endif %}
 
