@@ -1,0 +1,83 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+    View Workshop details
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <table class="table table-bordered">
+            <tr>
+                <th><label for="id_first_name">Workshop Type :</label></th>
+                <td><label for="id_first_name"><a
+                        href="{% url 'workshop_type_details' workshop.workshop_type_id %}">{{ workshop.workshop_type }}</a></label>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="id_last_name">Date :</label></th>
+                <td><label for="id_last_name">{{ workshop.date }}</label></td>
+            </tr>
+            <tr>
+                <th><label for="id_email">Coordinator :</label></th>
+                <td><label for="id_email"><a
+                        href="{% url 'view_profile' workshop.coordinator_id %}">{{ workshop.coordinator }}</a></label>
+                </td>
+            </tr>
+            {% if workshop.status %}
+                <tr>
+                    <th><label for="id_institute">Status :</label></th>
+                    <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
+                </tr>
+                <tr>
+                    <th><label for="id_phone_number">Instructor :</label></th>
+                    <td><label for="id_email"><a
+                            href="{% url 'view_profile' workshop.instructor_id %}">{{ workshop.instructor }}</a></label>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th><label for="id_institute">Status :</label></th>
+                    <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
+                </tr>
+            {% endif %}
+        </table>
+        <br>
+        <div class="container">
+            <h2 class="text-center">Comments</h2>
+            <br>
+            {% for comment in workshop_comments %}
+                <div class="card my-2">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="mx-3 font-weight-bold"><a
+                                    href="{% url 'view_profile' comment.author_id %}">{{ comment.author }}</a></div>
+                            <div class="text-muted">{{ comment.created_date }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ comment.comment }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            <br><br>
+            <div class="card mt-2 mb-5">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="mx-3 font-weight-bold">Post a comment</div>
+                            {% if request.user.profile.position == 'instructor' %}
+                                <div class="ml-5">{{ form.public }} Public</div>
+                                <div class="ml-1 text-muted">(Non-public comments are visible only to instructors)</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{ form.comment }}
+                    </div>
+                    <button type="submit" class="float-right btn btn-primary btn-md m-2">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

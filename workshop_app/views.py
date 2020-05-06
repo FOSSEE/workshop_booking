@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.urls import reverse
 
 try:
@@ -14,12 +15,12 @@ from django.utils import timezone
 
 from .forms import (
     UserRegistrationForm, UserLoginForm,
-    ProfileForm, WorkshopForm
+    ProfileForm, WorkshopForm, WorkshopCommentsForm
 )
 from .models import (
     Profile, User,
     Workshop,
-    WorkshopType
+    WorkshopType, WorkshopComment
 )
 from .send_mails import send_email
 
@@ -367,6 +368,32 @@ def workshop_type_list(request):
     workshop_type = paginator.get_page(page)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
+
+
+@login_required
+def workshop_details(request, workshop_id):
+    workshop = Workshop.objects.filter(id=workshop_id)
+    if not workshop.exists():
+        raise Http404
+    workshop = workshop.first()
+    if request.method == 'POST':
+        form = WorkshopCommentsForm(request.POST)
+        if form.is_valid():
+            form_data = form.save(commit=False)
+            if not is_instructor(request.user):
+                form_data.public = True
+            form_data.author = request.user
+            form_data.created_date = timezone.now()
+            form_data.workshop = workshop
+            form.save()
+        else:
+            print(form.errors)
+    if is_instructor(request.user):
+        workshop_comments = WorkshopComment.objects.filter(workshop=workshop)
+    else:
+        workshop_comments = WorkshopComment.objects.filter(workshop=workshop, public=True)
+    return render(request, 'workshop_app/workshop_details.html',
+                  {'workshop': workshop, 'workshop_comments': workshop_comments, 'form': WorkshopCommentsForm(initial={'public': True})})
 
 
 @login_required

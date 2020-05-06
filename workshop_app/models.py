@@ -200,24 +200,24 @@ class Testimonial(models.Model):
         )
 
 
-class ProfileComments(models.Model):
+class WorkshopComment(models.Model):
     """
-    Contains comments posted by instructors on coordinator profile
+    Contains comments posted by users on workshop instances
     """
 
-    coordinator = models.ForeignKey(User,
-                                    on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
-    instructor = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related", on_delete=models.CASCADE)
+    public = models.BooleanField(default=True)
     created_date = models.DateTimeField(default=timezone.now)
+    workshop = models.ForeignKey(Workshop, on_delete=models.CASCADE)
 
     def __str__(self):
-        return u"{0} | {1}".format(
+        return u"{0} | {1} | {2}".format(
             self.comment,
             self.created_date,
-            self.coordinator,
-            self.instructor
+            self.author,
         )
+
 
 
 class Banner(models.Model):

@@ -3,7 +3,7 @@ from string import punctuation, digits
 from django import forms
 from django.utils import timezone
 
-from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states)
+from .models import (Profile, Workshop, department_choices, title, source, states, WorkshopComment)
 
 try:
     from string import letters
@@ -170,22 +170,25 @@ class WorkshopForm(forms.ModelForm):
         }
 
 
-class ProfileCommentsForm(forms.ModelForm):
+class WorkshopCommentsForm(forms.ModelForm):
     """
-    Instructors will post comments on Coordinators profile
+    Users will post comments on workshops
     """
 
     def __init__(self, *args, **kwargs):
-        super(ProfileCommentsForm, self).__init__(*args, **kwargs)
-        self.fields['comment'].label = ""
-        self.fields['comment'].widget.attrs['rows'] = 5
-        self.fields['comment'].widget.attrs['cols'] = 95
+        kwargs.setdefault('label_suffix', '')
+        super(WorkshopCommentsForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].required = True
+        self.fields['public'].label = "Public"
 
     class Meta:
-        model = ProfileComments
-        exclude = ['coordinator_profile', 'instructor_profile',
-                   'created_date'
-                   ]
+        model = WorkshopComment
+        exclude = ['author', 'created_date', 'workshop']
         widgets = {
-            'comments': forms.CharField(),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            'public': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            })
         }
