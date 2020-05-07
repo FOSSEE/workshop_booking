@@ -3,7 +3,7 @@ from string import punctuation, digits
 from django import forms
 from django.utils import timezone
 
-from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states)
+from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states, WorkshopType)
 
 try:
     from string import letters
@@ -189,3 +189,16 @@ class ProfileCommentsForm(forms.ModelForm):
         widgets = {
             'comments': forms.CharField(),
         }
+
+
+class WorkshopTypeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(WorkshopTypeForm, self).__init__(*args, **kwargs)
+        for field in self.visible_fields():
+            field.field.widget.attrs['class'] = 'form-control'
+            field.field.widget.attrs['placeholder'] = field.label
+            field.field.widget.attrs['rows'] = 6
+
+    class Meta:
+        model = WorkshopType
+        exclude = []

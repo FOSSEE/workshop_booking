@@ -1,3 +1,5 @@
+from django.urls import reverse
+
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -6,13 +8,13 @@ from datetime import datetime
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from .forms import (
     UserRegistrationForm, UserLoginForm,
-    ProfileForm, WorkshopForm
+    ProfileForm, WorkshopForm, WorkshopTypeForm
 )
 from .models import (
     Profile, User,
@@ -360,11 +362,24 @@ def workshop_type_list(request):
     workshop_types = WorkshopType.objects.all()
 
     paginator = Paginator(workshop_types, 12)  # Show upto 12 workshops per page
-
     page = request.GET.get('page')
-    workshop_type = paginator.get_page(paginator.num_pages)
+    workshop_type = paginator.get_page(page)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
+
+
+@login_required
+def add_workshop_type(request):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    if request.method == 'POST':
+        form = WorkshopTypeForm(request.POST)
+        if form.is_valid():
+            form_data = form.save()
+            return redirect(reverse('workshop_type_details', args=[form_data.id]))
+    else:
+        form = WorkshopTypeForm
+    return render(request, 'workshop_app/add_workshop_type.html', {'form': form})
 
 
 @login_required
