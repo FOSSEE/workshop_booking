@@ -385,6 +385,18 @@ def workshop_type_details(request, workshop_type_id):
     )
 
 
+@login_required
+def delete_attachment_file(request, file_id):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    file = AttachmentFile.objects.filter(id=file_id)
+    if file.exists():
+        file = file.first()
+        file.delete()
+        return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
+    return redirect(reverse('workshop_type_list'))
+
+
 def workshop_type_list(request):
     """Gives the details for types of workshops."""
     user = request.user
