@@ -1,9 +1,11 @@
 from string import punctuation, digits
 
 from django import forms
+from django.forms import inlineformset_factory
 from django.utils import timezone
 
-from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states, WorkshopType)
+from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states, WorkshopType,
+                     AttachmentFile)
 
 try:
     from string import letters
@@ -202,3 +204,12 @@ class WorkshopTypeForm(forms.ModelForm):
     class Meta:
         model = WorkshopType
         exclude = []
+
+
+class AttachmentFileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AttachmentFileForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = AttachmentFile
+        exclude = ['workshop_type']

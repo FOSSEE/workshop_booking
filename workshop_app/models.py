@@ -145,7 +145,7 @@ class WorkshopType(models.Model):
 
 
 class AttachmentFile(models.Model):
-    attachments = models.FileField(upload_to=attachments, blank=True,
+    attachments = models.FileField(upload_to=attachments, blank=False,
                                    help_text='Please upload workshop documents one by one, \
                         ie.workshop schedule, instructions etc. \
                         Please Note: Name of Schedule file should be similar to \

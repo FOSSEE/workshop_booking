@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory, model_to_dict
 from django.urls import reverse
 
 try:
@@ -19,7 +20,7 @@ from .forms import (
 from .models import (
     Profile, User,
     Workshop,
-    WorkshopType
+    WorkshopType, AttachmentFile
 )
 from .send_mails import send_email
 
@@ -340,13 +341,44 @@ def propose_workshop(request):
         )
 
 
+@login_required
 def workshop_type_details(request, workshop_type_id):
     """Gives the types of workshop details """
     user = request.user
     if user.is_superuser:
         return redirect("/admin")
 
-    workshop_type = WorkshopType.objects.get(id=workshop_type_id)
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+    else:
+        return redirect(reverse('workshop_type_list'))
+
+    qs = AttachmentFile.objects.filter(workshop_type=workshop_type)
+    AttachmentFileFormSet = inlineformset_factory(WorkshopType, AttachmentFile, fields=['attachments'],
+                                                  can_delete=False, extra=(qs.count() + 1))
+
+    if is_instructor(user):
+        if request.method == 'POST':
+            form = WorkshopTypeForm(request.POST, instance=workshop_type)
+            form_file = AttachmentFileFormSet(request.POST, request.FILES, instance=form.instance)
+            if form.is_valid():
+                form_data = form.save()
+                for file in form_file:
+                    if file.is_valid() and file.clean() and file.clean()['attachments']:
+                        if file.cleaned_data['id']:
+                            file.cleaned_data['id'].delete()
+                        file.save()
+                return redirect(reverse('workshop_type_details', args=[form_data.id]))
+            else:
+                print(request.POST)
+                print(form_file.errors)
+        else:
+            form = WorkshopTypeForm(instance=workshop_type)
+        form_file = AttachmentFileFormSet()
+        for subform, data in zip(form_file, qs):
+            subform.initial = model_to_dict(data)
+        return render(request, 'workshop_app/edit_workshop_type.html', {'form': form, 'form_file': form_file})
 
     return render(
         request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
