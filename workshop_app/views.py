@@ -1,3 +1,5 @@
+from django.http import JsonResponse, Http404
+
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -6,7 +8,7 @@ from datetime import datetime
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -349,6 +351,16 @@ def workshop_type_details(request, workshop_type_id):
     return render(
         request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
     )
+
+
+@login_required
+def workshop_type_tnc(request, workshop_type_id):
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+        return JsonResponse({'tnc': workshop_type.terms_and_conditions})
+    else:
+        raise Http404
 
 
 def workshop_type_list(request):
