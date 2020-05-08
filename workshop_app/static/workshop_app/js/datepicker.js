@@ -4,10 +4,7 @@ $(document).ready(function () {
         placement: 'top',
         trigger: 'hover'
     });
-});
 
-//ToolTip popup function on-hover
-$(document).ready(function () {
     $('[data-toggle="popinfo"]').popover({
         placement: 'top',
         trigger: 'hover'
