@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block extra-dependencies %}
+    <style >
+    .table-heading{
+        color: #04a9cf;
+    }
+    </style>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -27,13 +32,13 @@
             </div>
         </div>
     {% else %}
-        <h3 class="text-center" style="color:#2952a2;">The status of your workshops </h3>
+        <h3 class="text-center">The status of your workshops </h3>
         <br>
 
         <!-- Accepted View -->
         <br>
         <div class="container">
-            <h3 align="center" style="color: #04a9cf;"><strong>Workshops Accepted</strong></h3>
+            <h3 align="center" class="table-heading"><strong>Workshops Accepted</strong></h3>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -57,7 +62,7 @@
                             <td>{{ workshop.date | date }}
 
                                 {% if workshop.date > today %}
-                                    <span class="material-icons datepicker" style="cursor:pointer;"
+                                    <span class="material-icons datepicker btn"
                                           data-toggle="popinfo"
                                           title="Note"
                                           data-content="Click here to change date"
@@ -87,7 +92,7 @@
         <!-- Proposed View -->
         <br>
         <div class="container">
-            <h3 class="text-center" style="color: #04a9cf;"><strong>Workshops Proposed By Coordinators</strong>
+            <h3 class="text-center table-heading"><strong>Workshops Proposed By Coordinators</strong>
             </h3>
             <table class="table table-striped">
                 <thead>
