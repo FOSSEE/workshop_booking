@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'workshop_app',
     'statistics_app',
     'teams',
+    'cms',
 ]
 
 MIDDLEWARE = [

@@ -21,7 +21,6 @@ js_info_dict = {
 }
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
     url(r'^register/$', views.user_register),
     url(r'^activate_user/(?P<key>.+)$', views.activate_user),
     url(r'^activate_user/$', views.activate_user),
