@@ -31,8 +31,8 @@ urlpatterns = [
     url(r'^change_workshop_date/(?P<workshop_id>\d+)$', views.change_workshop_date, name='change_workshop_date'),
     url(r'^propose_workshop/$', views.propose_workshop),
     url(r'^add_workshop_type$', views.add_workshop_type, name='add_workshop_type'),
-    url(r'^delete_attachment_file/([1-9][0-9]*)$', views.delete_attachment_file, name='delete_attachment_file'),
+    url(r'^delete_attachment_file/(?P<file_id>\d+)$', views.delete_attachment_file, name='delete_attachment_file'),
     url(r'^workshop_types/$', views.workshop_type_list),
-    url(r'^workshop_type_details/(?P<workshop_type_id>\d+)$', views.workshop_type_details),
-    url(r'^view_profile/(?P<workshop_type_id>\d+)$', views.view_comment_profile, name='view_profile'),
+    url(r'^workshop_type_details/(?P<workshop_type_id>\d+)$', views.workshop_type_details, name='workshop_type_details'),
+    url(r'^view_profile/(?P<user_id>\d+)$', views.view_comment_profile, name='view_profile'),
 ]
