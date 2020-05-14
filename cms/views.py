@@ -20,8 +20,6 @@ def home(request, permalink=''):
         nav_obj['subnavs'] = subnav_objects.filter(nav=nav).order_by('position')
         navs.insert(-1, nav_obj)
 
-    print(navs)
-
     if page.exists():
         page = page.first()
     else:
