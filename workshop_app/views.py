@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.db.models import Q
 from django.urls import reverse
 
 try:
@@ -217,16 +218,11 @@ def workshop_status_instructor(request):
     if not is_instructor(user):
         return redirect(get_landing_page(user))
     today = timezone.now().date()
-    proposed_workshop = Workshop.objects.filter(
+    workshops = Workshop.objects.filter(Q(
         instructor=user.id,
         date__gte=today,
-    ).order_by('-date')
+    ) | Q(status=0)).order_by('-date')
 
-    proposed_workshop_pending = Workshop.objects.filter(
-        status=0
-    ).order_by('-date')
-
-    workshops = list(proposed_workshop) + list(proposed_workshop_pending)
     return render(request, 'workshop_app/workshop_status_instructor.html',
                   {"workshops": workshops,
                    "today": today})
@@ -272,8 +268,7 @@ def change_workshop_date(request, workshop_id):
     if not is_instructor(user):
         return redirect(get_landing_page(user))
     if request.method == 'POST':
-        client_data = request.POST
-        new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
+        new_workshop_date = datetime.strptime(request.POST.get('new_date'), "%Y-%m-%d")
         today = datetime.today()
         if today <= new_workshop_date:
             workshop = Workshop.objects.filter(id=workshop_id)
