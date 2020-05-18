@@ -1,3 +1,4 @@
+from django.http import JsonResponse, Http404
 from django.db.models import Q
 from django.urls import reverse
 
@@ -346,6 +347,16 @@ def workshop_type_details(request, workshop_type_id):
     return render(
         request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
     )
+
+
+@login_required
+def workshop_type_tnc(request, workshop_type_id):
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+        return JsonResponse({'tnc': workshop_type.terms_and_conditions})
+    else:
+        raise Http404
 
 
 def workshop_type_list(request):
