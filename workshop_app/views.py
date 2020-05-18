@@ -1,5 +1,6 @@
-from django.forms import inlineformset_factory, model_to_dict
 from django.db.models import Q
+from django.forms import inlineformset_factory, model_to_dict
+from django.http import JsonResponse, Http404
 from django.urls import reverse
 
 try:
@@ -365,9 +366,6 @@ def workshop_type_details(request, workshop_type_id):
                             file.cleaned_data['id'].delete()
                         file.save()
                 return redirect(reverse('workshop_type_details', args=[form_data.id]))
-            else:
-                print(request.POST)
-                print(form_file.errors)
         else:
             form = WorkshopTypeForm(instance=workshop_type)
         form_file = AttachmentFileFormSet()
@@ -390,6 +388,16 @@ def delete_attachment_file(request, file_id):
         file.delete()
         return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
     return redirect(reverse('workshop_type_list'))
+
+
+@login_required
+def workshop_type_tnc(request, workshop_type_id):
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+        return JsonResponse({'tnc': workshop_type.terms_and_conditions})
+    else:
+        raise Http404
 
 
 def workshop_type_list(request):
