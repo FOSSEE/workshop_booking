@@ -49,9 +49,12 @@
                 <div class="card my-2">
                     <div class="card-header">
                         <div class="row">
-                            <div class="mx-3 font-weight-bold"><a
+                            <div class="ml-3 font-weight-bold"><a
                                     href="{% url 'view_profile' comment.author_id %}">{{ comment.author }}</a></div>
-                            <div class="text-muted">{{ comment.created_date }}</div>
+                            {% if not comment.public %}
+                                <div class="ml-1"><span class="badge badge-dark">Hidden</span></div>
+                            {% endif %}
+                            <div class="ml-3 text-muted">{{ comment.created_date }}</div>
                         </div>
                     </div>
                     <div class="card-body">

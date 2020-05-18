@@ -200,7 +200,7 @@ class Testimonial(models.Model):
         )
 
 
-class WorkshopComment(models.Model):
+class Comment(models.Model):
     """
     Contains comments posted by users on workshop instances
     """

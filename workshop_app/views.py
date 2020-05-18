@@ -16,12 +16,12 @@ from django.utils import timezone
 
 from .forms import (
     UserRegistrationForm, UserLoginForm,
-    ProfileForm, WorkshopForm, WorkshopCommentsForm
+    ProfileForm, WorkshopForm, CommentsForm
 )
 from .models import (
     Profile, User,
     Workshop,
-    WorkshopType, WorkshopComment
+    WorkshopType, Comment
 )
 from .send_mails import send_email
 
@@ -382,7 +382,7 @@ def workshop_details(request, workshop_id):
         raise Http404
     workshop = workshop.first()
     if request.method == 'POST':
-        form = WorkshopCommentsForm(request.POST)
+        form = CommentsForm(request.POST)
         if form.is_valid():
             form_data = form.save(commit=False)
             if not is_instructor(request.user):
@@ -394,12 +394,12 @@ def workshop_details(request, workshop_id):
         else:
             print(form.errors)
     if is_instructor(request.user):
-        workshop_comments = WorkshopComment.objects.filter(workshop=workshop)
+        workshop_comments = Comment.objects.filter(workshop=workshop)
     else:
-        workshop_comments = WorkshopComment.objects.filter(workshop=workshop, public=True)
+        workshop_comments = Comment.objects.filter(workshop=workshop, public=True)
     return render(request, 'workshop_app/workshop_details.html',
                   {'workshop': workshop, 'workshop_comments': workshop_comments,
-                   'form': WorkshopCommentsForm(initial={'public': True})})
+                   'form': CommentsForm(initial={'public': True})})
 
 
 @login_required

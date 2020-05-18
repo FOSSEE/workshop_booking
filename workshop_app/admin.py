@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .models import (
     Profile, WorkshopType,
     Workshop,
-    Testimonial, WorkshopComment, Banner, AttachmentFile
+    Testimonial, Comment, Banner, AttachmentFile
 )
 
 try:
@@ -117,7 +117,7 @@ class TestimonialAdmin(admin.ModelAdmin):
     download_csv.short_description = "Download CSV file for selected stats."
 
 
-class WorkshopCommentAdmin(admin.ModelAdmin):
+class CommentAdmin(admin.ModelAdmin):
     list_display = ['workshop', 'comment', 'created_date', 'author', 'public']
     list_filter = ['workshop', 'author', 'created_date', 'public']
 
@@ -127,6 +127,6 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(WorkshopType, WorkshopTypeAdmin)
 admin.site.register(Workshop, WorkshopAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
-admin.site.register(WorkshopComment, WorkshopCommentAdmin)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(Banner)
 admin.site.register(AttachmentFile)
