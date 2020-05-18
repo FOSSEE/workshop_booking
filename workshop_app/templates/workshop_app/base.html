@@ -91,10 +91,11 @@
     </nav>
 {% endblock %}
 
-{% block content %}
-    <h1>Base Template Content. Please override me</h1>
-{% endblock %}
-
+<div class="content">
+    {% block content %}
+        <h1>Base Template Content. Please override me</h1>
+    {% endblock %}
+</div>
 
 </body>
 <footer class="footer">
