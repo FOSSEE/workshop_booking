@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^workshop_types/$', views.workshop_type_list),
     url(r'^workshops/(?P<workshop_id>\d+)$', views.workshop_details, name='workshop_details'),
     url(r'^workshop_type_details/(?P<workshop_type_id>\d+)$', views.workshop_type_details, name='workshop_type_details'),
-    url(r'^view_profile/(?P<workshop_type_id>\d+)$', views.view_comment_profile, name='view_profile')
+    url(r'^workshop_type_tnc/(?P<workshop_type_id>\d+)$', views.workshop_type_tnc, name='workshop_type_tnc'),
+    url(r'^view_profile/(?P<workshop_type_id>\d+)$', views.view_comment_profile, name='view_profile'),
 ]

@@ -1,5 +1,5 @@
-from django.http import Http404
 from django.db.models import Q
+from django.http import JsonResponse, Http404
 from django.urls import reverse
 
 try:
@@ -349,6 +349,16 @@ def workshop_type_details(request, workshop_type_id):
     )
 
 
+@login_required
+def workshop_type_tnc(request, workshop_type_id):
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+        return JsonResponse({'tnc': workshop_type.terms_and_conditions})
+    else:
+        raise Http404
+
+
 def workshop_type_list(request):
     """Gives the details for types of workshops."""
     user = request.user
@@ -388,7 +398,8 @@ def workshop_details(request, workshop_id):
     else:
         workshop_comments = WorkshopComment.objects.filter(workshop=workshop, public=True)
     return render(request, 'workshop_app/workshop_details.html',
-                  {'workshop': workshop, 'workshop_comments': workshop_comments, 'form': WorkshopCommentsForm(initial={'public': True})})
+                  {'workshop': workshop, 'workshop_comments': workshop_comments,
+                   'form': WorkshopCommentsForm(initial={'public': True})})
 
 
 @login_required
