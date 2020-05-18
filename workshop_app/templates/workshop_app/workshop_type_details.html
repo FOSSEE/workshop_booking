@@ -1,23 +1,40 @@
-
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-	View Workshop details
+    View Workshop details
 {% endblock %}
 
 
 {% block extra %}
 
-	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{{ URL_ROOT }}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
 {% endblock %}
 
 {% block content %}
-	<div class="container">
-	{{ workshop_type.description | safe }}
-	</div>
+    <div class="container">
+        <h2 class="text-center m-3">Workshop Details</h2>
+        <table class="table table-hover">
+            <tr class="d-flex">
+                <th class="col-3">Workshop Name :</th>
+                <td class="col">{{ workshop_type.name }}</td>
+            </tr>
+            <tr class="d-flex">
+                <th class="col-3">Duration :</th>
+                <td class="col">{{ workshop_type.duration }}</td>
+            </tr>
+            <tr class="d-flex">
+                <th class="col-3">Description :</th>
+                <td class="col">{{ workshop_type.description }}</td>
+            </tr>
+            <tr class="d-flex">
+                <th class="col-3">Terms and Conditions :</th>
+                <td class="col">{{ workshop_type.terms_and_conditions }}</td>
+            </tr>
+        </table>
+    </div>
 
 {% endblock %}
 

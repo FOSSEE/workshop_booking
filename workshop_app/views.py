@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.forms import inlineformset_factory, model_to_dict
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 
@@ -16,12 +17,12 @@ from django.utils import timezone
 
 from .forms import (
     UserRegistrationForm, UserLoginForm,
-    ProfileForm, WorkshopForm, CommentsForm
+    ProfileForm, WorkshopForm, CommentsForm, WorkshopTypeForm
 )
 from .models import (
     Profile, User,
-    Workshop,
-    WorkshopType, Comment
+    Workshop, Comment,
+    WorkshopType, AttachmentFile
 )
 from .send_mails import send_email
 
@@ -336,17 +337,57 @@ def propose_workshop(request):
         )
 
 
+@login_required
 def workshop_type_details(request, workshop_type_id):
     """Gives the types of workshop details """
     user = request.user
     if user.is_superuser:
         return redirect("/admin")
 
-    workshop_type = WorkshopType.objects.get(id=workshop_type_id)
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+    else:
+        return redirect(reverse('workshop_type_list'))
+
+    qs = AttachmentFile.objects.filter(workshop_type=workshop_type)
+    AttachmentFileFormSet = inlineformset_factory(WorkshopType, AttachmentFile, fields=['attachments'],
+                                                  can_delete=False, extra=(qs.count() + 1))
+
+    if is_instructor(user):
+        if request.method == 'POST':
+            form = WorkshopTypeForm(request.POST, instance=workshop_type)
+            form_file = AttachmentFileFormSet(request.POST, request.FILES, instance=form.instance)
+            if form.is_valid():
+                form_data = form.save()
+                for file in form_file:
+                    if file.is_valid() and file.clean() and file.clean()['attachments']:
+                        if file.cleaned_data['id']:
+                            file.cleaned_data['id'].delete()
+                        file.save()
+                return redirect(reverse('workshop_type_details', args=[form_data.id]))
+        else:
+            form = WorkshopTypeForm(instance=workshop_type)
+        form_file = AttachmentFileFormSet()
+        for subform, data in zip(form_file, qs):
+            subform.initial = model_to_dict(data)
+        return render(request, 'workshop_app/edit_workshop_type.html', {'form': form, 'form_file': form_file})
 
     return render(
         request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
     )
+
+
+@login_required
+def delete_attachment_file(request, file_id):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    file = AttachmentFile.objects.filter(id=file_id)
+    if file.exists():
+        file = file.first()
+        file.delete()
+        return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
+    return redirect(reverse('workshop_type_list'))
 
 
 @login_required
@@ -368,7 +409,6 @@ def workshop_type_list(request):
     workshop_types = WorkshopType.objects.all()
 
     paginator = Paginator(workshop_types, 12)  # Show upto 12 workshops per page
-
     page = request.GET.get('page')
     workshop_type = paginator.get_page(page)
 
@@ -400,6 +440,20 @@ def workshop_details(request, workshop_id):
     return render(request, 'workshop_app/workshop_details.html',
                   {'workshop': workshop, 'workshop_comments': workshop_comments,
                    'form': CommentsForm(initial={'public': True})})
+
+
+@login_required
+def add_workshop_type(request):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    if request.method == 'POST':
+        form = WorkshopTypeForm(request.POST)
+        if form.is_valid():
+            form_data = form.save()
+            return redirect(reverse('workshop_type_details', args=[form_data.id]))
+    else:
+        form = WorkshopTypeForm
+    return render(request, 'workshop_app/add_workshop_type.html', {'form': form})
 
 
 @login_required

@@ -46,17 +46,17 @@
                         <a class="nav-link" href="{% url 'workshop_status_coordinator' %}">Workshop Status</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/propose_workshop/">Propose Workshop</a>
+                        <a class="nav-link" href="{% url 'propose_workshop' %}">Propose Workshop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/workshop_types/">Workshop Types</a>
+                        <a class="nav-link" href="{% url 'workshop_type_list' %}">Workshop Types</a>
                     </li>
                 {% elif request.user.profile.position == 'instructor' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'workshop_status_instructor' %}">Workshop Status</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/workshop_types/">Workshop Types</a>
+                        <a class="nav-link" href="{% url 'workshop_type_list' %}">Workshop Types</a>
                     </li>
                 {% endif %}
             </ul>
@@ -92,9 +92,9 @@
 {% endblock %}
 
 <div class="container-fluid" style="margin-bottom: 44px">
-{% block content %}
-    <h1>Base Template Content. Please override me</h1>
-{% endblock %}
+    {% block content %}
+        <h1>Base Template Content. Please override me</h1>
+    {% endblock %}
 </div>
 
 </body>

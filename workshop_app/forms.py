@@ -3,7 +3,8 @@ from string import punctuation, digits
 from django import forms
 from django.utils import timezone
 
-from .models import (Profile, Workshop, department_choices, title, source, states, Comment)
+from .models import (Profile, Workshop, Comment, department_choices, title, source, states, WorkshopType,
+                     AttachmentFile)
 
 try:
     from string import letters
@@ -192,3 +193,25 @@ class CommentsForm(forms.ModelForm):
                 'class': 'form-check-input',
             })
         }
+
+
+class WorkshopTypeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(WorkshopTypeForm, self).__init__(*args, **kwargs)
+        for field in self.visible_fields():
+            field.field.widget.attrs['class'] = 'form-control'
+            field.field.widget.attrs['placeholder'] = field.label
+            field.field.widget.attrs['rows'] = 6
+
+    class Meta:
+        model = WorkshopType
+        exclude = []
+
+
+class AttachmentFileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AttachmentFileForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = AttachmentFile
+        exclude = ['workshop_type']
