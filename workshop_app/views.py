@@ -1,3 +1,8 @@
+from django.db.models import Q
+from django.forms import inlineformset_factory, model_to_dict
+from django.http import JsonResponse, Http404
+from django.urls import reverse
+
 try:
     from StringIO import StringIO as string_io
 except ImportError:
@@ -6,18 +11,18 @@ from datetime import datetime
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from .forms import (
     UserRegistrationForm, UserLoginForm,
-    ProfileForm, WorkshopForm
+    ProfileForm, WorkshopForm, WorkshopTypeForm
 )
 from .models import (
     Profile, User,
     Workshop,
-    WorkshopType
+    WorkshopType, AttachmentFile
 )
 from .send_mails import send_email
 
@@ -42,8 +47,8 @@ def is_instructor(user):
 def get_landing_page(user):
     # For now, landing pages of both instructor and coordinator are same
     if is_instructor(user):
-        return '/my_workshops/'
-    return '/my_workshops/'
+        return reverse('workshop_status_instructor')
+    return reverse('workshop_status_coordinator')
 
 
 # View functions
@@ -150,7 +155,7 @@ def user_register(request):
             )
     else:
         if request.user.is_authenticated and is_email_checked(request.user):
-            return redirect('/my_workshops/')
+            return redirect(get_landing_page(request.user))
         elif request.user.is_authenticated:
             return render(request, 'workshop_app/activation.html')
         form = UserRegistrationForm()
@@ -195,102 +200,96 @@ def edit_profile(request):
 # Workshop views
 
 @login_required
-def my_workshops(request):
+def workshop_status_coordinator(request):
+    """ Workshops proposed by Coordinator """
     user = request.user
+    if is_instructor(user):
+        return redirect(get_landing_page(user))
+    workshops = Workshop.objects.filter(
+        coordinator=user.id
+    ).order_by('-date')
+    return render(request, 'workshop_app/workshop_status_coordinator.html',
+                  {"workshops": workshops})
 
-    if user.is_authenticated:
-        # View for instructor
-        if is_instructor(user):
-            if request.method == 'POST':
-                client_data = request.POST
-                action = request.POST.get('action')
-                if action == 'accept':
-                    workshop = Workshop.objects.get(id=client_data.get('workshop_id'))
-                    # Change Status of the selected workshop
-                    workshop.status = 1
-                    workshop.instructor = user
-                    workshop.save()
-                    # Parameters for emails
-                    coordinator_email = workshop.coordinator.email
-                    coordinator_name = workshop.coordinator.profile.user.get_full_name()
-                    coordinator_phone = workshop.coordinator.profile.phone_number
-                    coordinator_institute = workshop.coordinator.profile.institute
-                    instructor_phone = request.user.profile.phone_number
-                    workshop_title = workshop.workshop_type.name
-                    workshop_date = str(workshop.date)
 
-                    # For Instructor
-                    send_email(request, call_on='Booking Confirmed',
-                               user_position='instructor',
-                               workshop_date=workshop_date,
-                               workshop_title=workshop_title,
-                               user_name=str(coordinator_name),
-                               other_email=coordinator_email,
-                               phone_number=coordinator_phone,
-                               institute=coordinator_institute
-                               )
+@login_required
+def workshop_status_instructor(request):
+    """ Workshops to accept and accepted by Instructor """
+    user = request.user
+    if not is_instructor(user):
+        return redirect(get_landing_page(user))
+    today = timezone.now().date()
+    workshops = Workshop.objects.filter(Q(
+        instructor=user.id,
+        date__gte=today,
+    ) | Q(status=0)).order_by('-date')
 
-                    # For Coordinator
-                    send_email(request, call_on='Booking Confirmed',
-                               workshop_date=workshop_date,
-                               workshop_title=workshop_title,
-                               other_email=coordinator_email,
-                               phone_number=instructor_phone
-                               )
+    return render(request, 'workshop_app/workshop_status_instructor.html',
+                  {"workshops": workshops,
+                   "today": today})
 
-                elif action == 'change_date':
-                    cid = client_data.get('cid')
-                    new_workshop_date = datetime.strptime(client_data.get('new_date'), "%Y-%m-%d")
-                    coordinator_email = User.objects.get(id=cid)
-                    today = datetime.today()
-                    if today > new_workshop_date:
-                        # Invalid date
-                        pass
-                    else:
-                        workshop = Workshop.objects.filter(id=client_data.get('workshop_id'))
-                        workshop_date = workshop.first().date
-                        workshop.update(date=new_workshop_date)
 
-                        # For Instructor
-                        send_email(request, call_on='Change Date',
-                                   user_position='instructor',
-                                   workshop_date=str(workshop_date),
-                                   new_workshop_date=str(new_workshop_date.date())
-                                   )
+@login_required
+def accept_workshop(request, workshop_id):
+    user = request.user
+    if not is_instructor(user):
+        return redirect(get_landing_page(user))
+    workshop = Workshop.objects.get(id=workshop_id)
+    # Change Status of the selected workshop
+    workshop.status = 1
+    workshop.instructor = user
+    workshop.save()
 
-                        # For Coordinator
-                        send_email(request, call_on='Change Date',
-                                   new_workshop_date=str(new_workshop_date.date()),
-                                   workshop_date=str(workshop_date),
-                                   other_email=coordinator_email.email
-                                   )
+    coordinator_profile = workshop.coordinator.profile
 
-            today = timezone.now()
-            proposed_workshop = Workshop.objects.filter(
-                instructor=user.id,
-                date__gte=today,
-            ).order_by('-date')
+    # For Instructor
+    send_email(request, call_on='Booking Confirmed',
+               user_position='instructor',
+               workshop_date=str(workshop.date),
+               workshop_title=workshop.workshop_type.name,
+               user_name=str(coordinator_profile.user.get_full_name()),
+               other_email=workshop.coordinator.email,
+               phone_number=coordinator_profile.phone_number,
+               institute=coordinator_profile.institute
+               )
 
-            proposed_workshop_pending = Workshop.objects.filter(
-                status=0
-            ).order_by('-date')
+    # For Coordinator
+    send_email(request, call_on='Booking Confirmed',
+               workshop_date=str(workshop.date),
+               workshop_title=workshop.workshop_type.name,
+               other_email=workshop.coordinator.email,
+               phone_number=request.user.profile.phone_number
+               )
+    return redirect(reverse('workshop_status_instructor'))
 
-            workshops = list(proposed_workshop) + list(proposed_workshop_pending)
 
-            return render(request, 'workshop_app/my_workshops.html',
-                          {"workshops": workshops,
-                           "today": today})
+@login_required
+def change_workshop_date(request, workshop_id):
+    user = request.user
+    if not is_instructor(user):
+        return redirect(get_landing_page(user))
+    if request.method == 'POST':
+        new_workshop_date = datetime.strptime(request.POST.get('new_date'), "%Y-%m-%d")
+        today = datetime.today()
+        if today <= new_workshop_date:
+            workshop = Workshop.objects.filter(id=workshop_id)
+            workshop_date = workshop.first().date
+            workshop.update(date=new_workshop_date)
 
-        # Coordinator view
-        else:
-            workshops = Workshop.objects.filter(
-                coordinator=user.id
-            ).order_by('-date')
-            return render(request, 'workshop_app/my_workshops.html',
-                          {"workshops": workshops})
-    # Not logged in view
-    else:
-        return redirect('/login/')
+            # For Instructor
+            send_email(request, call_on='Change Date',
+                       user_position='instructor',
+                       workshop_date=str(workshop_date),
+                       new_workshop_date=str(new_workshop_date.date())
+                       )
+
+            # For Coordinator
+            send_email(request, call_on='Change Date',
+                       new_workshop_date=str(new_workshop_date.date()),
+                       workshop_date=str(workshop_date),
+                       other_email=workshop.first().coordinator.email
+                       )
+    return redirect(reverse('workshop_status_instructor'))
 
 
 # TODO: Show terms n conditions of selected ws type
@@ -316,7 +315,7 @@ def propose_workshop(request):
                         workshop_type=form_data.workshop_type,
                         coordinator=form_data.coordinator
                 ).exists():
-                    return redirect('/my_workshops/')
+                    return redirect(get_landing_page(user))
                 else:
                     form_data.save()
                     instructors = Profile.objects.filter(position='instructor')
@@ -330,7 +329,7 @@ def propose_workshop(request):
                                    phone_number=user.profile.phone_number,
                                    institute=user.profile.institute
                                    )
-                    return redirect('/my_workshops/')
+                    return redirect(get_landing_page(user))
         # GET request
         return render(
             request, 'workshop_app/propose_workshop.html',
@@ -338,17 +337,67 @@ def propose_workshop(request):
         )
 
 
+@login_required
 def workshop_type_details(request, workshop_type_id):
     """Gives the types of workshop details """
     user = request.user
     if user.is_superuser:
         return redirect("/admin")
 
-    workshop_type = WorkshopType.objects.get(id=workshop_type_id)
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+    else:
+        return redirect(reverse('workshop_type_list'))
+
+    qs = AttachmentFile.objects.filter(workshop_type=workshop_type)
+    AttachmentFileFormSet = inlineformset_factory(WorkshopType, AttachmentFile, fields=['attachments'],
+                                                  can_delete=False, extra=(qs.count() + 1))
+
+    if is_instructor(user):
+        if request.method == 'POST':
+            form = WorkshopTypeForm(request.POST, instance=workshop_type)
+            form_file = AttachmentFileFormSet(request.POST, request.FILES, instance=form.instance)
+            if form.is_valid():
+                form_data = form.save()
+                for file in form_file:
+                    if file.is_valid() and file.clean() and file.clean()['attachments']:
+                        if file.cleaned_data['id']:
+                            file.cleaned_data['id'].delete()
+                        file.save()
+                return redirect(reverse('workshop_type_details', args=[form_data.id]))
+        else:
+            form = WorkshopTypeForm(instance=workshop_type)
+        form_file = AttachmentFileFormSet()
+        for subform, data in zip(form_file, qs):
+            subform.initial = model_to_dict(data)
+        return render(request, 'workshop_app/edit_workshop_type.html', {'form': form, 'form_file': form_file})
 
     return render(
         request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
     )
+
+
+@login_required
+def delete_attachment_file(request, file_id):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    file = AttachmentFile.objects.filter(id=file_id)
+    if file.exists():
+        file = file.first()
+        file.delete()
+        return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
+    return redirect(reverse('workshop_type_list'))
+
+
+@login_required
+def workshop_type_tnc(request, workshop_type_id):
+    workshop_type = WorkshopType.objects.filter(id=workshop_type_id)
+    if workshop_type.exists():
+        workshop_type = workshop_type.first()
+        return JsonResponse({'tnc': workshop_type.terms_and_conditions})
+    else:
+        raise Http404
 
 
 def workshop_type_list(request):
@@ -360,16 +409,29 @@ def workshop_type_list(request):
     workshop_types = WorkshopType.objects.all()
 
     paginator = Paginator(workshop_types, 12)  # Show upto 12 workshops per page
-
     page = request.GET.get('page')
-    workshop_type = paginator.get_page(paginator.num_pages)
+    workshop_type = paginator.get_page(page)
 
     return render(request, 'workshop_app/workshop_type_list.html', {'workshop_type': workshop_type})
 
 
 @login_required
+def add_workshop_type(request):
+    if not is_instructor(request.user):
+        return redirect(get_landing_page(request.user))
+    if request.method == 'POST':
+        form = WorkshopTypeForm(request.POST)
+        if form.is_valid():
+            form_data = form.save()
+            return redirect(reverse('workshop_type_details', args=[form_data.id]))
+    else:
+        form = WorkshopTypeForm
+    return render(request, 'workshop_app/add_workshop_type.html', {'form': form})
+
+
+@login_required
 def view_comment_profile(request, user_id):
-    """instructor can view/post comments on coordinator profile """
+    """Instructor can view coordinator profile """
     user = request.user
     if is_instructor(user) and is_email_checked(user):
         coordinator_profile = Profile.objects.get(user_id=user_id)

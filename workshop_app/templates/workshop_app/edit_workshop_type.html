@@ -1,0 +1,110 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+    Add new Workshop type
+{% endblock %}
+
+{% block extra-dependencies %}
+{% endblock %}
+
+{% block extra-custom-scripts %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="text-center m-2">View / Edit Workshop Type</h2>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Workshop Name :</div>
+                <div class="col text-left">
+                    <div class="row">
+                        <div class="col">{{ form.name }}</div>
+                    </div>
+                    <div class="row m-1 text-danger">
+                        <div class="col">{{ form.name.errors }}</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Duration :</div>
+                <div class="col text-left">
+                    <div class="row">
+                        <div class="col">{{ form.duration }}</div>
+                    </div>
+                    <div class="row m-1 text-muted">
+                        <div class="col">{{ form.duration.help_text }}</div>
+                    </div>
+                    <div class="row m-1 text-danger">
+                        <div class="col">{{ form.duration.errors }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Description :</div>
+                <div class="col text-left">
+                    <div class="row">
+                        <div class="col">{{ form.description }}</div>
+                    </div>
+                    <div class="row m-1 text-danger">
+                        <div class="col">{{ form.description.errors }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Terms and Conditions :</div>
+                <div class="col text-left">
+                    <div class="row">
+                        <div class="col">{{ form.terms_and_conditions }}</div>
+                    </div>
+                    <div class="row m-1 text-danger">
+                        <div class="col">{{ form.terms_and_conditions.errors }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-center m-2">Attachments</h2>
+            {{ form_file.management_form }}
+            {{ form_file.non_form_errors }}
+            {% for form in form_file %}
+                <div class="inline {{ form_file.prefix }} my-4">
+                    <div class="row">
+                        <div class="col-11">
+                            {% for field in form %}
+                                <div class="col-6">{{ field }}</div>
+                            {% endfor %}
+                        </div>
+                    {% if form.id.value %}
+                    <div class="col-1">
+                        <a href="{% url 'delete_attachment_file' form.id.value %}"><button class="btn btn-md btn-danger float-right" type="button">Delete</button></a>
+                    </div>
+                    {% endif %}
+                    </div>
+
+                </div>
+                <hr>
+            {% endfor %}
+            <div class="row my-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-md btn-primary float-right m-3">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br><br><br><br>
+    <script type="text/javascript">
+        $(function () {
+            $(".inline.{{ form_file.prefix }}").formset({
+                prefix: "{{ form_file.prefix }}", // The form prefix for your django formset
+                addCssClass: "btn btn-md btn-primary bordered inline-form-add", // CSS class applied to the add link
+                deleteCssClass: "hidden", // CSS class applied to the delete link
+                addText: 'Add another attachment', // Text for the add link
+                deleteText: '',
+                formCssClass: 'inline-form' // CSS class applied to each form in a formset
+            })
+        });
+    </script>
+{% endblock %}
