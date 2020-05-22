@@ -1,4 +1,5 @@
 {% extends "workshop_app/base.html" %}
+{% load static %}
 
 {% block title %}
     Workshop Status
@@ -10,9 +11,9 @@
         color: #04a9cf;
     }
     </style>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="{% static 'workshop_app/css/jquery-ui.css' %}" type="text/css"/>
+    <script src="{% static 'workshop_app/js/jquery-1.12.4.js' %}"></script>
+    <script src="{% static 'workshop_app/js/jquery-ui.min.js' %}"></script>
 {% endblock %}
 {% block extra-custom-scripts %}
     {% load static %}
@@ -42,9 +43,9 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Workshop Name</th>
                     <th>Coordinator Name</th>
                     <th>Institute</th>
+                    <th>Workshop Name</th>
                     <th>Workshop Day</th>
                     <th>Status</th>
                 </tr>
@@ -53,12 +54,12 @@
                     <tbody>
                     <tr>
                         {% if workshop.status %}
-                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>
                                 <a href="{% url 'view_profile' workshop.coordinator.profile.user.id %}">
                                     {{ workshop.coordinator.get_full_name }}</a>
                             </td>
                             <td>{{ workshop.coordinator.profile.institute }}</td>
+                            <td>{{ workshop.workshop_type |capfirst }}</td>
                             <td>{{ workshop.date | date }}
 
                                 {% if workshop.date > today %}
@@ -97,9 +98,9 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Workshop Name</th>
                     <th>Coordinator Name</th>
                     <th>Institute</th>
+                    <th>Workshop Name</th>
                     <th>Workshop Day</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -110,12 +111,12 @@
                     <tbody>
                     <tr>
                         {% if not workshop.status and workshop.tnc_accepted %}
-                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>
                                 <a href="{% url 'view_profile' workshop.coordinator.profile.user.id %}">
                                     {{ workshop.coordinator.get_full_name }}</a>
                             </td>
                             <td>{{ workshop.coordinator.profile.institute }}</td>
+                            <td>{{ workshop.workshop_type }}</td>
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                             <td>
