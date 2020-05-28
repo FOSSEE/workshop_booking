@@ -1,10 +1,9 @@
 from string import punctuation, digits
 
 from django import forms
-from django.forms import inlineformset_factory
 from django.utils import timezone
 
-from .models import (Profile, Workshop, ProfileComments, department_choices, title, source, states, WorkshopType,
+from .models import (Profile, Workshop, Comment, department_choices, title, source, states, WorkshopType,
                      AttachmentFile)
 
 try:
@@ -172,24 +171,27 @@ class WorkshopForm(forms.ModelForm):
         }
 
 
-class ProfileCommentsForm(forms.ModelForm):
+class CommentsForm(forms.ModelForm):
     """
-    Instructors will post comments on Coordinators profile
+    Users will post comments on workshops
     """
 
     def __init__(self, *args, **kwargs):
-        super(ProfileCommentsForm, self).__init__(*args, **kwargs)
-        self.fields['comment'].label = ""
-        self.fields['comment'].widget.attrs['rows'] = 5
-        self.fields['comment'].widget.attrs['cols'] = 95
+        kwargs.setdefault('label_suffix', '')
+        super(CommentsForm, self).__init__(*args, **kwargs)
+        self.fields['comment'].required = True
+        self.fields['public'].label = "Public"
 
     class Meta:
-        model = ProfileComments
-        exclude = ['coordinator_profile', 'instructor_profile',
-                   'created_date'
-                   ]
+        model = Comment
+        exclude = ['author', 'created_date', 'workshop']
         widgets = {
-            'comments': forms.CharField(),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            'public': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            })
         }
 
 

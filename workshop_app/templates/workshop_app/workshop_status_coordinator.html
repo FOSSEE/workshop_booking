@@ -33,8 +33,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Instructor Name</th>
                     <th>Workshop Name</th>
+                    <th>Instructor Name</th>
                     <th>Workshop Day</th>
                     <th>Status</th>
                 </tr>
@@ -44,8 +44,8 @@
                     <tbody>
                     <tr>
                         {% if workshop.status %}
+                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>{{ workshop.instructor.get_full_name }}</td>
-                            <td>{{ workshop.workshop_type |capfirst }}</td>
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
                         {% endif %}
@@ -73,7 +73,7 @@
                     <tbody>
                     <tr>
                         {% if not workshop.status and workshop.tnc_accepted %}
-                            <td>{{ workshop.workshop_type }}</td>
+                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                         {% endif %}
