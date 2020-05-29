@@ -1,5 +1,4 @@
 # Create your views here.
-import dateutil.parser
 from rest_framework.generics import ListAPIView
 
 from api.serializers import WorkshopSerializer
@@ -13,18 +12,9 @@ class UpcomingWorkshops(ListAPIView):
         params = self.request.GET
         queryset = Workshop.objects.all()
         if params.get('status', None):
-            try:
-                queryset = queryset.filter(status=params.get('status'))
-            except:
-                pass
+            queryset = queryset.filter(status=params.get('status'))
         if params.get('date_from'):
-            try:
-                queryset = queryset.filter(date__gte=dateutil.parser.parse(params.get('date_from')).date())
-            except:
-                pass
+            queryset = queryset.filter(date__gte=params.get('date_from'))
         if params.get('date_to'):
-            try:
-                queryset = queryset.filter(date__lte=params.get('date_to'))
-            except:
-                pass
+            queryset = queryset.filter(date__lte=params.get('date_to'))
         return queryset
