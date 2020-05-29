@@ -1,7 +1,6 @@
 from django.db.models import Q
 from django.forms import inlineformset_factory, model_to_dict
 from django.http import JsonResponse, Http404
-from django.urls import reverse
 
 try:
     from StringIO import StringIO as string_io
@@ -12,7 +11,7 @@ from datetime import datetime
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils import timezone
 
 from .forms import (
@@ -25,6 +24,7 @@ from .models import (
     WorkshopType, AttachmentFile
 )
 from .send_mails import send_email
+from .decorators import *
 
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
@@ -39,38 +39,15 @@ def is_email_checked(user):
     return user.profile.is_email_verified
 
 
-def is_instructor(user):
-    """Check if the user is having instructor rights"""
-    return user.groups.filter(name='instructor').exists()
-
-
-def instructor_only(func):
-    def inner1(*args, **kwargs):
-        if is_instructor(args[0].user):
-            return func(*args, **kwargs)
-        return redirect(reverse('workshop_status_coordinator'))
-
-    return inner1
-
-
-def coordinator_only(func):
-    def inner1(*args, **kwargs):
-        if not is_instructor(args[0].user):
-            return func(*args, **kwargs)
-        return redirect(reverse('workshop_status_instructor'))
-
-    return inner1
-
-
 def redirect_to_landing_page(user):
     if is_instructor(user):
-        return reverse('workshop_status_instructor')
-    return reverse('workshop_status_coordinator')
+        return redirect(reverse('workshop_status_instructor'))
+    return redirect(reverse('workshop_status_coordinator'))
 
 
 # View functions
 
-@login_required()
+@login_required
 @instructor_only
 @coordinator_only
 def index(request):
