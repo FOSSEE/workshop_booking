@@ -7,7 +7,7 @@ class WorkshopTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkshopType
-        exclude = ['id', 'terms_and_conditions']
+        exclude = ['terms_and_conditions']
 
 
 class WorkshopTypeField(serializers.PrimaryKeyRelatedField):
