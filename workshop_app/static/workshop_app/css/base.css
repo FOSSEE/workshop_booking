@@ -37,9 +37,14 @@
     color: white;
 }
 
+.content{
+    margin-bottom:60px;
+}
+
 /**
  * Footer Styles
  */
+
 
 .footer {
     position: fixed;

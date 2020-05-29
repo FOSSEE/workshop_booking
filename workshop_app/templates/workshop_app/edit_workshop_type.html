@@ -1,4 +1,5 @@
 {% extends 'workshop_app/base.html' %}
+{% load static %}
 
 {% block title %}
     Add new Workshop type
@@ -9,7 +10,7 @@
 
 {% block extra-custom-scripts %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+    <script src="{% static 'workshop_app/js/jquery.formset.js' %}"></script>
 {% endblock %}
 
 {% block content %}
