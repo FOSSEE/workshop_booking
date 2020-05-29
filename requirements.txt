@@ -5,3 +5,5 @@ pytz==2016.10
 six==1.10.0
 coverage
 pyaml
+djangorestframework==3.11.0
+django-cors-headers==3.3.0
