@@ -10,8 +10,12 @@
     </title>
 
     <link rel="stylesheet" href="{% static 'workshop_app/css/bootstrap.min.css' %}">
-    <script src="{% static 'workshop_app/js/jquery-3.4.1.slim.min.js' %}"></script>
+    <script src="{% static 'workshop_app/js/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'workshop_app/js/popper.min.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'workshop_app/css/toastr.min.css' %}">
+    <script src="{% static 'workshop_app/js/toastr.min.js' %}"></script>
+
 
     {% block extra-dependencies %}
     {% endblock %}
@@ -92,6 +96,13 @@
     <h1>Base Template Content. Please override me</h1>
 {% endblock %}
 
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            toastr[{% if message.tags %} "{{ message.tags }}" {% else %} "info" {% endif %}]("{{ message }}");
+        {% endfor %}
+    {% endif %}
+</script>
 
 </body>
 <footer class="footer">
