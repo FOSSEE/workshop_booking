@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db.models import Q
 from django.forms import inlineformset_factory, model_to_dict
 from django.http import JsonResponse, Http404
@@ -188,12 +189,13 @@ def edit_profile(request):
             form_data.user.last_name = request.POST['last_name']
             form_data.user.save()
             form_data.save()
-
+            messages.add_message(request, messages.SUCCESS, "Profile updated.")
             return redirect('/view_profile/')
         else:
             return render(request, 'workshop_app/edit_profile.html')
     else:
         form = ProfileForm(user=user, instance=user.profile)
+        messages.add_message(request, messages.ERROR, "Profile update failed!")
         return render(request, 'workshop_app/edit_profile.html', {'form': form})
 
 
@@ -239,6 +241,7 @@ def accept_workshop(request, workshop_id):
     workshop.status = 1
     workshop.instructor = user
     workshop.save()
+    messages.add_message(request, messages.SUCCESS, "Workshop accepted!")
 
     coordinator_profile = workshop.coordinator.profile
 
@@ -275,6 +278,7 @@ def change_workshop_date(request, workshop_id):
             workshop = Workshop.objects.filter(id=workshop_id)
             workshop_date = workshop.first().date
             workshop.update(date=new_workshop_date)
+            messages.add_message(request, messages.INFO, "Workshop date updated")
 
             # For Instructor
             send_email(request, call_on='Change Date',
@@ -292,7 +296,6 @@ def change_workshop_date(request, workshop_id):
     return redirect(reverse('workshop_status_instructor'))
 
 
-# TODO: Show terms n conditions of selected ws type
 @login_required
 def propose_workshop(request):
     """Coordinator proposed a workshop and date"""
@@ -329,6 +332,7 @@ def propose_workshop(request):
                                    phone_number=user.profile.phone_number,
                                    institute=user.profile.institute
                                    )
+                    messages.add_message(request, messages.SUCCESS, "Workshop proposed successfully")
                     return redirect(get_landing_page(user))
         # GET request
         return render(
@@ -360,11 +364,13 @@ def workshop_type_details(request, workshop_type_id):
             form_file = AttachmentFileFormSet(request.POST, request.FILES, instance=form.instance)
             if form.is_valid():
                 form_data = form.save()
+                messages.add_message(request, messages.SUCCESS, "Workshop type saved.")
                 for file in form_file:
                     if file.is_valid() and file.clean() and file.clean()['attachments']:
                         if file.cleaned_data['id']:
                             file.cleaned_data['id'].delete()
                         file.save()
+                        messages.add_message(request, messages.INFO, "Attachment saved")
                 return redirect(reverse('workshop_type_details', args=[form_data.id]))
         else:
             form = WorkshopTypeForm(instance=workshop_type)
@@ -386,7 +392,9 @@ def delete_attachment_file(request, file_id):
     if file.exists():
         file = file.first()
         file.delete()
+        messages.add_message(request, messages.INFO, "Attachment deleted")
         return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
+    messages.add_message(request, messages.ERROR, "File does not exist")
     return redirect(reverse('workshop_type_list'))
 
 
@@ -431,8 +439,10 @@ def workshop_details(request, workshop_id):
             form_data.created_date = timezone.now()
             form_data.workshop = workshop
             form.save()
+            messages.add_message(request, messages.SUCCESS, "Comment posted")
         else:
             print(form.errors)
+            messages.add_message(request, messages.ERROR, "Error posting comment")
     if is_instructor(request.user):
         workshop_comments = Comment.objects.filter(workshop=workshop)
     else:
@@ -450,6 +460,7 @@ def add_workshop_type(request):
         form = WorkshopTypeForm(request.POST)
         if form.is_valid():
             form_data = form.save()
+            messages.add_message(request, messages.SUCCESS, "Workshop Type added")
             return redirect(reverse('workshop_type_details', args=[form_data.id]))
     else:
         form = WorkshopTypeForm
