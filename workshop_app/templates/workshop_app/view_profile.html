@@ -44,35 +44,38 @@
             </tr>
         </table>
         <br>
-        <div class="container">
+
+        {% if Workshops %}
+            <div class="container">
             <h2>Workshop Details</h2>
             <table class="table table-bordered">
-                <tr>
-                    <th><label for="id_instructor_name">Instructor name</label></th>
-                    <th><label for="id_workshop_date">Workshop date</label></th>
-                    <th><label for="id_workshop_type">Workshop type</label></th>
-                </tr>
-                {% for workshop in Workshops %}
-                    {% if workshop.instructor %}
-                        <tr>
-                            <td><label for="id_instructor_name">{{ workshop.instructor }}
-                            </label></td>
-                            <td><label for="id_workshop_date">{{ workshop.date }}</label>
-                            </td>
-                            <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td><span class="badge badge-warning">Pending</span></td>
-                            <td><label for="id_workshop_date">{{ workshop.date }}</label>
-                            </td>
-                            <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
+            <tr>
+                <th><label for="id_instructor_name">Instructor name</label></th>
+                <th><label for="id_workshop_date">Workshop date</label></th>
+                <th><label for="id_workshop_type">Workshop type</label></th>
+            </tr>
+            {% for workshop in Workshops %}
+                {% if workshop.instructor %}
+                    <tr>
+                        <td><label for="id_instructor_name">{{ workshop.instructor }}
+                        </label></td>
+                        <td><label for="id_workshop_date">{{ workshop.date }}</label>
+                        </td>
+                        <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><span class="badge badge-warning">Pending</span></td>
+                        <td><label for="id_workshop_date">{{ workshop.date }}</label>
+                        </td>
+                        <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </table>
         </div>
     </div>
 {% endblock %}

@@ -457,7 +457,7 @@ def add_workshop_type(request):
 
 
 @login_required
-def view_comment_profile(request, user_id):
+def view_profile(request, user_id):
     """Instructor can view coordinator profile """
     user = request.user
     if is_instructor(user) and is_email_checked(user):
@@ -469,3 +469,13 @@ def view_comment_profile(request, user_id):
                       {"coordinator_profile": coordinator_profile,
                        "Workshops": workshops})
     return redirect(get_landing_page(user))
+
+
+@login_required
+def view_own_profile(request):
+    """User can view own profile """
+    user = request.user
+    coordinator_profile = Profile.objects.get(user=user)
+
+    return render(request, "workshop_app/view_profile.html",
+                  {"coordinator_profile": coordinator_profile, "Workshops": None})
