@@ -19,8 +19,7 @@
             </tr>
             <tr>
                 <th><label for="id_email">Coordinator :</label></th>
-                <td><label for="id_email"><a
-                        href="{% url 'view_profile' workshop.coordinator_id %}">{{ workshop.coordinator }}</a></label>
+                <td><label for="id_email">{{ workshop.coordinator.get_full_name|title }}</label>
                 </td>
             </tr>
             {% if workshop.status %}
@@ -30,8 +29,7 @@
                 </tr>
                 <tr>
                     <th><label for="id_phone_number">Instructor :</label></th>
-                    <td><label for="id_email"><a
-                            href="{% url 'view_profile' workshop.instructor_id %}">{{ workshop.instructor }}</a></label>
+                    <td><label for="id_email">{{ workshop.instructor.get_full_name|title }}</label>
                     </td>
                 </tr>
             {% else %}

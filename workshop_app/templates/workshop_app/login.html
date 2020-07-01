@@ -20,10 +20,21 @@
                             <br>
                             {{ form.password }}
                             <br>
-                            <button class="btn btn-success btn-md" style="width: 40%" type="submit">Login</button>
+                            <button class="btn btn-success btn-md" style="width: 40%" type="submit">
+                                Login
+                            </button>
                             <br><br>
-                            <a href="{{ URL_ROOT }}/forgotpassword/" class="btn btn-default btn-sm"
-                               style="color:#3693C0;">Forgot Password</a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a class="btn btn-info" href="{% url 'register' %}">
+                                        Register
+                                    </a>
+                                </div>
+                                <div class="col-md-5">
+                                    <a href="{% url 'password_reset' %}" class="btn btn-outline-primary">Forgot Password?
+                                    </a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

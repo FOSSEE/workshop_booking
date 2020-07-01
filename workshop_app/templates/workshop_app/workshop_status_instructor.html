@@ -120,12 +120,8 @@
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                             <td>
-                                <a href="{% url 'accept_workshop' workshop.id %}">
-                                    <button class="btn btn-primary btn-sm" id="book-btn" data-toggle="popover"
-                                            title="Please Note"
-                                            data-content="Once Accepted you can't Reject, you have to personally contact the Coordinator if the workshop is to be cancelled">
-                                        Accept
-                                    </button>
+                                <a href="{% url 'accept_workshop' workshop.id %}" class="btn btn-primary btn-sm"  onclick="return confirm('Once accepted you cannot reject, you have to personally contact the Coordinator if the workshop is to be cancelled. Are you sure you want to accept the workshop?')">
+                                    Accept
                                 </a>
                             </td>
                         {% endif %}

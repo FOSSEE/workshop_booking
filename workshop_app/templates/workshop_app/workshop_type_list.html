@@ -1,5 +1,5 @@
 {% extends 'workshop_app/base.html' %}
-
+{% load custom_filters %}
 {% block title %}
 	View List of available Workshops
 {% endblock %}
@@ -8,7 +8,7 @@
     <div class="container">
     <h2 class="text-center">Workshop Types</h2>
     <br>
-    {% if request.user.profile.position == 'instructor' %}
+    {% if request.user|has_group:"instructor" %}
         <a href="{% url 'add_workshop_type' %}">
         <button class="btn btn-md btn-primary float-right mb-3 mx-4">Add Workshop Type</button>
         </a>
@@ -31,7 +31,7 @@
 		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
 		      <td>{{ w.name }}</td>
 		      <td>{{ w.duration }}</td>
-		      <td><a href="{{URL_ROOT}}/workshop_type_details/{{ w.id }}" class="btn btn-default btn-sm" class="accordion-toggle" >View Workshop Details</a></td>
+		      <td><a href="{{URL_ROOT}}/workshop_type_details/{{ w.id }}" class="btn btn-outline-info" class="accordion-toggle" >View Workshop Details</a></td>
 		    </tr>
 		  </tbody>
 		 {% endfor %}
