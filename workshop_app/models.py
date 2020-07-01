@@ -1,9 +1,11 @@
 import os
+import uuid
 
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
+from django.core.validators import MinValueValidator
 
 position_choices = (
     ("coordinator", "Coordinator"),
@@ -105,25 +107,25 @@ class Profile(models.Model):
                 in the format: '9999999999'.\
                 Up to 10 digits allowed.")
         )], null=False)
-    position = models.CharField(max_length=32, choices=position_choices,
-                                default='coordinator',
-                                help_text='Select Coordinator if you want to organise a workshop\
+    position = models.CharField(
+            max_length=32, choices=position_choices,
+            default='coordinator',
+            help_text='Select Coordinator if you want to organise a workshop\
          in your college/school. <br> Select Instructor if you want to conduct\
                  a workshop.')
-    how_did_you_hear_about_us = models.CharField(max_length=255, blank=True, choices=source)
-    location = models.CharField(max_length=255, blank=True, help_text="Place/City")
+    how_did_you_hear_about_us = models.CharField(
+        max_length=255, blank=True, choices=source
+    )
+    location = models.CharField(
+        max_length=255, blank=True, help_text="Place/City"
+    )
     state = models.CharField(max_length=255, choices=states, default="IN-MH")
     is_email_verified = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     key_expiry_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return u"id: {0}| {1} {2} | {3} ".format(
-            self.user.id,
-            self.user.first_name,
-            self.user.last_name,
-            self.user.email
-        )
+        return f"Profile for {self.user.get_full_name()}"
 
 
 class WorkshopType(models.Model):
@@ -133,23 +135,23 @@ class WorkshopType(models.Model):
 
     name = models.CharField(max_length=120)
     description = models.TextField()
-    duration = models.CharField(max_length=32,
-                                help_text='Please write this in \
-                    following format eg: 3days, 8hours a day')
+    duration = models.PositiveIntegerField(
+        help_text='Please enter duration in days',
+        validators=[MinValueValidator(1)]
+    )
     terms_and_conditions = models.TextField()
 
     def __str__(self):
-        return u"{0} {1}".format(self.name,
-                                 self.duration
-                                 )
+        return f"{self.name} for {self.duration} day(s)"
 
 
 class AttachmentFile(models.Model):
-    attachments = models.FileField(upload_to=attachments, blank=False,
-                                   help_text='Please upload workshop documents one by one, \
-                        ie.workshop schedule, instructions etc. \
-                        Please Note: Name of Schedule file should be similar to \
-                        WorkshopType Name')
+    attachments = models.FileField(
+        upload_to=attachments, blank=False,
+        help_text='Please upload workshop documents one by one, \
+                    ie.workshop schedule, instructions etc. \
+                    Please Note: Name of Schedule file should be similar to \
+                    WorkshopType Name')
     workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE)
 
 
@@ -157,29 +159,32 @@ class Workshop(models.Model):
     """
         Contains details of workshops
     """
+    uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     coordinator = models.ForeignKey(User, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related",
-                                   on_delete=models.CASCADE)
-    workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE, help_text='Select the type of workshop.')
+    instructor = models.ForeignKey(
+        User, null=True, related_name="%(app_label)s_%(class)s_related",
+        on_delete=models.CASCADE
+    )
+    workshop_type = models.ForeignKey(
+        WorkshopType, on_delete=models.CASCADE,
+        help_text='Select the type of workshop.'
+    )
     date = models.DateField()
     STATUS_CHOICES = [(0, 'Pending'),
                       (1, 'Accepted'),
                       (2, 'Deleted')]
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
-    tnc_accepted = models.BooleanField(help_text="I accept the terms and conditions")
+    tnc_accepted = models.BooleanField(
+        help_text="I accept the terms and conditions"
+    )
 
     def __str__(self):
-        return u"{0} | {1} | {2} | {3} | {4}".format(
-            self.date,
-            self.workshop_type,
-            self.coordinator,
-            self.instructor,
-            self.STATUS_CHOICES[self.status][1]
-        )
+        return f"{self.workshop_type} on {self.date} by {self.coordinator}"
 
     def get_status(self):
-        return str(self.STATUS_CHOICES[self.status][1])
+        choice = dict(self.STATUS_CHOICES)
+        return choice.get(self.status)
 
 
 class Testimonial(models.Model):
@@ -193,11 +198,7 @@ class Testimonial(models.Model):
     message = models.TextField()
 
     def __str__(self):
-        return u"{0} | {1} ".format(
-            self.name,
-            self.institute,
-            self.department
-        )
+        return f"Testimonial by {self.name}"
 
 
 class Comment(models.Model):
@@ -212,12 +213,7 @@ class Comment(models.Model):
     workshop = models.ForeignKey(Workshop, on_delete=models.CASCADE)
 
     def __str__(self):
-        return u"{0} | {1} | {2}".format(
-            self.comment,
-            self.created_date,
-            self.author,
-        )
-
+        return f"Comment by {self.author.get_full_name()}"
 
 
 class Banner(models.Model):

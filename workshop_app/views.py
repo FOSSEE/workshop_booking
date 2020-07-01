@@ -151,7 +151,7 @@ def user_register(request):
             if request.user.is_authenticated:
                 return redirect('/view_profile/')
             return render(
-                request, "workshop_app/registration/register.html",
+                request, "workshop_app/register.html",
                 {"form": form}
             )
     else:
@@ -160,7 +160,7 @@ def user_register(request):
         elif request.user.is_authenticated:
             return render(request, 'workshop_app/activation.html')
         form = UserRegistrationForm()
-    return render(request, "workshop_app/registration/register.html", {"form": form})
+    return render(request, "workshop_app/register.html", {"form": form})
 
 
 @login_required
@@ -441,7 +441,6 @@ def workshop_details(request, workshop_id):
             form.save()
             messages.add_message(request, messages.SUCCESS, "Comment posted")
         else:
-            print(form.errors)
             messages.add_message(request, messages.ERROR, "Error posting comment")
     if is_instructor(request.user):
         workshop_comments = Comment.objects.filter(workshop=workshop)
