@@ -1,0 +1,35 @@
+{% extends 'workshop_app/base.html' %}
+
+	{% block title %}
+		Register
+	{% endblock %}
+
+{% block content %}
+
+	<style type="text/css">
+    	label.required::after {
+    	content: "*";
+    	color: red;
+		}
+
+		.errorlist {
+      color: red;
+    }
+	</style>
+
+	<div class="container" >
+		<br>
+		<h3>Coordinator Registration Form</h3>
+		<br>
+		<form action="" method="post">
+			{% csrf_token %}
+				<table class="table table-bordered">
+					{{ form.as_table }}
+				</table>
+
+				<button class="btn btn-primary" type="submit">Register</button>
+		</form><br>
+		<!-- Activate when Instructor registeration starts -->
+		<br>
+	</div>
+{% endblock %}

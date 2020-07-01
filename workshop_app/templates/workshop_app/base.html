@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
+{% load custom_filters %}
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>
-		{% block title %}
-			HomePage
-		{% endblock %}
-	</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}
+            HomePage
+        {% endblock %}
+    </title>
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-    <link href="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-    <link rel="stylesheet" href="{{ URL_ROOT }}/static/workshop_app/css/sticky-footer.css" type="text/css" />
+    <link rel="stylesheet" href="{% static 'workshop_app/css/bootstrap.min.css' %}">
+    <script src="{% static 'workshop_app/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'workshop_app/js/popper.min.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'workshop_app/css/toastr.min.css' %}">
+    <script src="{% static 'workshop_app/js/toastr.min.js' %}"></script>
+
+
+    {% block extra-dependencies %}
+    {% endblock %}
+
+    <script src="{% static 'workshop_app/js/bootstrap.min.js' %}"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'workshop_app/css/base.css' %}" type="text/css"/>
     <!-- favicon -->
-    <link rel="shortcut icon" type="image/png" href="{{ URL_ROOT}}/static/workshop_app/img/fevicon_python.png"/>
+    <link rel="shortcut icon" type="image/png" href="{{ URL_ROOT }}/static/workshop_app/img/fevicon_python.png"/>
+
+    {% block extra-custom-scripts %}
+    {% endblock %}
+
 </head>
 
-	<!-- For js/ajax and other related scripts -->
-	{% block extra %}
-	{% endblock %}
-
-<body style="overflow: scroll;">
- {% block header %}
- <nav class="navbar navbar-default navbar-custom">
-  <div class="container-fluid">
-      {% if request.user.profile.position == 'instructor' %}
-	<div class="navbar-header">
-	    <a class="navbar-brand" >FOSSEE Python Workshops</a>
-	</div>
-          <ul class="nav navbar-nav">
-            <li><a href="{{ URL_ROOT }}/manage/">Manage Workshops</a></li>
-            <li><a href="{{ URL_ROOT }}/create_workshop/">Create Workshop</a></li>
-            <li><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-          </ul>
-        {% elif request.user.profile.position == 'coordinator' %}
-	        <div class="navbar-header">
-	            <a class="navbar-brand" >FOSSEE Python Workshops</a>
-	        </div>
-          <ul class="nav navbar-nav">
-            <li ><a href="{{ URL_ROOT }}/my_workshops/">Workshop Status</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Workshops
-                    <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{{ URL_ROOT }}/book/">Book a Workshop</a></li>
-                    <li><a href="{{ URL_ROOT }}/propose_workshop/">Propose a Workshop</a></li>
+<body>
+{% block header %}
+    <nav class=" navbar-custom navbar navbar-expand-lg bg-light fixed-top">
+        <a class="navbar-brand" href="/">FOSSEE Python Workshops</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'workshop_status_instructor' %}">
+                        Workshop Status
+                    </a>
+                </li>
+                {% if not request.user|has_group:"instructor" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'propose_workshop' %}">
+                            Propose Workshop
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'workshop_type_list' %}">
+                        Workshop Types
+                    </a>
+                </li>
+            </ul>
+            <div class="my-2 my-lg-0">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <span class="material-icons" style="vertical-align: middle">account_circle</span>
+                            <p style="display: inline; vertical-align: middle">
+                                {{user.get_full_name|title}}
+                            </p>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/view_profile/">Profile</a>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </li>
                 </ul>
-            </li>
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/"> Workshop List</a></li>
-          </ul>
-          {% else %}
-	        <div class="navbar-header">
-	            <a class="navbar-brand" href="{{ URL_ROOT }}/">FOSSEE Python Workshops</a>
-	        </div>
-
-        {% endif %}
-
-        <ul class="nav navbar-nav navbar-right">
-            {% if request.user.profile.position == 'instructor' %}
-            <li><a href="{{ URL_ROOT }}/view_workshoptype_list/">Workshop List</a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Statistics
-                    <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{{ URL_ROOT }}/statistics/">Workshop Statistics</a></li>
-                    <li><a href="{{ URL_ROOT }}/statistics/profile_stats/">Profile Statistics</a></li>
-                </ul>
-            </li>
-            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            {%  elif request.user.profile.position == 'coordinator' %}
-	          <li><a href="{{ URL_ROOT }}/how_to_participate/">How to Participate</a></li>
-            <li><a href="{{ URL_ROOT }}/faq/">FAQ's</a></li>
-            <li><a href="{{ URL_ROOT }}/view_profile/"><span class="glyphicon glyphicon-user"></span> {{ user.first_name }} </a></li>
-            <li><a href="{{ URL_ROOT }}/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            {% else %}
-                <li><a href="{{URL_ROOT}}/register">Register</a></li>
-                <li><a href="{{URL_ROOT}}/login">Login</a></li>
-                <li><a href="{{URL_ROOT}}/how_to_participate">How to Participate</a></li>
-                <li ><a href="https://python.fossee.in/about" target="_blank">About Us</a></li>
-                <li><a href="{{URL_ROOT}}/statistics/public_stats/">Stats</a></li>
-        </ul>
+            </div>
             {% endif %}
-  	</div>
-  </nav>
-  {% endblock %}
+        </div>
+    </nav>
+{% endblock %}
 
-	{% block content %}
-		<h1>Base Template Content. Please override me</h1>
-	{% endblock %}
+<div class="base-content">
+    {% block content %}
+        <h1>Base Template Content. Please override me</h1>
+    {% endblock %}
+</div>
 
-	
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            toastr[{% if message.tags %} "{{ message.tags }}" {% else %} "info" {% endif %}]("{{ message }}");
+        {% endfor %}
+    {% endif %}
+</script>
+
 </body>
-	<footer class="footer">
-		<div class="container">
-			 <p align="center">Developed by FOSSEE group, IIT Bombay</p>
-		 </div>
-	</footer>
+<footer class="footer">
+    <div class="container">
+        Developed by FOSSEE group, IIT Bombay
+    </div>
+</footer>
 </html>

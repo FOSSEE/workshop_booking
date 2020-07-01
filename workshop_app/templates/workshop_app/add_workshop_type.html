@@ -1,0 +1,50 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}
+    Add new Workshop type
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="text-center m-2">New Workshop Type</h2>
+        <br>
+        <form method="post">
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Workshop Name :</div>
+                <div class="col text-left">
+                    <div class="row"><div class="col">{{ form.name }}</div></div>
+                    <div class="row m-1 text-danger"><div class="col">{{ form.name.errors }}</div></div>
+                </div>
+
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Duration :</div>
+                <div class="col text-left">
+                    <div class="row"><div class="col">{{ form.duration }}</div></div>
+                    <div class="row m-1 text-muted"><div class="col">{{ form.duration.help_text }}</div></div>
+                    <div class="row m-1 text-danger"><div class="col">{{ form.duration.errors }}</div></div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Description :</div>
+                <div class="col text-left">
+                    <div class="row"><div class="col">{{ form.description }}</div></div>
+                    <div class="row m-1 text-danger"><div class="col">{{ form.description.errors }}</div></div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-3 font-weight-bold">Terms and Conditions :</div>
+                <div class="col text-left">
+                    <div class="row"><div class="col">{{ form.terms_and_conditions }}</div></div>
+                    <div class="row m-1 text-danger"><div class="col">{{ form.terms_and_conditions.errors }}</div></div>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-md btn-primary float-right m-3">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

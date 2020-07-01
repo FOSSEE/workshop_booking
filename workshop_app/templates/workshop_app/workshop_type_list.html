@@ -1,0 +1,85 @@
+{% extends 'workshop_app/base.html' %}
+{% load custom_filters %}
+{% block title %}
+	View List of available Workshops
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <h2 class="text-center">Workshop Types</h2>
+    <br>
+    {% if request.user|has_group:"instructor" %}
+        <a href="{% url 'add_workshop_type' %}">
+        <button class="btn btn-md btn-primary float-right mb-3 mx-4">Add Workshop Type</button>
+        </a>
+        <br>
+    {% endif %}
+	<div class="container">
+		<table class="table table-hover">
+		  <thead>
+		    <tr>
+		      <th>id</th>
+		      <th>Workshop Name</th>
+		      <th>Workshop Duration</th>
+		      <th>Action</th>
+		    </tr>
+		  </thead>
+
+		{% for w in workshop_type %}
+		  <tbody>
+		    <tr  >
+		      <td scope="row" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
+		      <td>{{ w.name }}</td>
+		      <td>{{ w.duration }}</td>
+		      <td><a href="{{URL_ROOT}}/workshop_type_details/{{ w.id }}" class="btn btn-outline-info" class="accordion-toggle" >View Workshop Details</a></td>
+		    </tr>
+		  </tbody>
+		 {% endfor %}
+		</table>
+	</div>
+
+	    <!-- The Modal -->
+	    <div id="mailModal" class="modal">
+
+	    <!-- Modal content -->
+	    <div class="modal-content">
+		<span class="close">&times;</span>
+		<p>Separate Multiple Email Id's using <strong> comma (,)</strong></p>
+		<form action="{{URL_ROOT}}/share_details/" method="POST">
+		  {% csrf_token %}
+		    <label > Email: </label>
+		    <input name="email" type='email' multiple>
+		    <input type='submit'>
+		</form>
+	    </div>
+	    </div>
+
+<!-- Page Navigation -->
+	<div class="container">
+
+		<div class="Page-Nav" align="center">
+		<nav aria-label="Page navigation">
+		 	<ul class="pagination pagination-sm">
+			  	<li class="page-item">
+			      {% if workshoptype.has_previous %}
+					<a class="page-link" tabindex="-1" 
+							href="?page={{ workshop_type.previous_page_number }}">Previous</a>
+				{% endif %}
+			    </li>
+			    <li class="page-item">
+			    <span class="current">
+				Page {{ workshop_type.number }} of {{ workshop_type.paginator.num_pages }}
+					</span>
+				</li>
+			    <li class="page-item">
+			    {% if workshop_type.has_next %}
+					<a class="page-link" href="?page={{ workshop_type.next_page_number }}">Next
+					</a>
+				{% endif %}
+			    </li>
+		  	</ul>
+		</nav>
+		</div>
+	</div>
+</div>
+{% endblock %}

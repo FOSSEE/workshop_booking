@@ -1,62 +1,82 @@
 {% extends 'workshop_app/base.html' %}
 
 {% block title %}
-    View Profile
+    Coordinator Profile
 {% endblock %}
-
-
-    {% block extra %}
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-          <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
-    {% endblock %}
 
 {% csrf_token %}
 {% block content %}
 
-  <div class="container">
-  <table class="table table-bordered">
-  <tr>
-    <th><label for="id_first_name"><h5>First name:</h5></label></th>
-    <th><label for="id_first_name"><h5>{{ user.first_name }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_last_name"><h5>Last name:</h5></label></th>
-    <th><label for="id_last_name"><h5>{{ user.last_name }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_email"><h5>Email:</h5></label></th>
-    <th><label for="id_email"><h5>{{ user.email }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_institute"><h5>Institute:</h5></label></th>
-    <th><label for="id_institute"><h5>{{ user.profile.institute }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
-    <th><label for="id_phone_number"><h5>{{ user.profile.phone_number }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_department"><h5>Department:</h5></label></th>
-    <th><label for="id_department"><h5>{{ user.profile.department }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_location"><h5>Location:</h5></label></th>
-    <th><label for="id_location"><h5>{{ user.profile.location }}</h5></label></th>
-  </tr>
-  <tr>
-    <th><label for="id_position"><h5>Position:</h5></label></th>
-    <th><label for="id_position"><h5>{{ user.profile.position }}</h5></label></th>
-  </tr>
-  </table>
-    <br>
-    <a class="btn btn-primary" href="{{ URL_ROOT }}/edit_profile/">Edit Profile</a>
-    {% if user.profile.position == 'instructor' %}
-        <a class="btn btn-primary " href="{{ URL_ROOT }}/download/">Download Workshop</a>
-      {% endif %}
+    <div class="container">
+        <table class="table table-bordered">
+            <tr>
+                <th><label for="id_first_name"><h5>First name:</h5></label></th>
+                <th><label for="id_first_name"><h5>{{ coordinator_profile.user.first_name }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_last_name"><h5>Last name:</h5></label></th>
+                <th><label for="id_last_name"><h5>{{ coordinator_profile.user.last_name }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_email"><h5>Email:</h5></label></th>
+                <th><label for="id_email"><h5>{{ coordinator_profile.user.email }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_institute"><h5>Institute:</h5></label></th>
+                <th><label for="id_institute"><h5>{{ coordinator_profile.user.profile.institute }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
+                <th><label for="id_phone_number"><h5>{{ coordinator_profile.user.profile.phone_number }}</h5></label>
+                </th>
+            </tr>
+            <tr>
+                <th><label for="id_department"><h5>Department:</h5></label></th>
+                <th><label for="id_department"><h5>{{ coordinator_profile.user.profile.department }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_location"><h5>Location:</h5></label></th>
+                <th><label for="id_location"><h5>{{ coordinator_profile.user.profile.location }}</h5></label></th>
+            </tr>
+            <tr>
+                <th><label for="id_position"><h5>Position:</h5></label></th>
+                <th><label for="id_position"><h5>{{ coordinator_profile.user.profile.position }}</h5></label></th>
+            </tr>
+        </table>
+        <br>
 
-
-  </div>
-
-
-
+        {% if Workshops %}
+            <div class="container">
+            <h2>Workshop Details</h2>
+            <table class="table table-bordered">
+            <tr>
+                <th><label for="id_instructor_name">Instructor name</label></th>
+                <th><label for="id_workshop_date">Workshop date</label></th>
+                <th><label for="id_workshop_type">Workshop type</label></th>
+            </tr>
+            {% for workshop in Workshops %}
+                {% if workshop.instructor %}
+                    <tr>
+                        <td><label for="id_instructor_name">{{ workshop.instructor }}
+                        </label></td>
+                        <td><label for="id_workshop_date">{{ workshop.date }}</label>
+                        </td>
+                        <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><span class="badge badge-warning">Pending</span></td>
+                        <td><label for="id_workshop_date">{{ workshop.date }}</label>
+                        </td>
+                        <td><label for="id_workshop_type">{{ workshop.workshop_type }}</label>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </table>
+            </div>
+            <br><br>
+        {% endif %}
+    </div>
 {% endblock %}
