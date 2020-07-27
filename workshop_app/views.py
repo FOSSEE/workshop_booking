@@ -27,6 +27,7 @@ from .models import (
 )
 from .send_mails import send_email
 
+
 __author__ = "Akshen Doke"
 __credits__ = ["Mahesh Gudi", "Aditya P.", "Ankit Javalkar",
                "Prathamesh Salunke", "Kiran Kishore",
@@ -48,8 +49,8 @@ def is_instructor(user):
 def get_landing_page(user):
     # For now, landing pages of both instructor and coordinator are same
     if is_instructor(user):
-        return reverse('workshop_status_instructor')
-    return reverse('workshop_status_coordinator')
+        return reverse('workshop_app:workshop_status_instructor')
+    return reverse('workshop_app:workshop_status_coordinator')
 
 
 # View functions
@@ -61,7 +62,7 @@ def index(request):
     if user.is_authenticated and is_email_checked(user):
         return redirect(get_landing_page(user))
 
-    return redirect('/login/')
+    return redirect(reverse('workshop_app:login'))
 
 
 # User views
@@ -116,14 +117,14 @@ def activate_user(request, key=None):
             return render(request, 'workshop_app/activation.html',
                           {'status': status})
         else:
-            return redirect('/register/')
+            return redirect(reverse("workshop_app:register"))
 
     user = Profile.objects.filter(activation_key=key)
     if user.exists():
         user = user.first()
     else:
         logout(request)
-        return redirect('/register/')
+        return redirect(reverse("workshop_app:register"))
 
     user.is_email_verified = True
     user.save()
@@ -149,7 +150,7 @@ def user_register(request):
             return render(request, 'workshop_app/activation.html')
         else:
             if request.user.is_authenticated:
-                return redirect('/view_profile/')
+                return redirect('workshop:view_profile')
             return render(
                 request, "workshop_app/register.html",
                 {"form": form}
@@ -190,13 +191,14 @@ def edit_profile(request):
             form_data.user.save()
             form_data.save()
             messages.add_message(request, messages.SUCCESS, "Profile updated.")
-            return redirect('/view_profile/')
+            return redirect(reverse("workshop_app:view_own_profile"))
         else:
-            return render(request, 'workshop_app/edit_profile.html')
+            messages.add_message(
+                request, messages.ERROR, "Profile update failed!"
+            )
     else:
         form = ProfileForm(user=user, instance=user.profile)
-        messages.add_message(request, messages.ERROR, "Profile update failed!")
-        return render(request, 'workshop_app/edit_profile.html', {'form': form})
+    return render(request, 'workshop_app/edit_profile.html', {'form': form})
 
 
 # Workshop views
@@ -250,7 +252,7 @@ def accept_workshop(request, workshop_id):
                user_position='instructor',
                workshop_date=str(workshop.date),
                workshop_title=workshop.workshop_type.name,
-               user_name=str(coordinator_profile.user.get_full_name()),
+               user_name=workshop.coordinator.get_full_name(),
                other_email=workshop.coordinator.email,
                phone_number=coordinator_profile.phone_number,
                institute=coordinator_profile.institute
@@ -263,7 +265,7 @@ def accept_workshop(request, workshop_id):
                other_email=workshop.coordinator.email,
                phone_number=request.user.profile.phone_number
                )
-    return redirect(reverse('workshop_status_instructor'))
+    return redirect(reverse('workshop_app:workshop_status_instructor'))
 
 
 @login_required
@@ -272,7 +274,9 @@ def change_workshop_date(request, workshop_id):
     if not is_instructor(user):
         return redirect(get_landing_page(user))
     if request.method == 'POST':
-        new_workshop_date = datetime.strptime(request.POST.get('new_date'), "%Y-%m-%d")
+        new_workshop_date = datetime.strptime(
+            request.POST.get('new_date'), "%Y-%m-%d"
+        )
         today = datetime.today()
         if today <= new_workshop_date:
             workshop = Workshop.objects.filter(id=workshop_id)
@@ -293,7 +297,7 @@ def change_workshop_date(request, workshop_id):
                        workshop_date=str(workshop_date),
                        other_email=workshop.first().coordinator.email
                        )
-    return redirect(reverse('workshop_status_instructor'))
+    return redirect(reverse('workshop_app:workshop_status_instructor'))
 
 
 @login_required
@@ -352,35 +356,51 @@ def workshop_type_details(request, workshop_type_id):
     if workshop_type.exists():
         workshop_type = workshop_type.first()
     else:
-        return redirect(reverse('workshop_type_list'))
+        return redirect(reverse('workshop_app:workshop_type_list'))
 
     qs = AttachmentFile.objects.filter(workshop_type=workshop_type)
-    AttachmentFileFormSet = inlineformset_factory(WorkshopType, AttachmentFile, fields=['attachments'],
-                                                  can_delete=False, extra=(qs.count() + 1))
+    AttachmentFileFormSet = inlineformset_factory(
+        WorkshopType, AttachmentFile, fields=['attachments'],
+        can_delete=False, extra=(qs.count() + 1)
+    )
 
     if is_instructor(user):
         if request.method == 'POST':
             form = WorkshopTypeForm(request.POST, instance=workshop_type)
-            form_file = AttachmentFileFormSet(request.POST, request.FILES, instance=form.instance)
+            form_file = AttachmentFileFormSet(
+                request.POST, request.FILES, instance=form.instance
+            )
             if form.is_valid():
                 form_data = form.save()
-                messages.add_message(request, messages.SUCCESS, "Workshop type saved.")
+                messages.add_message(
+                    request, messages.SUCCESS, "Workshop type saved."
+                )
                 for file in form_file:
-                    if file.is_valid() and file.clean() and file.clean()['attachments']:
+                    if (file.is_valid() and file.clean() and
+                            file.clean()['attachments']):
                         if file.cleaned_data['id']:
                             file.cleaned_data['id'].delete()
                         file.save()
-                        messages.add_message(request, messages.INFO, "Attachment saved")
-                return redirect(reverse('workshop_type_details', args=[form_data.id]))
+                        messages.add_message(
+                            request, messages.INFO, "Attachment saved"
+                        )
+                return redirect(
+                    reverse('workshop_app:workshop_type_details',
+                            args=[form_data.id])
+                    )
         else:
             form = WorkshopTypeForm(instance=workshop_type)
         form_file = AttachmentFileFormSet()
         for subform, data in zip(form_file, qs):
             subform.initial = model_to_dict(data)
-        return render(request, 'workshop_app/edit_workshop_type.html', {'form': form, 'form_file': form_file})
+        return render(
+            request, 'workshop_app/edit_workshop_type.html',
+            {'form': form, 'form_file': form_file}
+        )
 
     return render(
-        request, 'workshop_app/workshop_type_details.html', {'workshop_type': workshop_type}
+        request, 'workshop_app/workshop_type_details.html',
+        {'workshop_type': workshop_type}
     )
 
 
@@ -393,9 +413,12 @@ def delete_attachment_file(request, file_id):
         file = file.first()
         file.delete()
         messages.add_message(request, messages.INFO, "Attachment deleted")
-        return redirect(reverse('workshop_type_details', args=[file.workshop_type.id]))
+        return redirect(
+            reverse('workshop_app:workshop_type_details',
+                    args=[file.workshop_type.id])
+        )
     messages.add_message(request, messages.ERROR, "File does not exist")
-    return redirect(reverse('workshop_type_list'))
+    return redirect(reverse('workshop_app:workshop_type_list'))
 
 
 @login_required
@@ -414,7 +437,7 @@ def workshop_type_list(request):
     if user.is_superuser:
         return redirect("/admin")
 
-    workshop_types = WorkshopType.objects.all()
+    workshop_types = WorkshopType.objects.get_queryset().order_by("id")
 
     paginator = Paginator(workshop_types, 12)  # Show upto 12 workshops per page
     page = request.GET.get('page')
@@ -460,7 +483,10 @@ def add_workshop_type(request):
         if form.is_valid():
             form_data = form.save()
             messages.add_message(request, messages.SUCCESS, "Workshop Type added")
-            return redirect(reverse('workshop_type_details', args=[form_data.id]))
+            return redirect(
+                reverse('workshop_app:workshop_type_details',
+                        args=[form_data.id])
+            )
     else:
         form = WorkshopTypeForm
     return render(request, 'workshop_app/add_workshop_type.html', {'form': form})
