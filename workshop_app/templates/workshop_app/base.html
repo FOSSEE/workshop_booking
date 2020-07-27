@@ -10,22 +10,20 @@
         {% endblock %}
     </title>
 
-    <link rel="stylesheet" href="{% static 'workshop_app/css/bootstrap.min.css' %}">
     <script src="{% static 'workshop_app/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'workshop_app/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'workshop_app/js/popper.min.js' %}"></script>
-
-    <link rel="stylesheet" href="{% static 'workshop_app/css/toastr.min.css' %}">
     <script src="{% static 'workshop_app/js/toastr.min.js' %}"></script>
 
 
     {% block extra-dependencies %}
     {% endblock %}
 
-    <script src="{% static 'workshop_app/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'workshop_app/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'workshop_app/css/toastr.min.css' %}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'workshop_app/css/base.css' %}" type="text/css"/>
-    <!-- favicon -->
-    <link rel="shortcut icon" type="image/png" href="{{ URL_ROOT }}/static/workshop_app/img/fevicon_python.png"/>
+    <link rel="stylesheet" href="{% static 'workshop_app/css/font-awesome.css' %}" type="text/css"/>
 
     {% block extra-custom-scripts %}
     {% endblock %}
@@ -34,8 +32,12 @@
 
 <body>
 {% block header %}
-    <nav class=" navbar-custom navbar navbar-expand-lg bg-light fixed-top">
-        <a class="navbar-brand" href="/">FOSSEE Python Workshops</a>
+    <nav class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top">
+        {% if user.is_authenticated %}
+        <a class="navbar-brand text-white" href="{% url 'workshop_app:index' %}">FOSSEE Workshops</a>
+        {% else %}
+        <a class="navbar-brand text-white" href="{{request.scheme}}://{{request.get_host}}">FOSSEE Workshops</a>
+        {% endif %}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -44,19 +46,19 @@
             {% if user.is_authenticated %}
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'workshop_status_instructor' %}">
+                    <a class="nav-link text-white" href="{% url 'workshop_app:workshop_status_instructor' %}">
                         Workshop Status
                     </a>
                 </li>
                 {% if not request.user|has_group:"instructor" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'propose_workshop' %}">
+                        <a class="nav-link text-white" href="{% url 'workshop_app:propose_workshop' %}">
                             Propose Workshop
                         </a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'workshop_type_list' %}">
+                    <a class="nav-link text-white" href="{% url 'workshop_app:workshop_type_list' %}">
                         Workshop Types
                     </a>
                 </li>
@@ -64,7 +66,7 @@
             <div class="my-2 my-lg-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                            <span class="material-icons" style="vertical-align: middle">account_circle</span>
                             <p style="display: inline; vertical-align: middle">
@@ -72,8 +74,8 @@
                             </p>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/view_profile/">Profile</a>
-                            <a class="dropdown-item" href="/logout">Logout</a>
+                            <a class="dropdown-item" href="{% url 'workshop_app:view_own_profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'workshop_app:logout' %}">Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -99,8 +101,10 @@
 
 </body>
 <footer class="footer">
-    <div class="container">
-        Developed by FOSSEE group, IIT Bombay
-    </div>
+    {% block footer %}
+       <div class="container">
+           Developed by FOSSEE group, IIT Bombay
+       </div> 
+    {% endblock %}
 </footer>
 </html>

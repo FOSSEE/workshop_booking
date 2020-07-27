@@ -10,7 +10,7 @@
             <tr>
                 <th><label for="id_first_name">Workshop Type :</label></th>
                 <td><label for="id_first_name"><a
-                        href="{% url 'workshop_type_details' workshop.workshop_type_id %}">{{ workshop.workshop_type }}</a></label>
+                        href="{% url 'workshop_app:workshop_type_details' workshop.workshop_type_id %}">{{ workshop.workshop_type }}</a></label>
                 </td>
             </tr>
             <tr>
@@ -41,26 +41,6 @@
         </table>
         <br>
         <div class="container">
-            <h2 class="text-center">Comments</h2>
-            <br>
-            {% for comment in workshop_comments %}
-                <div class="card my-2">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="ml-3 font-weight-bold"><a
-                                    href="{% url 'view_profile' comment.author_id %}">{{ comment.author }}</a></div>
-                            {% if not comment.public %}
-                                <div class="ml-1"><span class="badge badge-dark">Hidden</span></div>
-                            {% endif %}
-                            <div class="ml-3 text-muted">{{ comment.created_date }}</div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p>{{ comment.comment }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-            <br><br>
             <div class="card mt-2 mb-5">
                 <form method="post">
                     <div class="card-header">
@@ -78,6 +58,26 @@
                     <button type="submit" class="float-right btn btn-primary btn-md m-2">Post</button>
                 </form>
             </div>
+            <br><br>
+            <h2 class="text-center">Comments</h2>
+            <br>
+            {% for comment in workshop_comments %}
+                <div class="card my-2">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="ml-3 font-weight-bold"><a
+                                    href="{% url 'workshop_app:view_profile' comment.author_id %}">{{ comment.author }}</a></div>
+                            {% if not comment.public %}
+                                <div class="ml-1"><span class="badge badge-dark">Hidden</span></div>
+                            {% endif %}
+                            <div class="ml-3 text-muted">{{ comment.created_date }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ comment.comment }}</p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 
