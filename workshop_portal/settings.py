@@ -127,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = 'workshop_app/static/'
 
 LOGIN_URL = '/login/'
 
@@ -156,7 +156,10 @@ ADMIN_EMAIL = 'your admin email'
 # Set True or False to view/hide
 SHOW_WORKSHOP_STATS = True
 
-LOGIN_REDIRECT_URL = '/profile'
+# Create a CMS page as a home page and give the page title here
+HOME_PAGE_TITLE = "home-page-title"
+
+LOGIN_REDIRECT_URL = '/workshop/login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 3600

@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from workshop_portal import views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('workshop_app.urls')),
+    url(r'^$', views.index),
+    url(r'^workshop/', include('workshop_app.urls')),
     url(r'^reset/', include('django.contrib.auth.urls')),
-    url(r'^', include('cms.urls')),
+    url(r'^page/', include('cms.urls')),
 ]
