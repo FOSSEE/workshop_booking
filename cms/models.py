@@ -9,8 +9,9 @@ from django.db import models
 
 class Nav(models.Model):
     name = models.CharField(max_length=20)
-    link = models.CharField(max_length=20)
+    link = models.CharField(max_length=255)
     position = models.IntegerField()
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -19,8 +20,9 @@ class Nav(models.Model):
 class SubNav(models.Model):
     nav = models.ForeignKey(Nav, on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
-    link = models.CharField(max_length=100)
+    link = models.CharField(max_length=255)
     position = models.IntegerField()
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -29,10 +31,13 @@ class SubNav(models.Model):
 class Page(models.Model):
     permalink = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=50)
-    imports = models.TextField(help_text='External imports like css,js files, will be placed in <head> tag (already '
-                                         'includes bootstrap4 and jQuery)', null=True, blank=True)
+    imports = models.TextField(
+        help_text='External imports like css,js files, will be placed in <head> tag (already '
+                  'includes bootstrap4 and jQuery)', null=True, blank=True
+    )
     content = models.TextField(help_text='Body of the page')
     pub_date = models.DateTimeField('date published', auto_now_add=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

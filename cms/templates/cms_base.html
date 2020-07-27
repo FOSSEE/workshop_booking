@@ -3,7 +3,7 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>{{ page.title }}</title>
+    <title>{{ page.title|title }}</title>
     <link rel="stylesheet" href="{% static 'cms/css/bootstrap.min.css' %}">
 
     <script src="{% static 'cms/js/jquery-3.4.1.slim.min.js' %}"></script>
@@ -14,8 +14,8 @@
 </head>
 <body>
 
-<nav class=" navbar-custom navbar navbar-expand-lg bg-light">
-    <a class="navbar-brand" href="/">FOSSEE Python Workshops</a>
+<nav class=" navbar navbar-dark navbar navbar-expand-lg bg-dark fixed-top">
+    <a class="navbar-brand" href="/">FOSSEE Workshops</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -52,6 +52,8 @@
         </div>
     </div>
 </nav>
+<div class="base-content">
 {{ page.content | safe }}
+</div>
 </body>
 </html>
