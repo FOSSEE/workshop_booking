@@ -8,23 +8,24 @@ from django.db import migrations
 def load_data(apps, schema_editor):
     Workshop = apps.get_model("workshop_app", "Workshop")
     cur_dir = os.path.dirname(os.path.abspath(__file__))
-    db_json = os.path.join(cur_dir, '../../db.json') 
-    with open(db_json, encoding='utf-8') as file:
-        workshops = json.load(file)
-        for workshop in workshops:
-            if workshop['model'] == 'workshop_app.proposeworkshopdate':
-                _id = workshop['pk']
-                coordinator_id = workshop['fields']['proposed_workshop_coordinator']
-                date = workshop['fields']['proposed_workshop_date']
-                instructor_id = workshop['fields']['proposed_workshop_instructor']
-                status = 1
-                tnc_accepted = True
-                workshop_type_id = workshop['fields']['proposed_workshop_title']
-                Workshop.objects.create(coordinator_id=coordinator_id,
-                    date=date, instructor_id=instructor_id, status=status,
-                    tnc_accepted=tnc_accepted,
-                    workshop_type_id=workshop_type_id
-                )
+    db_json = os.path.join(cur_dir, 'db.json')
+    if os.path.exists(db_json):
+        with open(db_json, encoding='utf-8') as file:
+            workshops = json.load(file)
+            for workshop in workshops:
+                if workshop['model'] == 'workshop_app.proposeworkshopdate':
+                    _id = workshop['pk']
+                    coordinator_id = workshop['fields']['proposed_workshop_coordinator']
+                    date = workshop['fields']['proposed_workshop_date']
+                    instructor_id = workshop['fields']['proposed_workshop_instructor']
+                    status = 1
+                    tnc_accepted = True
+                    workshop_type_id = workshop['fields']['proposed_workshop_title']
+                    Workshop.objects.create(coordinator_id=coordinator_id,
+                        date=date, instructor_id=instructor_id, status=status,
+                        tnc_accepted=tnc_accepted,
+                        workshop_type_id=workshop_type_id
+                    )
 
 
 def reverse_load_data(apps, schema_editor):
