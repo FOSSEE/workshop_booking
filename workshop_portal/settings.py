@@ -21,6 +21,8 @@ from local_settings import (
     SENDER_EMAIL
 )
 
+from decouple import config
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -82,11 +84,14 @@ WSGI_APPLICATION = 'workshop_portal.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'TEST': {
-            'NAME': 'mytestdatabase',
-        },
+        'ENGINE': 'django.db.backends.{0}'.format(
+            config('DB_ENGINE', default='sqlite3')
+        ),
+        'NAME': config('DB_NAME', default=os.path.join(BASE_DIR, 'db.sqlite3')),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='')
     }
 }
 
