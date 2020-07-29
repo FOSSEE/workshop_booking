@@ -1,54 +1,11 @@
-/* Navbar */
-.navbar-custom {
-    background: linear-gradient(135deg, #2c5aa0, #2c5aa0 30%, #3bb1d1);
-    color: black;
-    border-radius: 0;
-    margin-bottom: 20px;
-}
-
-/* Text color */
-.navbar-custom .navbar-nav > li > a {
-    color: #fff;
-}
-
-/* OnActive Tab */
-.navbar-custom .navbar-nav > .active > a {
-    color: black;
-    background: white;
-}
-
-.navbar-custom .navbar-nav > li > a:hover,
-.navbar-custom .navbar-nav > li > a:focus,
-.navbar-custom .navbar-nav > .active > a:hover,
-.navbar-custom .navbar-nav > .active > a:focus,
-.navbar-custom .navbar-nav > .open > a {
-    text-decoration: none;
-    background-color: #ffffff17;
-}
-
-/* Brand-CompanyName */
-.navbar-custom .navbar-brand {
-    color: #efefef;
-    background-color: #2c5aa0;
-}
-
-
-.navbar-custom .navbar-brand:hover {
-    color: white;
-}
-
-.content{
-    margin-bottom:60px;
-}
-
 /**
  * Footer Styles
  */
-
-
+.navbar {
+	z-index: 1000;
+}
 .footer {
     position: fixed;
-    z-index: 100;
     bottom: 0;
     width: 100%;
     background-color: #61615F;

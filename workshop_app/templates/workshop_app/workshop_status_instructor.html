@@ -40,7 +40,7 @@
         <br>
         <div class="container">
             <h3 align="center" class="table-heading"><strong>Workshops Accepted</strong></h3>
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive-sm">
                 <thead>
                 <tr>
                     <th>Coordinator Name</th>
@@ -55,7 +55,7 @@
                     <tr>
                         {% if workshop.status %}
                             <td>
-                                <a href="{% url 'view_profile' workshop.coordinator.profile.user.id %}">
+                                <a href="{% url 'workshop_app:view_profile' workshop.coordinator.id %}">
                                     {{ workshop.coordinator.get_full_name }}</a>
                             </td>
                             <td>{{ workshop.coordinator.profile.institute }}</td>
@@ -70,7 +70,7 @@
                                           onclick="changeDate('R,{{ workshop.date| safe }}, {{ forloop.counter }}')">event</span>
                                     <div class="myDialogR{{ forloop.counter }}" style="display: none;"
                                          title="Select New Date">
-                                        <form method="post" action="{% url 'change_workshop_date' workshop.id %}">
+                                        <form method="post" action="{% url 'workshop_app:change_workshop_date' workshop.id %}">
                                             <input type="text" placeholder="New date" name="new_date"
                                                    class="rDate{{ forloop.counter }}"/><br>
                                             {% csrf_token %}
@@ -95,7 +95,7 @@
         <div class="container">
             <h3 class="text-center table-heading"><strong>Workshops Proposed By Coordinators</strong>
             </h3>
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive-sm">
                 <thead>
                 <tr>
                     <th>Coordinator Name</th>
@@ -112,7 +112,7 @@
                     <tr>
                         {% if not workshop.status and workshop.tnc_accepted %}
                             <td>
-                                <a href="{% url 'view_profile' workshop.coordinator.profile.user.id %}">
+                                <a href="{% url 'workshop_app:view_profile' workshop.coordinator.id %}">
                                     {{ workshop.coordinator.get_full_name }}</a>
                             </td>
                             <td>{{ workshop.coordinator.profile.institute }}</td>
@@ -120,7 +120,7 @@
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                             <td>
-                                <a href="{% url 'accept_workshop' workshop.id %}" class="btn btn-primary btn-sm"  onclick="return confirm('Once accepted you cannot reject, you have to personally contact the Coordinator if the workshop is to be cancelled. Are you sure you want to accept the workshop?')">
+                                <a href="{% url 'workshop_app:accept_workshop' workshop.id %}" class="btn btn-primary btn-sm"  onclick="return confirm('Once accepted you cannot reject, you have to personally contact the Coordinator if the workshop is to be cancelled. Are you sure you want to accept the workshop?')">
                                     Accept
                                 </a>
                             </td>

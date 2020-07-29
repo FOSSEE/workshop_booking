@@ -30,7 +30,7 @@
         <br>
         <div class="container">
             <h3 class="text-center table-heading"><strong>Workshops Accepted</strong></h3>
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive-sm">
                 <thead>
                 <tr>
                     <th>Workshop Name</th>
@@ -44,7 +44,7 @@
                     <tbody>
                     <tr>
                         {% if workshop.status %}
-                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
+                            <td><a href="{% url 'workshop_app:workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>{{ workshop.instructor.get_full_name }}</td>
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
@@ -61,7 +61,7 @@
         <br>
         <div class="container">
             <h3 class="text-center table-heading"><strong>Workshops Proposed By Me</strong></h3>
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive-sm">
                 <thead>
                 <tr>
                     <th>Workshop Name</th>
@@ -73,7 +73,7 @@
                     <tbody>
                     <tr>
                         {% if not workshop.status and workshop.tnc_accepted %}
-                            <td><a href="{% url 'workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
+                            <td><a href="{% url 'workshop_app:workshop_details' workshop.id %}" >{{ workshop.workshop_type |capfirst }}</a></td>
                             <td>{{ workshop.date | date }}</td>
                             <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
                         {% endif %}
