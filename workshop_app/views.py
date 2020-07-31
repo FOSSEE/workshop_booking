@@ -9,6 +9,7 @@ try:
 except ImportError:
     from io import BytesIO as string_io
 from datetime import datetime
+import os
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -411,6 +412,8 @@ def delete_attachment_file(request, file_id):
     file = AttachmentFile.objects.filter(id=file_id)
     if file.exists():
         file = file.first()
+        if os.path.exists(file.attachments.path):
+            os.remove(file.attachments.path)
         file.delete()
         messages.add_message(request, messages.INFO, "Attachment deleted")
         return redirect(

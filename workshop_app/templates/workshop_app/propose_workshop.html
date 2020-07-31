@@ -32,14 +32,15 @@
             $('#disp_tnc').click(function (e) {
                 e.preventDefault()
                 if ($('#id_workshop_type').val() === '')
-                    $('.modal-body').html("<p class='text-danger'>Please select a workshop_type first!</p>")
-                else
+                    $('.modal-body').html("<p class='text-danger'>Please select a workshop type</p>")
+                else {
                     $.ajax({
-                        url: '/workshop_type_tnc/' + $('#id_workshop_type').val(),
+                        url: '/workshop/type_tnc/' + $('#id_workshop_type').val(),
                         success: function (data) {
                             $('.modal-body').html(data.tnc)
                         }
                     })
+                }
             })
         });
     </script>
@@ -77,9 +78,11 @@
                             <br>
                             {{ form.date }}
                             <br>
-                            {{ form.tnc_accepted }} I accept the <a href="#" id="disp_tnc" data-toggle="modal"
-                                                                    data-target="#exampleModalCenter">terms and
-                            conditions</a>
+                            {{ form.tnc_accepted }} I accept the
+                            <a href="#" id="disp_tnc" data-toggle="modal"
+                            data-target="#exampleModalCenter">
+                                terms and conditions
+                            </a>
                             <br>
                             {% if form.errors %}
                                 <br>
