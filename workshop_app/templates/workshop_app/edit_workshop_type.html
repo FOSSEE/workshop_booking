@@ -80,7 +80,7 @@
                         </div>
                     {% if form.id.value %}
                     <div class="col-1">
-                        <a href="{% url 'delete_attachment_file' form.id.value %}"><button class="btn btn-md btn-danger float-right" type="button">Delete</button></a>
+                        <a href="{% url 'workshop_app:delete_attachment_file' form.id.value %}"><button class="btn btn-md btn-danger float-right" type="button">Delete</button></a>
                     </div>
                     {% endif %}
                     </div>
