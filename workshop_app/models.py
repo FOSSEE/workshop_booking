@@ -1,5 +1,6 @@
 import os
 import uuid
+import pandas as pd
 
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
@@ -44,6 +45,7 @@ source = (
 )
 
 states = (
+    ("", "---------"),
     ("IN-AP", "Andhra Pradesh"),
     ("IN-AR", "Arunachal Pradesh"),
     ("IN-AS", "Assam"),
@@ -85,7 +87,7 @@ states = (
 
 def has_profile(user):
     """ check if user has profile """
-    return True if hasattr(user, 'profile') else False
+    return hasattr(user, 'profile')
 
 
 def attachments(instance, filename):
@@ -155,6 +157,34 @@ class AttachmentFile(models.Model):
     workshop_type = models.ForeignKey(WorkshopType, on_delete=models.CASCADE)
 
 
+class WorkshopManager(models.Manager):
+
+    def get_workshops_by_state(self, workshops):
+        w = workshops.values_list("coordinator__profile__state", flat=True)
+        states_map = dict(states)
+        df = pd.DataFrame(w)
+        data_states, data_counts = [], []
+        if not df.empty:
+            grouped_data = df.value_counts().to_dict()
+            for state, count in grouped_data.items():
+                state_name = state[0]
+                data_states.append(states_map[state_name])
+                data_counts.append(count)
+        return data_states, data_counts
+
+    def get_workshops_by_type(self, workshops):
+        w = workshops.values_list("workshop_type__name", flat=True)
+        df = pd.DataFrame(w)
+        data_wstypes, data_counts = [], []
+        if not df.empty:
+            grouped_data = df.value_counts().to_dict()
+            for ws, count in grouped_data.items():
+                ws_name = ws[0]
+                data_wstypes.append(ws_name)
+                data_counts.append(count)
+        return data_wstypes, data_counts
+
+
 class Workshop(models.Model):
     """
         Contains details of workshops
@@ -179,12 +209,16 @@ class Workshop(models.Model):
         help_text="I accept the terms and conditions"
     )
 
+    objects = WorkshopManager()
+
     def __str__(self):
         return f"{self.workshop_type} on {self.date} by {self.coordinator}"
 
     def get_status(self):
         choice = dict(self.STATUS_CHOICES)
         return choice.get(self.status)
+
+
 
 
 class Testimonial(models.Model):

@@ -1,4 +1,4 @@
-import csv
+import pandas as pd
 
 from django.contrib import admin
 from django.http import HttpResponse
@@ -23,21 +23,15 @@ class ProfileAdmin(admin.ModelAdmin):
     actions = ['download_csv']
 
     def download_csv(self, request, queryset):
-        openfile = string_io()
+        data = queryset.values(
+            "title", "user__first_name", "user__last_name",
+            "user__email", "institute", "location", "department",
+            "phone_number"
+        )
+        df = pd.DataFrame(data)
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment;filename=profile_data.csv'
-        writer = csv.writer(response)
-        writer.writerow(['email_id', 'title', 'username', 'first_name', 'last_name',
-                         'institute', 'location', 'department',
-                         'phone_number', 'position'])
-        for q in queryset:
-            writer.writerow([q.user.email, q.title, q.user, q.user.first_name,
-                             q.user.last_name, q.institute,
-                             q.location, q.department, q.phone_number,
-                             q.position])
-
-        openfile.seek(0)
-        response.write(openfile.read())
+        response['Content-Disposition'] = f'attachment; filename=profile.csv'
+        output_file = df.to_csv(response, index=False)
         return response
 
     download_csv.short_description = "Download CSV file for selected stats."
@@ -49,17 +43,18 @@ class WorkshopAdmin(admin.ModelAdmin):
     actions = ['download_csv']
 
     def download_csv(self, request, queryset):
-        openfile = string_io()
+        data = queryset.values(
+            "workshop_type__name", "date", "coordinator__first_name",
+            "coordinator__last_name", "instructor__first_name",
+            "instructor__last_name", "status"
+        )
+        df = pd.DataFrame(data)
+        df.status.replace(
+            [0, 1, 2], ['Pending', 'Success', 'Reject'], inplace=True
+        )
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment;filename=workshop_data.csv'
-        writer = csv.writer(response)
-        writer.writerow(['workshop_type', 'date', 'instructor', 'coordinator', 'status'])
-
-        for q in queryset:
-            writer.writerow([q.title, q.date, q.instructor, q.coordinator, q.status])
-
-        openfile.seek(0)
-        response.write(openfile.read())
+        response['Content-Disposition'] = f'attachment; filename=workshops.csv'
+        output_file = df.to_csv(response, index=False)
         return response
 
     download_csv.short_description = "Download CSV file for selected stats."
