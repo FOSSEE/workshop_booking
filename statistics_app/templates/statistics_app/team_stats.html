@@ -4,121 +4,45 @@
  Workshop  Statistics
 {% endblock %}
 
-
-{% block extra %}
-
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="{{URL_ROOT}}/static/workshop_app/js/bootstrap-3.3.7.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
- 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-  	<!-- For Charts -->
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-
-	<!-- For Google GeoChart India Map -->
-	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
-
-{% endblock %}
-
 {% block content %}
 
-<div class="container">
-<div class="row">
-	<br>
-	<div class="col-md-12 ">
-		<br>
-		<canvas id="myChartPie" ></canvas>
-		<script>
-			var dynamic_pie_color = [];
-			var data = {{ workshop_data.data}};
-
-			var dynamicColors = function() {
-				var r = Math.floor(Math.random() * 255);
-				var g = Math.floor(Math.random() * 255);
-				var b = Math.floor(Math.random() * 255);
-				return "rgb(" + r + "," + g + "," + b + ")";
-			};
-
-
-			for (var i in data) {
-				dynamic_pie_color.push(dynamicColors());
-			}
-
-			var data = {
-			    datasets: [{
-			        data: data,
-			        label: 'My dataset', // for legend
-			        backgroundColor: dynamic_pie_color,
-			    }],
-			    labels: [{% for label in workshop_data.labels %}"{{ label }}",{% endfor %}]
-			};
-
-			var pieOptions = {
-			  events: false,
-			  animation: {
-			    duration: 500,
-			    easing: "easeOutQuart",
-			    onComplete: function () {
-			      var ctx = this.chart.ctx;
-			      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-			      ctx.textAlign = 'center';
-			      ctx.textBaseline = 'bottom';
-
-			      this.data.datasets.forEach(function (dataset) {
-
-			        for (var i = 0; i < dataset.data.length; i++) {
-			          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
-			              total = dataset._meta[Object.keys(dataset._meta)[0]].total,
-			              mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
-			              start_angle = model.startAngle,
-			              end_angle = model.endAngle,
-			              mid_angle = start_angle + (end_angle - start_angle)/2;
-
-			          var x = mid_radius * Math.cos(mid_angle);
-			          var y = mid_radius * Math.sin(mid_angle);
-
-			          ctx.fillStyle = '#fff';
-			          if (i == 3){ // Darker text color for lighter background
-			            ctx.fillStyle = '#444';
-			          }
-
-			          var val = dataset.data[i];
-			          var percent = String(Math.round(val/total*100)) + "%";
-
-			          if(val != 0) {
-			            ctx.fillText(dataset.data[i], model.x + x, model.y + y);
-			            // Display percent in another line, line break doesn't work for fillText
-			            ctx.fillText(percent, model.x + x, model.y + y + 15);
-			          }
-			        }
-			      });               
-			    }
-			  }
-			};
-
-			var pieChartCanvas = $("#myChartPie");
-			var pieChart = new Chart(pieChartCanvas, {
-			  type: 'pie', // or doughnut
-			  data: data,
-			  options: pieOptions
-			});
-		</script>	
-		<style>
-		    #visualization path {
-		    stroke-width:1; /* control the countries borders width */
-		    stroke:white; /* choose a color for the border */
-		    }
-		</style>
-		<div id="visualization" style="width: 400px; height: 300px; display: block; margin: 0 auto;" ></div>
-
-	</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="nav nav-pills list-group">
+                {% for team in all_teams %}
+                    <li class="nav-item">
+                        <a href="{% url 'statistics_app:team' team.id %}" class="nav-link list-group-item">
+                            Team {{forloop.counter}}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <br>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
 </div>
-</div>
-<br>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            labels: {{team_labels|safe}},
+            datasets: [{
+                data: {{ws_count|safe}},
+                label: "Team Members Workshops",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+            }]
+        },
+        // Configuration options go here
+        options: {}
+    });
+</script>
 {% endblock %}
