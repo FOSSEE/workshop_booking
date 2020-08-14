@@ -8,7 +8,18 @@
         <div class="col-md-3">
             <form method="GET">
                 <div class="card">
-                    <div class="card-header"><h3><u>Filters</u></h3></div>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h3><u>Filters</u></h3>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{% url 'statistics_app:public' %}" class="btn btn-outline-info">
+                                    <i class="fa fa-times"></i>&nbsp;Clear
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div>From date: {{form.from_date}}</div>
                         <div>To date: {{form.to_date}}</div>
@@ -20,15 +31,15 @@
                         {% endif %}
                         <br>
                         <div class="row justify-content-center">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <button type="submit" class="btn btn-success">
                                     <i class="fa fa-eye"></i>&nbsp;View
                                 </button>
                             </div>
-                            <div class="col-md-4">
-                                <a href="{% url 'statistics_app:public' %}" class="btn btn-info">
-                                    <i class="fa fa-times"></i>&nbsp;Clear
-                                </a>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-info" name="download" value="download">
+                                    <i class="fa fa-download"></i>&nbsp;Download
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -69,7 +80,7 @@
                             <td>{{ forloop.counter0|add:objects.start_index}}</td>
                             <td>{{ workshop.coordinator.get_full_name | capfirst }}</td>
                             <td>{{ workshop.coordinator.profile.institute | capfirst }}</td>
-                            <td>{{ workshop.instructor.get_full_name }}</td>
+                            <td>{{ workshop.instructor.get_full_name | capfirst }}</td>
                             <td>{{ workshop.workshop_type.name }}</td>
                             <td>{{ workshop.date | date}}</td>
                         </tr>

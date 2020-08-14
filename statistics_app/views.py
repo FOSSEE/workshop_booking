@@ -1,5 +1,6 @@
 # Python Imports
 import datetime as dt
+import pandas as pd
 
 # Django Imports
 from django.template.loader import get_template
@@ -10,10 +11,12 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.http import HttpResponse
 
 # Local Imports
 from workshop_app.models import (
-    Profile, User, has_profile, Workshop, WorkshopType, Testimonial
+    Profile, User, has_profile, Workshop, WorkshopType, Testimonial,
+    states
 )
 from teams.models import Team
 from .forms import FilterForm
@@ -40,7 +43,9 @@ def workshop_public_stats(request):
     workshoptype = request.GET.get('workshop_type')
     show_workshops = request.GET.get('show_workshops')
     sort = request.GET.get('sort')
-    if from_date is not None or to_date is not None:
+    download = request.GET.get('download')
+
+    if from_date and to_date:
         form = FilterForm(
             start=from_date, end=to_date, state=state, type=workshoptype,
             show_workshops=show_workshops, sort=sort
@@ -63,6 +68,26 @@ def workshop_public_stats(request):
             workshops = workshops.filter(instructor_id=user.id)
         else:
             workshops = workshops.filter(coordinator_id=user.id)
+    if download:
+        data = workshops.values(
+            "workshop_type__name", "coordinator__first_name",
+            "coordinator__last_name", "instructor__first_name",
+            "instructor__last_name", "coordinator__profile__state",
+            "date", "status"
+        )
+        df = pd.DataFrame(data)
+        if not df.empty:
+            df.status.replace(
+                [0, 1, 2], ['Pending', 'Success', 'Reject'], inplace=True
+            )
+            codes, states = list(zip(*states))
+            df.coordinator__profile__state.replace(codes, states, inplace=True)
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=statistics.csv'
+            output_file = df.to_csv(response, index=False)
+            return response
+        else:
+            messages.add_message(request, messages.WARNING, "No data found")
     ws_states, ws_count = Workshop.objects.get_workshops_by_state(workshops)
     ws_type, ws_type_count = Workshop.objects.get_workshops_by_type(workshops)
     paginator = Paginator(workshops, 30)
