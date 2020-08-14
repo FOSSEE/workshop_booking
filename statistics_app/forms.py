@@ -1,6 +1,7 @@
+# Django imports
 from django import forms
-from django.utils import timezone
 
+# Local Imports
 from workshop_app.models import states, WorkshopType
 
 
