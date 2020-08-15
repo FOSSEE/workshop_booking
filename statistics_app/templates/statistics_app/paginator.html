@@ -1,0 +1,34 @@
+<ul class="pagination pagination">
+    {% if objects.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page=1{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.workshop_type %}&workshop_type={{ request.GET.workshop_type }}{% endif %}{% if request.GET.show_workshops %}&show_workshops={{ request.GET.show_workshops }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}
+        " aria-label="Previous">
+            <span aria-hidden="true">
+                <i class="fa fa-angle-double-left"></i>
+            </span>
+            <span class="sr-only">begin</span>
+        </a>
+    </li>
+    {% endif %}
+
+    {% for n in objects.paginator.page_range %}
+        {% if objects.number == n %}
+            <li class="page-item active">
+                <span class="page-link">{{ n }}<span class="sr-only">(current)</span></span>
+            </li>
+        {% elif n > objects.number|add:'-5' and n < objects.number|add:'5' %}
+            <li class="page-item"><a class="page-link" href="?page={{ n }}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.workshop_type %}&workshop_type={{ request.GET.workshop_type }}{% endif %}{% if request.GET.show_workshops %}&show_workshops={{ request.GET.show_workshops }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ n }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% if objects.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ objects.paginator.num_pages }}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.workshop_type %}&workshop_type={{ request.GET.workshop_type }}{% endif %}{% if request.GET.show_workshops %}&show_workshops={{ request.GET.show_workshops }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" aria-label="Next">
+                <span aria-hidden="true">
+                    <i class="fa fa-angle-double-right"></i>
+                </span>
+                <span class="sr-only">end</span>
+            </a>
+        </li>
+    {% endif %}
+</ul>

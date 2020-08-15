@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^workshop/', include('workshop_app.urls')),
     url(r'^reset/', include('django.contrib.auth.urls')),
     url(r'^page/', include('cms.urls')),
+    url(r'^statistics/', include('statistics_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

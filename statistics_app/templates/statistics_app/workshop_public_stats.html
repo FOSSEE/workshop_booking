@@ -1,346 +1,140 @@
 {% extends 'workshop_app/base.html' %}
 
-{% block title %}
- Open Statistics
-{% endblock %}
-
-{% block extra %}
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-
-  	<!-- For Charts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-
-	<!-- For Google GeoChart India Map -->
-	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
-
-<script>
-    var dateToday = new Date();
-    var upto = new Date();
-
-    dateToday.setDate(dateToday.getDate() - 1);
-    upto.setFullYear(dateToday.getFullYear() + 1);
-
-  $( function() {
-      from = $( "#from" )
-        .datepicker({
-          defaultDate: "+1w",
-          changeMonth: true,
-          changeYear: true,
-          showButtonPanel: true,
-          maxDate: dateToday,
-          dateFormat: "yy-mm-dd"
-        })
-        .on( "change", function() {
-          to.datepicker( "option", "minDate", getDate( this ) );
-        }),
-      to = $( "#to" ).datepicker({
-        defaultDate: "+1w",
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-        minDate: dateToday,
-       	maxDate: upto,
-       	dateFormat: "yy-mm-dd"
-      })
-      .on( "change", function() {
-        from.datepicker( "option", "maxDate", getDate( this ) );
-      });
-
-	function getDate( element ) {
-		var date;
-		try {
-			date = $.datepicker.parseDate( dateFormat, element.value );
-		} catch( error ) {
-			date = null;
-		}
-		return date;
-		}
-	} );
-
-  </script>
-
-{% endblock %}
+{% block title %} Statistics {% endblock %}
 
 {% block content %}
-
-<div class="container">
-  <div class="row">
-		<div class="col-md-4" align="left" >
-			  <fieldset data-mini="true">
-			    <label for="radio-2">Overall Count</label>
-			    <input type="radio" name="radio-1" id="radio-2" value="OWC">
-			    <label for="radio-3">India Map</label>
-			    <input type="radio" name="radio-1" id="radio-3" value="MOIN">
-			  </fieldset>
-		</div>
-
-	<div class="col-md-8">
-		<form method="POST" >
-			{% csrf_token %}
-			<div class="form-group">
-			 <label>state: </label>
-			  <select name="states">
-			    <option value="all">ALL</option>
-			    <option value="IN-AP">Andhra Pradesh</option>
-			    <option value="IN-AR">Arunachal Pradesh</option
-			    <option value="IN-AS">Assam</option>
-			    <option value="IN-BR">Bihar</option>
-			    <option value="IN-CT">Chhattisgarh</option>
-			    <option value="IN-GA">Goa</option>
-			    <option value="IN-GJ">Gujarat</option>
-			    <option value="IN-HR">Haryana</option>
-			    <option value="IN-HP">Himachal Pradesh</option>
-			    <option value="IN-JK">Jammu and Kashmir</option>
-			    <option value="IN-JH">Jharkhand</option>
-			    <option value="IN-KA">Karnataka</option>
-			    <option value="IN-KL">Kerala</option>
-			    <option value="IN-MP">Madhya Pradesh</option>
-			    <option value="IN-MH">Maharashtra</option>
-			    <option value="IN-MN">Manipur</option>
-			    <option value="IN-ML">Meghalaya</option>
-			    <option value="IN-MZ">Mizoram</option>
-			    <option value="IN-NL">Nagaland</option>
-			    <option value="IN-OR">Odisha</option>
-			    <option value="IN-PB">Punjab</option>
-			    <option value="IN-RJ">Rajasthan</option>
-			    <option value="IN-SK">Sikkim</option>
-			    <option value="IN-TN">Tamil Nadu</option>
-			    <option value="IN-TG">Telangana</option>
-			    <option value="IN-TR">Tripura</option>
-			    <option value="IN-UT">Uttarakhand</option>
-			    <option value="IN-UP">Uttar Pradesh</option>
-			    <option value="IN-WB">West Bengal</option>
-			    <option value="IN-AN">Andaman and Nicobar Islands</option>
-			    <option value="IN-CH">Chandigarh</option>
-			    <option value="IN-DN">Dadra and Nagar Haveli</option>
-			    <option value="IN-DD">Daman and Diu</option>
-			    <option value="IN-DL">Delhi</option>
-			    <option value="IN-LD">Lakshadweep</option>
-			    <option value="IN-PY">Puducherry</option>
-	                  </select>
-			  <label>WorkshopType:  </label>
-			  <select name="workshoptype_name">
-			  {% for workshop in workshoptype_list %}
-			   <option value={{ workshop.id }}> {{ workshop }} </option>
-			  {% endfor %}
-			  </select>
-			  &nbsp;
-			  <br>
-				<label for="from">From</label>
-				<input type="text" id="from" name="from">
-				<label for="to">to</label>
-				<input type="text" id="to" name="to">
-				<button class="btn btn-info btn-sm" type="submit" name="View" value="View">View</button>
-			</div>
-	    </form>
-
-	    {% if messages %}
-		<ul class="messages">
-		    {% for message in messages %}
-		    	<div class="alert alert-{{ message.tags }}">
-				    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }}
-				    </li>
-			    </div>
-		    {% endfor %}
-		</ul>
-		{% endif %}
-
-	</div>
-	<br>
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>Coordinator Name</th>
-					<th>Institute Name</th>
-					<th>Instructor Name</th>
-					<th>Workshop Name</th>
-					<th>Workshop Date</th>
-					<th>Initiated By</th>
-				</tr>
-			</thead>
-			{% csrf_token %}
-			{% for workshop in workshop_list %}
-				{% if workshop.proposed_workshop_date %}
-						<tbody>
-							<tr>
-							<td>{{ workshop.proposed_workshop_coordinator.get_full_name | capfirst }}</td>
-							<td>{{ workshop.proposed_workshop_coordinator.profile.institute | capfirst }}</td>
-							<td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
-							<td>{{ workshop.proposed_workshop_title.workshoptype_name }}</td>
-							<td>{{ workshop.proposed_workshop_date | date}}</td>
-							<td>Coordinator</td>
-							</tr>
-						</tbody>
-				{% else %}
-						<tbody>
-							<tr>
-							<td>{{ workshop.requested_workshop_coordinator.get_full_name | capfirst }}</td>
-							<td>{{ workshop.requested_workshop_coordinator.profile.institute | capfirst }}</td>
-							<td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
-							<td>{{ workshop.requested_workshop_title.workshoptype_name }}</td>
-							<td>{{ workshop.requested_workshop_date | date}}</td>
-							<td>Instructor</td>
-							</tr>
-						</tbody>
-				{% endif %}
-			{% endfor %}
-		</table>
-
-		<!-- Page Navigation -->
-		<div class="container">
-		<div class="Page-Nav" align="center">
-		<nav aria-label="Page navigation">
-		 	<ul class="pagination pagination-sm">
-			  	<li class="page-item">
-			      {% if workshop_list.has_previous %}
-					<a class="page-link" tabindex="-1"
-						href="?page={{ workshop_list.previous_page_number }}">Previous</a>
-				  {% endif %}
-			    </li>
-			    <li class="page-item">
-			    <span class="current">
-				Page {{ workshop_list.number }} of {{ workshop_list.paginator.num_pages }}
-					</span>
-				</li>
-			    <li class="page-item">
-			    {% if workshop_list.has_next %}
-					<a class="page-link" href="?page={{ workshop_list.next_page_number }}">Next
-					</a>
-				{% endif %}
-			    </li>
-		  	</ul>
-		</nav>
-		</div>
-	</div>
-	</div>
-
-<div class="row">
-	<br>
-	<div class="col-md-12 ">
-		<br>
-		<canvas id="myChartPie" ></canvas>
-		<script>
-			$( function() {
-			    $( "fieldset" ).controlgroup();
-			  });
-
-			var ctx1 = document.getElementById("myChartPie").getContext('2d');
-			var myChart;
-
-			$('input[type=radio]').change(function() {
-		   if (this.value == 'OWC') { //Overall Workshop Count
-			        if(myChart){
-			        	myChart.destroy();
-			        }
-
-				    var dWidth = $(window).width() * 0.9;
-			        var dHeight = $(window).height() * 0.9;
-
-			        $( "#myChartPie" ).dialog({
-					resizable: false,
-					draggable: true,
-			        title: 'Pie Chart',
-					closeOnEscape: true,
-					stack: true,
-					zIndex: 10000,
-					width: dWidth,
-					height: dHeight,
-					modal: true
-					});
-
-				document.getElementById("visualization").style.visibility='hidden';
-				myChart = new Chart(ctx1, {
-				    type: 'pie',
-				    data: {
-				    	labels : {{ workshoptype_count.0 | safe}},
-				        datasets: [{
-				            data: {{ workshoptype_count.1 }},
-				            //Add more color scheme if workshop number increases
-				            backgroundColor: [
-				                'rgba(153, 102, 255, 1)',
-				                'rgba(191, 191, 1, 1)',
-				                'rgba(75, 192, 192, 1)',
-					        'rgba(153, 102, 255, 1)'
-				           ]
-				        }]
-				    },
-				    options: {
-				    	responsive: true
-				 		}
-					});
-			     }
-
-				else if (this.value == 'MOIN') {
-			            if(myChart){
-			        		myChart.destroy();
-			            }
-
-				    var dWidth = $(window).width() * 0.9;
-			        var dHeight = $(window).height() * 0.9;
-
-			        $( "#visualization" ).dialog({
-					resizable: false,
-					draggable: true,
-			        title: 'State wise(Map of India)',
-					closeOnEscape: true,
-					stack: true,
-					zIndex: 10000,
-					width: dWidth,
-					height: dHeight,
-					modal: true
-					});
-
-					document.getElementById("visualization").style.visibility='visible';
-			        function drawVisualization() {
-					    var data = google.visualization.arrayToDataTable(
-						{{ india_map | safe }}
-						);
-
-					var opts = {
-					    region: 'IN',
-					    domain: 'IN',
-					    displayMode:  'regions',
-					    resolution: 'provinces',
-					    datalessRegionColor: 'transparent',
-					    colorAxis: {colors: ['#e6e6e6','#ff8b3e']},
-
-
-					   	};
-
-					var geochart = new google.visualization.GeoChart(
-					document.getElementById('visualization'));
-							geochart.draw(data, opts);
-					    };
-					if(google) {
-					    google.load('visualization', '1.0', {
-						packages: ['geochart'],
-			            callback: function() {
-					    // do stuff, if you wan't - it doesn't matter, because the page isn't blank!
-							drawVisualization();
-							}
-			            })
-				        }
-				}
-			});
-		</script>
-		<style>
-		    #visualization path {
-		    stroke-width:1; /* control the countries borders width */
-		    stroke:white;
-		     /* choose a color for the border */
-		    }
-		</style>
-		<div id="visualization" style="width: 400px; height: 300px; display: block; margin: 0 auto;" ></div>
-
-	</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <form method="GET">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h3><u>Filters</u></h3>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{% url 'statistics_app:public' %}" class="btn btn-outline-info">
+                                    <i class="fa fa-times"></i>&nbsp;Clear
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>From date: {{form.from_date}}</div>
+                        <div>To date: {{form.to_date}}</div>
+                        <div>Workshop: {{form.workshop_type}}</div>
+                        <div>State: {{form.state}}</div>
+                        <div>{{form.sort.help_text}}: {{form.sort}}</div>
+                        {% if request.user.is_authenticated %}
+                        <div>{{form.show_workshops.help_text}}: {{form.show_workshops}}</div>
+                        {% endif %}
+                        <br>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-eye"></i>&nbsp;View
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-info" name="download" value="download">
+                                    <i class="fa fa-download"></i>&nbsp;Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-md-6">
+                    {% include "statistics_app/paginator.html" %}
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-info" id="state_graph">
+                        <i class="fa fa-bar-chart"></i>&nbsp;State chart
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-info" id="type_graph">
+                        <i class="fa fa-bar-chart"></i>&nbsp;Workshops chart
+                    </button>
+                </div>
+            </div>
+            <table class="table table-responsive-sm">
+                <thead>
+                    <tr>
+                        <th>Sr No.</th>
+                        <th>Coordinator Name</th>
+                        <th>Institute Name</th>
+                        <th>Instructor Name</th>
+                        <th>Workshop Name</th>
+                        <th>Workshop Date</th>
+                    </tr>
+                </thead>
+                {% csrf_token %}
+                {% for workshop in objects %}
+                    <tbody>
+                        <tr>
+                            <td>{{ forloop.counter0|add:objects.start_index}}</td>
+                            <td>{{ workshop.coordinator.get_full_name | capfirst }}</td>
+                            <td>{{ workshop.coordinator.profile.institute | capfirst }}</td>
+                            <td>{{ workshop.instructor.get_full_name | capfirst }}</td>
+                            <td>{{ workshop.workshop_type.name }}</td>
+                            <td>{{ workshop.date | date}}</td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+            {% include "statistics_app/paginator.html" %}
+        </div>
+    </div>
 </div>
+
+<!-- The Modal -->
+<div id="dialog" title="Workshops Statistics">
+    <canvas id="myChart"></canvas>
 </div>
-<br>
+
+<script type="text/javascript">
+    var state_labels = {{ws_states|safe}};
+    var state_data = {{ws_count|safe}};
+    var type_labels = {{ws_type|safe}};
+    var type_data = {{ws_type_count|safe}};
+    var chart;
+    $("#state_graph").on("click", function() {
+        show_graph(state_labels, state_data, "State wise workshops");
+    });
+    $("#type_graph").on("click", function() {
+        show_graph(type_labels, type_data, "Type wise workshops");
+    });
+
+    function show_graph(labels, data, graph_name, chart_name) {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        if(chart) chart.destroy();
+        chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    label: graph_name,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                }]
+            },
+            // Configuration options go here
+            options: {}
+        });
+        $("#dialog").dialog({
+            width: 900,
+            height: 500
+        });
+    }
+</script>
+
 {% endblock %}

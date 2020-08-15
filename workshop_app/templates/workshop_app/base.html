@@ -14,6 +14,8 @@
     <script src="{% static 'workshop_app/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'workshop_app/js/popper.min.js' %}"></script>
     <script src="{% static 'workshop_app/js/toastr.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 
     {% block extra-dependencies %}
@@ -24,6 +26,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'workshop_app/css/base.css' %}" type="text/css"/>
     <link rel="stylesheet" href="{% static 'workshop_app/css/font-awesome.css' %}" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 
     {% block extra-custom-scripts %}
     {% endblock %}
@@ -43,8 +46,27 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'statistics_app:public' %}">
+                        Workshop Statistics
+                    </a>
+                </li>
+            </ul>
             {% if user.is_authenticated %}
             <ul class="navbar-nav mr-auto">
+                {% if request.user|has_group:"instructor" %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'statistics_app:team' %}">
+                        Team Statistics
+                    </a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link text-white" href="{% url 'workshop_app:workshop_status_instructor' %}">
                         Workshop Status

@@ -134,7 +134,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = 'workshop_app/static/'
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/workshop/login/'
 
 MEDIA_URL = '/data/'
 
