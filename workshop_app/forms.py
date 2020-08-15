@@ -125,24 +125,6 @@ class UserLoginForm(forms.Form):
         return user
 
 
-class ProfileForm(forms.ModelForm):
-    """ profile form for coordinator and instructor """
-
-    class Meta:
-        model = Profile
-        fields = ['first_name', 'last_name', 'institute', 'department']
-
-    first_name = forms.CharField(max_length=32)
-    last_name = forms.CharField(max_length=32)
-
-    def __init__(self, *args, **kwargs):
-        if 'user' in kwargs:
-            user = kwargs.pop('user')
-        super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].initial = user.first_name
-        self.fields['last_name'].initial = user.last_name
-
-
 class WorkshopForm(forms.ModelForm):
     """
     Coordinators will propose a workshop and date 
@@ -215,3 +197,51 @@ class AttachmentFileForm(forms.ModelForm):
     class Meta:
         model = AttachmentFile
         exclude = ['workshop_type']
+
+
+class ProfileForm(forms.ModelForm):
+    """ profile form for coordinators and instructors """
+
+    class Meta:
+        model = Profile
+        exclude = ["user", "is_email_verified", "activation_key",
+                   "key_expiry_time", "how_did_you_hear_about_us"]
+
+    first_name = forms.CharField(max_length=30, widget=forms.TextInput(
+                    {'class': "form-control", 'placeholder': "First Name"}))
+    last_name = forms.CharField(max_length=30, widget=forms.TextInput(
+                    {'class': "form-control", 'placeholder': "Last Name"}))
+
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            user = kwargs.pop('user')
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].initial = user.first_name
+        self.fields['first_name'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'First Name'}
+        )
+        self.fields['last_name'].initial = user.last_name
+        self.fields['last_name'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'Last Name'}
+        )
+        self.fields['institute'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'Institute'}
+        )
+        self.fields['department'].widget.attrs.update(
+            {'class': "custom-select"}
+        )
+        self.fields['title'].widget.attrs.update(
+            {'class': "custom-select"}
+        )
+        self.fields['state'].widget.attrs.update(
+            {'class': "custom-select"}
+        )
+        self.fields['phone_number'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'Phone Number'}
+        )
+        self.fields['position'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'Position'}
+        )
+        self.fields['location'].widget.attrs.update(
+            {'class': "form-control", 'placeholder': 'Location'}
+        )
