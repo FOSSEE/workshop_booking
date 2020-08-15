@@ -1,51 +1,49 @@
 {% extends 'workshop_app/base.html' %}
 
-{% block title %}
-    Coordinator Profile
-{% endblock %}
+{% block title %} Profile {% endblock %}
 
 {% csrf_token %}
 {% block content %}
 
     <div class="container">
-        <table class="table table-bordered">
-            <tr>
-                <th><label for="id_first_name"><h5>First name:</h5></label></th>
-                <th><label for="id_first_name"><h5>{{ coordinator_profile.user.first_name }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_last_name"><h5>Last name:</h5></label></th>
-                <th><label for="id_last_name"><h5>{{ coordinator_profile.user.last_name }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_email"><h5>Email:</h5></label></th>
-                <th><label for="id_email"><h5>{{ coordinator_profile.user.email }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_institute"><h5>Institute:</h5></label></th>
-                <th><label for="id_institute"><h5>{{ coordinator_profile.user.profile.institute }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
-                <th><label for="id_phone_number"><h5>{{ coordinator_profile.user.profile.phone_number }}</h5></label>
-                </th>
-            </tr>
-            <tr>
-                <th><label for="id_department"><h5>Department:</h5></label></th>
-                <th><label for="id_department"><h5>{{ coordinator_profile.user.profile.department }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_location"><h5>Location:</h5></label></th>
-                <th><label for="id_location"><h5>{{ coordinator_profile.user.profile.location }}</h5></label></th>
-            </tr>
-            <tr>
-                <th><label for="id_position"><h5>Position:</h5></label></th>
-                <th><label for="id_position"><h5>{{ coordinator_profile.user.profile.position }}</h5></label></th>
-            </tr>
-        </table>
-        <br>
-
         {% if Workshops %}
+            <table class="table table-bordered">
+                <tr>
+                    <th><label for="id_first_name"><h5>First name:</h5></label></th>
+                    <th><label for="id_first_name"><h5>{{ coordinator_profile.user.first_name }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_last_name"><h5>Last name:</h5></label></th>
+                    <th><label for="id_last_name"><h5>{{ coordinator_profile.user.last_name }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_email"><h5>Email:</h5></label></th>
+                    <th><label for="id_email"><h5>{{ coordinator_profile.user.email }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_institute"><h5>Institute:</h5></label></th>
+                    <th><label for="id_institute"><h5>{{ coordinator_profile.user.profile.institute }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_phone_number"><h5>Phone Number:</h5></label></th>
+                    <th><label for="id_phone_number"><h5>{{ coordinator_profile.user.profile.phone_number }}</h5></label>
+                    </th>
+                </tr>
+                <tr>
+                    <th><label for="id_department"><h5>Department:</h5></label></th>
+                    <th><label for="id_department"><h5>{{ coordinator_profile.user.profile.department }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_location"><h5>Location:</h5></label></th>
+                    <th><label for="id_location"><h5>{{ coordinator_profile.user.profile.location }}</h5></label></th>
+                </tr>
+                <tr>
+                    <th><label for="id_position"><h5>Position:</h5></label></th>
+                    <th><label for="id_position"><h5>{{ coordinator_profile.user.profile.position }}</h5></label></th>
+                </tr>
+            </table>
+            <br>
+
             <div class="container">
             <h2>Workshop Details</h2>
             <table class="table table-bordered">
@@ -77,6 +75,55 @@
             </table>
             </div>
             <br><br>
+        {% else %}
+            <form action="" method="post">
+              {% csrf_token %}
+                <div class="row justify-content-center form-group">
+                    <div class="col-md-6">
+                    <form action="" method="post">
+                        <fieldset>
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-dismissible alert-danger">
+                                            <button type="button" class="close" data-dismiss="alert">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                            <strong>{{field.label}} : {{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <i class="fa fa-close"></i>
+                                        </button>
+                                        <strong>{{field.label}} : {{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <table class="table table-responsive-sm">
+                                <tr><td>{{form.title}}</td></tr>
+                                <tr><td>{{form.first_name}}</td></tr>
+                                <tr><td>{{form.last_name}}</td></tr>
+                                <tr><td>{{form.phone_number}}</td></tr>
+                                <tr><td>{{form.institute}}</td></tr>
+                                <tr><td>{{form.department}}</td></tr>
+                                <tr><td>{{form.position}}</td></tr>
+                                <tr><td>{{form.location}}</td></tr>
+                                <tr><td>{{form.state}}</td></tr>
+                            </table>
+                            <br>
+                        </fieldset>
+                        <button class="btn btn-success btn-lg" type="submit">
+                            <i class="fa fa-pencil-square-o"></i>&nbsp;Update</button>
+                        <a href="{% url 'workshop_app:index' %}" class="btn btn-primary btn-lg">Cancel
+                        </a>
+                    </form>
+                    </div>
+                </div>
+            </form>
         {% endif %}
     </div>
 {% endblock %}

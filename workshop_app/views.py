@@ -165,43 +165,6 @@ def user_register(request):
     return render(request, "workshop_app/register.html", {"form": form})
 
 
-@login_required
-def view_profile(request):
-    """ view instructor and coordinator profile """
-    user = request.user
-    if user.is_superuser:
-        return redirect('/admin')
-    return render(request, "workshop_app/view_profile.html")
-
-
-@login_required
-def edit_profile(request):
-    """ edit profile details facility for instructor and coordinator """
-
-    user = request.user
-    if user.is_superuser:
-        return redirect('/admin')
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, user=user, instance=user.profile)
-        if form.is_valid():
-            form_data = form.save(commit=False)
-            form_data.user = user
-            form_data.user.first_name = request.POST['first_name']
-            form_data.user.last_name = request.POST['last_name']
-            form_data.user.save()
-            form_data.save()
-            messages.add_message(request, messages.SUCCESS, "Profile updated.")
-            return redirect(reverse("workshop_app:view_own_profile"))
-        else:
-            messages.add_message(
-                request, messages.ERROR, "Profile update failed!"
-            )
-    else:
-        form = ProfileForm(user=user, instance=user.profile)
-    return render(request, 'workshop_app/edit_profile.html', {'form': form})
-
-
 # Workshop views
 
 @login_required
@@ -514,7 +477,26 @@ def view_profile(request, user_id):
 def view_own_profile(request):
     """User can view own profile """
     user = request.user
-    coordinator_profile = Profile.objects.get(user=user)
+    if user.is_superuser:
+        return redirect("admin")
+    profile = user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, user=user, instance=profile)
+        if form.is_valid():
+            form_data = form.save(commit=False)
+            form_data.user = user
+            form_data.user.first_name = request.POST['first_name']
+            form_data.user.last_name = request.POST['last_name']
+            form_data.user.save()
+            form_data.save()
+            messages.add_message(request, messages.SUCCESS, "Profile updated.")
+            return redirect(reverse("workshop_app:view_own_profile"))
+        else:
+            messages.add_message(
+                request, messages.ERROR, "Profile update failed!"
+            )
+    else:
+        form = ProfileForm(user=user, instance=profile)
 
     return render(request, "workshop_app/view_profile.html",
-                  {"coordinator_profile": coordinator_profile, "Workshops": None})
+                  {"profile": profile, "Workshops": None, "form": form})

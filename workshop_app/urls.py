@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^activate_user/$', views.activate_user),
     url(r'^login/$', views.user_login, name="login"),
     url(r'^logout/$', views.user_logout, name="logout"),
-    url(r'^edit_profile/$', views.edit_profile),
     url(r'^status$', views.workshop_status_coordinator,
         name='workshop_status_coordinator'),
     url(r'^dashboard$', views.workshop_status_instructor,
