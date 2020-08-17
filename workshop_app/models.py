@@ -162,7 +162,7 @@ class WorkshopManager(models.Manager):
     def get_workshops_by_state(self, workshops):
         w = workshops.values_list("coordinator__profile__state", flat=True)
         states_map = dict(states)
-        df = pd.DataFrame(w)
+        df = pd.DataFrame(list(w))
         data_states, data_counts = [], []
         if not df.empty:
             grouped_data = df.value_counts().to_dict()
@@ -174,7 +174,7 @@ class WorkshopManager(models.Manager):
 
     def get_workshops_by_type(self, workshops):
         w = workshops.values_list("workshop_type__name", flat=True)
-        df = pd.DataFrame(w)
+        df = pd.DataFrame(list(w))
         data_wstypes, data_counts = [], []
         if not df.empty:
             grouped_data = df.value_counts().to_dict()

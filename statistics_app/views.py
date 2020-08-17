@@ -75,13 +75,15 @@ def workshop_public_stats(request):
             "instructor__last_name", "coordinator__profile__state",
             "date", "status"
         )
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(list(data))
         if not df.empty:
             df.status.replace(
                 [0, 1, 2], ['Pending', 'Success', 'Reject'], inplace=True
             )
-            codes, states = list(zip(*states))
-            df.coordinator__profile__state.replace(codes, states, inplace=True)
+            codes, states_map = list(zip(*states))
+            df.coordinator__profile__state.replace(
+                codes, states_map, inplace=True
+            )
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = f'attachment; filename=statistics.csv'
             output_file = df.to_csv(response, index=False)
